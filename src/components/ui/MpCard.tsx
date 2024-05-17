@@ -2,6 +2,8 @@
 "use client"
 import { useEffect } from 'react';
 
+import Image from "next/image";
+
 import * as React from 'react'
 
 // import { config } from './app.config';
@@ -24,7 +26,16 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
         {item.gender === "M" ? male : female}
       </div>
       <h4>{item.name}</h4>
-      <img style={{ width: "100%" }} className='browse__card__img' src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`} alt="Paris" loading="lazy"></img>
+      {/* <img style={{ width: "100%" }} className='browse__card__img' src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`} alt="Paris" loading="lazy"></img> */}
+      <div className="relative w-6 h-6 md:w-10 md:h-10 lg:w-24 lg:h-24 xl:w-40 xl:h-40 2xl:w-56 2xl:h-56 ring">
+        <Image
+          fill
+          // className='browse__card__img' 
+          src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
+          alt="MpImage"
+        />
+      </div>
+
       <span>{item.party}</span>
       <p>{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>
       <div className="votecounts">
