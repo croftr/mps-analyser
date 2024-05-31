@@ -33,7 +33,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="grid min-h-screen p-24 gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 place-items-center"> 
         {mps && mps.map(mp =>  <MpCard key={(mp.id)} onQueryMp={onQueryMp} item={mp} />  )}    
     </main>
   );

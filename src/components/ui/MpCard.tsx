@@ -21,16 +21,18 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
   }, [item]);
 
   return (
-    <div className='browse__card' onClick={() => onQueryMp(item.id)} >
+    <div className='relative p-7 pt-2 pb-2 ring' onClick={() => onQueryMp(item.id)} >
+
       <div title={item.gender === "M" ? "Male" : "Female"} style={{ position: "absolute", right: 0, paddingRight: 4 }}>
         {item.gender === "M" ? male : female}
       </div>
+      
       <h4>{item.name}</h4>
-      {/* <img style={{ width: "100%" }} className='browse__card__img' src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`} alt="Paris" loading="lazy"></img> */}
-      <div className="relative w-6 h-6 md:w-10 md:h-10 lg:w-24 lg:h-24 xl:w-40 xl:h-40 2xl:w-56 2xl:h-56 ring">
+      
+      <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-40 xl:h-40 2xl:w-56 2xl:h-56">      
         <Image
-          fill
-          // className='browse__card__img' 
+          className='rounded-lg'
+          fill          
           src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
           alt="MpImage"
         />
