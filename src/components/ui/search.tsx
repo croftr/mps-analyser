@@ -82,10 +82,9 @@ export default function Search() {
         }
 
         if (result) {
-            if (result?.value?.gender) {
-                console.log('result >>>>>> ', result);                
+            if (result?.value?.gender) {            
                 useMpStore.setState({ mp: result.value });
-                router.push('/mp', { scroll: false })
+                router.push(`/mp?id=${item.id}`, { scroll: false })
             } else {
                 setDivisionDetails(result)
             }
