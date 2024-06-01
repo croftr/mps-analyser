@@ -13,7 +13,6 @@ import { useMpStore } from '@/lib/store';
 
 const EARLIEST_FROM_DATE = "2003-11-12";
 
-// useRouter
 import { useRouter } from 'next/navigation'
  
 export default function Search() {
@@ -84,7 +83,7 @@ export default function Search() {
         if (result) {
             if (result?.value?.gender) {            
                 useMpStore.setState({ mp: result.value });
-                router.push(`/mp?id=${item.id}`, { scroll: false })
+                router.push(`/mp?id=${item.id}`, { scroll: false });
             } else {
                 setDivisionDetails(result)
             }

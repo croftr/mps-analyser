@@ -6,9 +6,14 @@ import { config } from './app.config';
 import ky from 'ky';
 import { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+    
 const EARLIEST_FROM_DATE = "2003-11-12";
 
 export default function Home() {
+
+  const router = useRouter()
+
 
   const [mps, setMps] = useState([])
 
@@ -16,8 +21,6 @@ export default function Home() {
     const result = await fetch("https://mps-api-production-8da5.up.railway.app/searchMps?party=Any");
     const mpsResult = await result.json();
 
-    console.log("check ", mpsResult);
-    
     setMps(mpsResult);
 
   }
@@ -28,6 +31,7 @@ export default function Home() {
 
     
   const onQueryMp = async (id:number) => {
+    router.push(`/mp?id=${id}`, { scroll: false });
     // const mp = await ky.get(`${config.apiUrl}/mp/${id}`).json();
     console.log(id);
   }
