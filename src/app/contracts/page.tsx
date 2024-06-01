@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 import { useEffect, useState } from "react";
 
@@ -41,29 +42,25 @@ export default function Contracts() {
       <div>
 
         {!contracts && <progress value="" />}
-        {/* {contracts && <pre>{JSON.stringify(contracts, null, 2)}</pre>} */}
 
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Org Name</TableHead>
-              <TableHead>Number of contracts</TableHead>                            
+              {contracts && contracts[0]?.keys.map((header, index) => (
+                <TableHead key={`head-${index}`}>{header}</TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {contracts?.map((contract:any, index) => (
+            {contracts?.map((contract: any, index) => (
               <TableRow key={`row-${index}`}>
-              <TableCell className="font-medium">{contract._fields[contract._fieldLookup["org.Name"]] }</TableCell>           
-              <TableCell className="font-medium">{contract._fields[contract._fieldLookup["contractCount"]].low }</TableCell>                                       
-            </TableRow>
+                <TableCell className="font-medium">{contract._fields[contract._fieldLookup["org.Name"]]}</TableCell>
+                <TableCell className="font-medium">{contract._fields[contract._fieldLookup["contractCount"]].low}</TableCell>
+              </TableRow>
             ))}
-            
           </TableBody>
         </Table>
-
-
-
       </div>
 
     </main>
