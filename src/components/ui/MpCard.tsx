@@ -6,10 +6,6 @@ import Image from "next/image";
 
 import * as React from 'react'
 
-// import { config } from './app.config';
-
-// import ky from 'ky-universal';
-
 const male = <svg className="standalone-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"><path d="M16 2v2h3.586l-3.972 3.972c-1.54-1.231-3.489-1.972-5.614-1.972-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.125-.741-4.074-1.972-5.614l3.972-3.972v3.586h2v-7h-7zm-6 20c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" /></svg>
 const female = <svg className="standalone-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"><path d="M21 9c0-4.97-4.03-9-9-9s-9 4.03-9 9c0 4.632 3.501 8.443 8 8.941v2.059h-3v2h3v2h2v-2h3v-2h-3v-2.059c4.499-.498 8-4.309 8-8.941zm-16 0c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7-7-3.14-7-7z" /></svg>
 
@@ -21,7 +17,7 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
   }, [item]);
 
   return (
-    <div className='relative p-7 pt-2 pb-2 ring' onClick={() => onQueryMp(item.id)} >
+    <div className='relative p-5 pt-2 pb-2 ring' onClick={() => onQueryMp(item.id)} >
 
       <div title={item.gender === "M" ? "Male" : "Female"} style={{ position: "absolute", right: 0, paddingRight: 4 }}>
         {item.gender === "M" ? male : female}
@@ -29,7 +25,7 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
       
       <h4>{item.name}</h4>
       
-      <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-40 xl:h-40 2xl:w-56 2xl:h-56">      
+      <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-40 xl:h-40 2xl:w-52 2xl:h-52">      
         <Image
           className='rounded-lg'
           fill          

@@ -68,6 +68,8 @@ export default function Search() {
     }
 
     const handleOnSelect = async (item: any) => {
+        console.log("handle select ", item);
+        
         
         useMpStore.setState({ mp: undefined });
 
@@ -85,7 +87,7 @@ export default function Search() {
                 useMpStore.setState({ mp: result.value });
                 router.push(`/mp?id=${item.id}`, { scroll: false });
             } else {
-                setDivisionDetails(result)
+                router.push(`/division?id=${item.id}`, { scroll: false });                
             }
         }
 

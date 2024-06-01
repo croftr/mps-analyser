@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation'
 import ky from 'ky';
 
-export default function Home() {
+export default function Mp() {
 
   // const mpDetails = useMpStore(state => state.mp);
 
@@ -53,6 +53,8 @@ export default function Home() {
           />
         )}
       </div>
+
+      {JSON.stringify(mpDetails?.value)}
 
     </section>
   );
