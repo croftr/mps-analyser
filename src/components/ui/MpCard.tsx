@@ -17,36 +17,42 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
   }, [item]);
 
   return (
-    <div className='relative p-8 pt-2 pb-0 border border-gray-600' onClick={() => onQueryMp(item.id)} >
-
-      <div title={item.gender === "M" ? "Male" : "Female"} style={{ position: "absolute", right: 0, paddingRight: 4 }}>
+<div 
+    className="relative p-4 border border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+    onClick={() => onQueryMp(item.id)}
+>
+    <div 
+        title={item.gender === "M" ? "Male" : "Female"} 
+        className="absolute top-2 right-2 flex items-center"
+    >
         {item.gender === "M" ? male : female}
-      </div>
-      
-      <h4 className='pb-2'>{item.name}</h4>
-      
-      <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-40 xl:h-40 2xl:w-52 2xl:h-52 mb-1">            
-      {/* <div className="relative mb-1" style={{ width: "60%", height : "50%"}}>             */}
-        <Image
-          className='rounded-lg'
-          fill          
-          src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
-          alt="MpImage"
-        />
-      </div>
-
-      <span className='truncate'>{item.party}</span>      
-      <p>{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>
-
-      <div class="mb-6 grid grid-cols-3 border rounded-md border-gray-600 mt-1">
-        <span className='border-b border-r pl-1 border-gray-600'>Votes</span>
-        <span className='border-b border-r pl-1 border-gray-600'>Aye</span>
-        <span className='border-b pl-1 border-gray-600'>No</span>
-        <span className='pl-1 border-gray-600'>{item.totalVotes}</span>
-        <span className='pl-1 border-r border-l border-gray-600'>{item.ayeVotes}</span>
-        <span className='pl-1 border-gray-600'>{item.noVotes}</span>
-      </div>
     </div>
+    
+    <h4 className="font-semibold text-lg mb-2">{item.name}</h4>
+
+    <div className="relative mb-1 aspect-square"> {/* Added aspect-square */}
+        <Image
+            className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
+            fill 
+            src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
+            alt="MpImage"
+        />
+    </div>
+
+    <span className="block truncate text-gray-600 dark:text-gray-300">{item.party}</span>
+    <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>
+
+    <div className="mt-2 grid grid-cols-3 text-center text-sm border rounded-md border-gray-600"> 
+    <span className="py-1 border-b border-r border-gray-600 first:border-l">Votes</span>
+    <span className="py-1 border-b border-r border-gray-600">Aye</span>
+    <span className="py-1 border-b border-gray-600 last:border-r">No</span>
+    <span className="py-1"> {item.totalVotes} </span>
+    <span className="py-1 border-r border-l border-gray-600"> {item.ayeVotes} </span>
+    <span className="py-1"> {item.noVotes} </span>
+</div>
+
+</div>
+
   )
 }
 

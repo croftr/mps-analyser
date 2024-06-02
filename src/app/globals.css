@@ -57,6 +57,7 @@ body {
   display: flex;
   gap: 8px;
   align-items: baseline;
+  padding: 4px;
 }
 
 @media (prefers-color-scheme: dark) {
