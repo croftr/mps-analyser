@@ -6,8 +6,10 @@ import { useSearchParams } from 'next/navigation'
 import ky from 'ky';
 import { config } from "../app.config";
 
+// import "../../styles/mpDetails.css"
+
 import {
-  Party,  
+  Party,
   EARLIEST_FROM_DATE,
   VOTING_CATEGORIES
 } from "../config/constants";
@@ -28,13 +30,13 @@ export default function Mp() {
   const [filterInProgress, setFilterInProgress] = useState(false);
   const [votingSummary, setVotingSummary] = useState();
   const [votingSimilarity, setVotingSimilarity] = useState();
-  
-	//similarity params
-	const [isExcludingParties, setIsExcludingParties] = useState(true);
-	const [isIncludingParties, setIsIncludingParties] = useState(false);
-	const [excludeParties, setExcludeParties] = useState("");
-	const [includeParties, setIncludeParties] = useState("");
-	const [limit, setLimit] = useState(10);
+
+  //similarity params
+  const [isExcludingParties, setIsExcludingParties] = useState(true);
+  const [isIncludingParties, setIsIncludingParties] = useState(false);
+  const [excludeParties, setExcludeParties] = useState("");
+  const [includeParties, setIncludeParties] = useState("");
+  const [limit, setLimit] = useState(10);
 
   const [progress, setProgress] = useState("");
   const [votingHistory, setVotingHistory] = useState();
@@ -43,30 +45,30 @@ export default function Mp() {
 
   const onApplyGlobalFilter = () => {
     console.log("apply filter");
-    
+
   }
 
   const onApplyFilter = async () => {
     setFilterInProgress(true);
-    
+
     // await onApplyGlobalFilter(mpDetails?.value?.id, votefilterFrom, votefilterTo, votefilterType, votefilterTitle);
     setFilterInProgress(false);
   }
 
-  const onToggleExcludeInclude = (type:string) => {
-		console.log(type);
-		if (type === "include") {
-			setIsIncludingParties(!isIncludingParties);
-			if (isExcludingParties) {
-				setIsExcludingParties(false);
-			}
-		} else {
-			setIsExcludingParties(!isExcludingParties);
-			if (isIncludingParties) {
-				setIsIncludingParties(false);
-			}
-		}
-	}
+  const onToggleExcludeInclude = (type: string) => {
+    console.log(type);
+    if (type === "include") {
+      setIsIncludingParties(!isIncludingParties);
+      if (isExcludingParties) {
+        setIsExcludingParties(false);
+      }
+    } else {
+      setIsExcludingParties(!isExcludingParties);
+      if (isIncludingParties) {
+        setIsIncludingParties(false);
+      }
+    }
+  }
 
   const onQueryMp = async (id: string) => {
 
@@ -99,72 +101,72 @@ export default function Mp() {
   }, [searchParams])
 
 
-  const onGetVotingSimilarity = async (orderby:string) => {
-		setProgress("Getting voting similarity...");
-		//clear voting history to make space for similarity
-		setVotingHistory(undefined);
+  const onGetVotingSimilarity = async (orderby: string) => {
+    setProgress("Getting voting similarity...");
+    //clear voting history to make space for similarity
+    setVotingHistory(undefined);
 
-		setTimeout(
-			() =>
-				document
-					.getElementsByClassName("container")[0]
-					.scrollTo(0, document.body.scrollHeight),
-			100
-		);
+    setTimeout(
+      () =>
+        document
+          .getElementsByClassName("container")[0]
+          .scrollTo(0, document.body.scrollHeight),
+      100
+    );
 
-		let queryParams = '';
+    let queryParams = '';
 
-		if (isExcludingParties && excludeParties) {
-			queryParams = `&partyExcludes=${excludeParties}`;
-		} else if (isIncludingParties && includeParties) {
-			queryParams = `&partyIncludes=${includeParties}`;
-		}
+    if (isExcludingParties && excludeParties) {
+      queryParams = `&partyExcludes=${excludeParties}`;
+    } else if (isIncludingParties && includeParties) {
+      queryParams = `&partyIncludes=${includeParties}`;
+    }
 
-		const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpDetails?.value?.nameDisplayAs}&id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
+    const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpDetails?.value?.nameDisplayAs}&id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
 
-		const result = await ky(url).json();
-
-    // @ts-ignore
-		setVotingSimilarity(result);
-
-		//TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
-		const chartData = {
-			labels: [],
-			datasets: [
-				{
-					label: "Voting Similarity",
-					backgroundColor:
-						window.localStorage.getItem("theme") ===
-							"light-mode"
-							? "#a972cb"
-							: "#980c4c",
-					borderColor: "#262a32",
-					borderWidth: 2,
-					// barThickness: 5,
-					indexAxis: "y",
-					width: "40px",
-					data: [],
-				},
-			],
-		};
+    const result = await ky(url).json();
 
     // @ts-ignore
-		result.forEach((element) => {
+    setVotingSimilarity(result);
+
+    //TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
+    const chartData = {
+      labels: [],
+      datasets: [
+        {
+          label: "Voting Similarity",
+          backgroundColor:
+            window.localStorage.getItem("theme") ===
+              "light-mode"
+              ? "#a972cb"
+              : "#980c4c",
+          borderColor: "#262a32",
+          borderWidth: 2,
+          // barThickness: 5,
+          indexAxis: "y",
+          width: "40px",
+          data: [],
+        },
+      ],
+    };
+
+    // @ts-ignore
+    result.forEach((element) => {
       // @ts-ignore
-			chartData.labels.push(element.name);
+      chartData.labels.push(element.name);
       // @ts-ignore
-			chartData.datasets[0].data.push(element.score);
-		});
-    
+      chartData.datasets[0].data.push(element.score);
+    });
+
     // @ts-ignore
-		setBarChartData(chartData);
+    setBarChartData(chartData);
     // @ts-ignore
-		setProgress(undefined);
-	};
+    setProgress(undefined);
+  };
 
 
   return (
-    <section id="mpDetailsPage" className="flex justify-around p-4">
+    <section id="mpDetailsPage" className="flex justify-around p-4 gap-4 flex-wrap">
 
       <div className="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white">
 
@@ -226,8 +228,6 @@ export default function Mp() {
             <div className="col-span-2">
               <p className="text-gray-600">Status:</p>
               {Boolean(mpDetails?.value?.latestHouseMembership.membershipStatus?.statusIsActive) ? <p className="font-medium text-green-500">{mpDetails?.value?.latestHouseMembership.membershipStatus?.statusDescription}</p> : <p className="font-medium text-red-400">{mpDetails?.value?.latestHouseMembership.membershipStatus?.statusDescription}</p>}
-
-
             </div>
 
           </div>
@@ -235,12 +235,11 @@ export default function Mp() {
 
       </div>
 
-      <div className="fieldsetsWrapper">
+      <div className="fieldsetsWrapper flex-1">
 
-        <fieldset>
-
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative">
           <legend>
-
+          <span className='flex'>
             <svg
               style={{ position: "relative", top: 0, marginRight: 4 }}
               className="standalone-svg"
@@ -250,12 +249,11 @@ export default function Mp() {
               viewBox="0 0 24 24">
               <path d="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z" />
             </svg>
-            <span style={{ position: "relative", top: -6 }}>
+            
               Filters
             </span>
 
           </legend>
-
 
           <div className="filterWrapper" style={{ paddingBottom: 8, display: "flex", flexDirection: "column", gap: 12 }}>
             <div className="datePicker">
@@ -325,8 +323,9 @@ export default function Mp() {
 
         </fieldset>
 
-        <fieldset>
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative">
           <legend>
+          <span className='flex'>
             <svg
               style={{ position: "relative", top: 0, marginRight: 4 }}
               className="standalone-svg"
@@ -336,7 +335,7 @@ export default function Mp() {
               viewBox="0 0 24 24">
               <path d="M2 0v24h20v-24h-20zm18 22h-16v-15h16v15zm-3-4h-10v-1h10v1zm0-3h-10v-1h10v1zm0-3h-10v-1h10v1z" />
             </svg>
-            <span style={{ position: "relative", top: -6 }}>
+            
               Voting details
             </span>
           </legend>
@@ -401,9 +400,9 @@ export default function Mp() {
           </div>
         </fieldset>
 
-        <fieldset>
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative">
           <legend>
-
+          <span className='flex'>
             <svg
               style={{ position: "relative", top: 0, marginRight: 4 }}
               className="standalone-svg"
@@ -412,8 +411,7 @@ export default function Mp() {
               height="24"
               viewBox="0 0 24 24">
               <path d="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z" />
-            </svg>
-            <span style={{ position: "relative", top: -6 }}>
+            </svg>            
               Voting analysis
             </span>
 
@@ -424,7 +422,7 @@ export default function Mp() {
             <div className="mpDetails__toggle-wrapper">
 
               <div className="mpDetails__label">
-                <Switch onToggle={() => onToggleExcludeInclude("exclude")} isChecked={isExcludingParties} label="Exclude"/>                
+                <Switch onToggle={() => onToggleExcludeInclude("exclude")} isChecked={isExcludingParties} label="Exclude" />
               </div>
 
               <select
@@ -447,7 +445,7 @@ export default function Mp() {
 
             <div className="mpDetails__toggle-wrapper">
               <div className="mpDetails__label">
-                <Switch onToggle={() => onToggleExcludeInclude("include")} isChecked={isIncludingParties} label="Include" />                
+                <Switch onToggle={() => onToggleExcludeInclude("include")} isChecked={isIncludingParties} label="Include" />
               </div>
 
               <select
@@ -497,7 +495,7 @@ export default function Mp() {
             </button>
           </div>
 
-        </fieldset> 
+        </fieldset>
 
       </div>
 
