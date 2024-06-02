@@ -113,6 +113,7 @@ export default function Search() {
     return (
         <div className="p-2 mt-1 lg:mt-10 xg:mt-10 2xl:mt-10">
             <ReactSearchAutocomplete
+                styling={{ zIndex: 1 }}
                 items={mpNames.concat(divisionNames)}                
                 onSearch={handleOnSearch}
                 onHover={handleOnHover}
