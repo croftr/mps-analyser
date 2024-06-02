@@ -17,6 +17,9 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
   }, [item]);
 
   return (
+
+
+    
 <div 
     className="relative p-4 border border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
     onClick={() => onQueryMp(item.id)}

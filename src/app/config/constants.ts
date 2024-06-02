@@ -20,7 +20,23 @@ export const PARTY_NAMES = [
     "Alliance"
 ]
 
-export const Party = {
+export type PartyType = 
+    "Conservative" | 
+    "Labour" | 
+    "Liberal Democrat" | 
+    "Green Party" | 
+    "Scottish National Party" | 
+    "Plaid Cymru" | 
+    "Democratic Unionist Party" | 
+    "Sinn Féin" | 
+    "Ulster Unionist Party" | 
+    "Social Democratic and Labour Party" | 
+    "Brexit Party" | 
+    "The Reclaim Party" | 
+    "Unknown" | 
+    "Any";
+
+export const Party: Record<string, PartyType> = {
     CONSERVATIVE: "Conservative",
     LABOUR: "Labour",
     LIBERAL_DEMOCRATS: "Liberal Democrat",
