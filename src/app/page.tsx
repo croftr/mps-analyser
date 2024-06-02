@@ -453,17 +453,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* {type === "MP" && !filteredMps && skeletonArray.map((item, index) => <MpCardSkeleton key={'skel-'+index} />)}        
-        {type === "Division" && !filteredDivisions && skeletonArray.map((item, index) => <DivisionCardSkeleton key={'skel'+index} />)}
-
-
-        {Boolean(mps && mps.length) && filteredMps.map(i => (
-          <MpCard item={i} onQueryMp={onQueryMp} key={i.id} />
-        ))}
-
-   */}
-
-      <main className="grid min-h-screen p-24 gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 place-items-center">
+      <main className="grid p-1 gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
 
         {Boolean(divisions && divisions.length) && filteredDivisions.map(i => (
           <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.id} />

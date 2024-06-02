@@ -17,15 +17,16 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
   }, [item]);
 
   return (
-    <div className='relative p-5 pt-2 pb-2 ring' onClick={() => onQueryMp(item.id)} >
+    <div className='relative p-8 pt-2 pb-0 border border-gray-600' onClick={() => onQueryMp(item.id)} >
 
       <div title={item.gender === "M" ? "Male" : "Female"} style={{ position: "absolute", right: 0, paddingRight: 4 }}>
         {item.gender === "M" ? male : female}
       </div>
       
-      <h4>{item.name}</h4>
+      <h4 className='pb-2'>{item.name}</h4>
       
-      <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-40 xl:h-40 2xl:w-52 2xl:h-52">      
+      <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-40 xl:h-40 2xl:w-52 2xl:h-52 mb-1">            
+      {/* <div className="relative mb-1" style={{ width: "60%", height : "50%"}}>             */}
         <Image
           className='rounded-lg'
           fill          
@@ -34,15 +35,16 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
         />
       </div>
 
-      <span>{item.party}</span>
+      <span className='truncate'>{item.party}</span>      
       <p>{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>
-      <div className="votecounts">
-        <span className='gridheader'>Votes</span>
-        <span className='gridheader'>Aye</span>
-        <span className='gridheader'>No</span>
-        <span>{item.totalVotes}</span>
-        <span>{item.ayeVotes}</span>
-        <span>{item.noVotes}</span>
+
+      <div class="mb-6 grid grid-cols-3 border rounded-md border-gray-600 mt-1">
+        <span className='border-b border-r pl-1 border-gray-600'>Votes</span>
+        <span className='border-b border-r pl-1 border-gray-600'>Aye</span>
+        <span className='border-b pl-1 border-gray-600'>No</span>
+        <span className='pl-1 border-gray-600'>{item.totalVotes}</span>
+        <span className='pl-1 border-r border-l border-gray-600'>{item.ayeVotes}</span>
+        <span className='pl-1 border-gray-600'>{item.noVotes}</span>
       </div>
     </div>
   )
