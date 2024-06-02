@@ -26,10 +26,12 @@ export default function Mp() {
   const [votefilterFrom, setVotefilterFrom] = useState("");
   const [votefilterTo, setVotefilterTo] = useState("");
   const [votefilterType, setVotefilterType] = useState("");
-  const [votefilterTitle, setVotefilterTitle] = useState("");
   const [filterInProgress, setFilterInProgress] = useState(false);
-  const [votingSummary, setVotingSummary] = useState();
+  const [votingSummary, setVotingSummary] = useState<any>(undefined);
   const [votingSimilarity, setVotingSimilarity] = useState();
+
+
+  const [votefilterTitle, setVotefilterTitle] = useState("");
 
   //similarity params
   const [isExcludingParties, setIsExcludingParties] = useState(true);
@@ -80,6 +82,9 @@ export default function Mp() {
 
     setMpDetails(result);
 
+
+    onGetVotingSummary(result.value.id);
+
   }
 
   const onChangeSummaryDatePicker = (type: string, value: string) => {
@@ -92,13 +97,76 @@ export default function Mp() {
     }
   }
 
+  const onGetVotingSummary = async (id: number, fromDate = EARLIEST_FROM_DATE, toDate = new Date().toISOString().substr(0, 10), divisionCategory = "Any", name = "Any") => {
+
+    setFilterInProgress(true);
+
+    const result = await ky(`${config.mpsApiUrl}votecounts?id=${id}&fromDate=${fromDate}&toDate=${toDate}&category=${divisionCategory}&name=${name}`).json();
+    console.log('votecounts ', result);
+
+    setFilterInProgress(false);
+    setVotingSummary(result);
+  }
+
   useEffect(() => {
     const paramId = searchParams.toString().split("=")[1]
     console.log(paramId);
 
-    onQueryMp(paramId)
+    onQueryMp(paramId);
+
 
   }, [searchParams])
+
+  const onGetVotingHistory = async (type: string) => {
+    setProgress("Analysing voting history...");
+
+    //clear similarity to make space for voting history
+    setVotingSimilarity(undefined);
+    setBarChartData(undefined);
+    setVotingHistory(undefined);
+
+    //TODO scroll to bottom probably should be for mobile only
+    setTimeout(
+      () =>
+        document
+          .getElementsByClassName("container")[0]
+          .scrollTo(0, document.body.scrollHeight),
+      1
+    );
+
+    try {
+      const nameParam = votefilterTitle || "Any";
+      const response = await ky(
+        `${config.mpsApiUrl}votingDetailsNeo?id=${mpDetails?.value?.id}&type=${type}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${nameParam}`
+      ).json();
+
+      // @ts-ignore
+      const formattedResults = [];
+
+      // @ts-ignore
+      response.records.forEach(i => {
+        const memberVotedAye = type === "votedAye" ? true : type === "votedNo" ? false : i._fields[3];
+        formattedResults.push({
+          divisionId: i._fields[0].low,
+          title: i._fields[1],
+          date: i._fields[2],
+          memberVotedAye
+        })
+      });
+      // @ts-ignore
+      setVotingHistory(formattedResults);
+      // @ts-ignore
+      setProgress(undefined);
+    } catch (error) {
+      // @ts-ignore
+      setProgress(undefined);
+      console.error(error);
+      setVotingHistory(undefined);
+      // @ts-ignore
+      setGlobalMessage({ type: "error", text: error.message });
+    }
+  };
+
 
 
   const onGetVotingSimilarity = async (orderby: string) => {
@@ -239,17 +307,17 @@ export default function Mp() {
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative">
           <legend>
-          <span className='flex'>
-            <svg
-              style={{ position: "relative", top: 0, marginRight: 4 }}
-              className="standalone-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24">
-              <path d="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z" />
-            </svg>
-            
+            <span className='flex'>
+              <svg
+                style={{ position: "relative", top: 0, marginRight: 4 }}
+                className="standalone-svg"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24">
+                <path d="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z" />
+              </svg>
+
               Filters
             </span>
 
@@ -312,7 +380,7 @@ export default function Mp() {
             </div>
 
             <button
-              className='button'
+              className='text-primary border border-primary rounded'
               onClick={onApplyFilter}
             >
               Apply
@@ -325,31 +393,31 @@ export default function Mp() {
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative">
           <legend>
-          <span className='flex'>
-            <svg
-              style={{ position: "relative", top: 0, marginRight: 4 }}
-              className="standalone-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24">
-              <path d="M2 0v24h20v-24h-20zm18 22h-16v-15h16v15zm-3-4h-10v-1h10v1zm0-3h-10v-1h10v1zm0-3h-10v-1h10v1z" />
-            </svg>
-            
+            <span className='flex'>
+              <svg
+                style={{ position: "relative", top: 0, marginRight: 4 }}
+                className="standalone-svg"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24">
+                <path d="M2 0v24h20v-24h-20zm18 22h-16v-15h16v15zm-3-4h-10v-1h10v1zm0-3h-10v-1h10v1zm0-3h-10v-1h10v1z" />
+              </svg>
+
               Voting details
             </span>
           </legend>
           <div className='mpDetails__actions'>
 
-            {/* {votingSummary && (
+            {votingSummary && (
               <div className='votingSummary'>
                 <h4>
-                  {displayName(details.value.nameDisplayAs)}
+                  {mpDetails?.value.nameDisplayAs}
                 </h4>
 
-                <div className='votingSummary__buttons'>
+                <div className='mt-2 grid grid-cols-3 gap-px justify-items-center items-center'>
                   <button
-                    className='button votingButton'
+                    className='text-primary border border-primary rounded w-full'
                     onClick={() =>
                       onGetVotingHistory("all")
                     }
@@ -357,7 +425,7 @@ export default function Mp() {
                     Total
                   </button>
                   <button
-                    className='button'
+                    className='text-primary border border-primary rounded w-full'
                     onClick={() =>
                       onGetVotingHistory("votedAye")
                     }
@@ -365,7 +433,7 @@ export default function Mp() {
                     Aye
                   </button>
                   <button
-                    className='button'
+                    className='text-primary border border-primary rounded w-full'
                     onClick={() =>
                       onGetVotingHistory("votedNo")
                     }
@@ -392,26 +460,26 @@ export default function Mp() {
 
                 {filterInProgress && (
                   <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
-                    <progress value={null} />
+                    <progress value={0} />
                   </div>
                 )}
               </div>
-            )} */}
+            )}
           </div>
         </fieldset>
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative">
           <legend>
-          <span className='flex'>
-            <svg
-              style={{ position: "relative", top: 0, marginRight: 4 }}
-              className="standalone-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24">
-              <path d="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z" />
-            </svg>            
+            <span className='flex'>
+              <svg
+                style={{ position: "relative", top: 0, marginRight: 4 }}
+                className="standalone-svg"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24">
+                <path d="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z" />
+              </svg>
               Voting analysis
             </span>
 
@@ -419,11 +487,9 @@ export default function Mp() {
 
           <div className='mpDetails__actions'>
 
-            <div className="mpDetails__toggle-wrapper">
+            <div className="flex gap-4 p-2">
 
-              <div className="mpDetails__label">
-                <Switch onToggle={() => onToggleExcludeInclude("exclude")} isChecked={isExcludingParties} label="Exclude" />
-              </div>
+              <Switch onToggle={() => onToggleExcludeInclude("exclude")} isChecked={isExcludingParties} label="Exclude" />
 
               <select
                 className="mpDetails__select select"
@@ -443,11 +509,9 @@ export default function Mp() {
               </select>
             </div>
 
-            <div className="mpDetails__toggle-wrapper">
-              <div className="mpDetails__label">
-                <Switch onToggle={() => onToggleExcludeInclude("include")} isChecked={isIncludingParties} label="Include" />
-              </div>
+            <div className="flex gap-4 p-2">
 
+              <Switch onToggle={() => onToggleExcludeInclude("include")} isChecked={isIncludingParties} label="Include" />
               <select
                 className="mpDetails__select select"
                 name="partiesToExclude"
@@ -467,7 +531,7 @@ export default function Mp() {
 
             </div>
 
-            <div className="mpDetails__toggle-wrapper">
+            <div className="flex gap-4 p-2">
 
               <label className="mpDetails__label">Limit</label>
 
@@ -480,19 +544,24 @@ export default function Mp() {
 
             </div>
 
-            <button
-              className='button'
-              onClick={() => onGetVotingSimilarity('DESCENDING')}
-            >
-              Most Similar Voting Mps
-            </button>
+            <div className='flex flex-col gap-2 p-4'>
+              <button
+                className='text-primary border border-primary rounded'
+                onClick={() => onGetVotingSimilarity('DESCENDING')}
+              >
+                Most Similar Voting Mps
+              </button>
 
-            <button
-              className='button'
-              onClick={() => onGetVotingSimilarity('ASCENDING')}
-            >
-              Least Similar Voting Mps
-            </button>
+              <button
+                className='text-primary border border-primary rounded'
+                onClick={() => onGetVotingSimilarity('ASCENDING')}
+              >
+                Least Similar Voting Mps
+              </button>
+
+            </div>
+
+
           </div>
 
         </fieldset>

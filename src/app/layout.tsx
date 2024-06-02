@@ -1,5 +1,7 @@
 // @ts-nocheck
 import "./globals.css";
+import "../styles/utils.css";
+import "../styles/browse.css"
 
 import Nav from "@/components/ui/nav";
 import Search from "@/components/ui/search";
