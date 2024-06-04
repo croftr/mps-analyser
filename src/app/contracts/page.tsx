@@ -2,6 +2,8 @@
 "use client"
 import { useEffect, useState } from "react";
 
+import NeoTable from "../../components/ui/neoTable";
+
 import {
   Table,
   TableBody,
@@ -80,27 +82,8 @@ export default function Contracts() {
 
         {!contracts && <progress value="" />}
 
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              {contracts && contracts[0]?.keys.map((header, index) => (
-                <TableHead key={`head-${index}`}>{header}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {contracts && Array.isArray(contracts) && contracts.map((contract: any, rowIndex) => (
-              <TableRow key={`row-${rowIndex}`}>
+        <NeoTable data={contracts} title="contracts"/>
 
-                {contracts && contracts[0]?.keys.map((header, cellIndex) => (
-                  <TableCell key={`cell-${cellIndex}`} className="font-medium">{renderCell(contract._fields[contract._fieldLookup[contract.keys[cellIndex]]])}</TableCell>  
-                ))}
-
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
       </div>
 
     </main>

@@ -15,6 +15,8 @@ import {
 } from "../config/constants";
 
 import Switch from "@/components/ui/switch";
+import { table } from 'console';
+import NeoTable from '@/components/ui/neoTable';
 
 export default function Mp() {
 
@@ -23,8 +25,9 @@ export default function Mp() {
 
   const [mpDetails, setMpDetails] = useState<Record<string, any> | undefined>({});
 
-  const [votefilterFrom, setVotefilterFrom] = useState("");
-  const [votefilterTo, setVotefilterTo] = useState("");
+  const [votefilterFrom, setVotefilterFrom] = useState(new Date(new Date(EARLIEST_FROM_DATE)).toISOString().substr(0, 10));
+  const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substr(0, 10));
+
   const [votefilterType, setVotefilterType] = useState("");
   const [filterInProgress, setFilterInProgress] = useState(false);
   const [votingSummary, setVotingSummary] = useState<any>(undefined);
@@ -45,10 +48,8 @@ export default function Mp() {
   const [barChartData, setBarChartData] = useState();
   const searchParams = useSearchParams();
 
-  const onApplyGlobalFilter = () => {
-    console.log("apply filter");
-
-  }
+  const [tableData, setTableData] = useState();
+  const [tableTitle, setTableTitle] = useState("");
 
   const onApplyFilter = async () => {
     setFilterInProgress(true);
@@ -88,6 +89,8 @@ export default function Mp() {
   }
 
   const onChangeSummaryDatePicker = (type: string, value: string) => {
+    console.log("check ", value);
+    
     if (type === "from") {
       setVotefilterFrom(value);
       // setFromDate(value);
@@ -114,7 +117,6 @@ export default function Mp() {
 
     onQueryMp(paramId);
 
-
   }, [searchParams])
 
   const onGetVotingHistory = async (type: string) => {
@@ -126,13 +128,13 @@ export default function Mp() {
     setVotingHistory(undefined);
 
     //TODO scroll to bottom probably should be for mobile only
-    setTimeout(
-      () =>
-        document
-          .getElementsByClassName("container")[0]
-          .scrollTo(0, document.body.scrollHeight),
-      1
-    );
+    // setTimeout(
+    //   () =>
+    //     document
+    //       .getElementsByClassName("container")[0]
+    //       .scrollTo(0, document.body.scrollHeight),
+    //   1
+    // );
 
     try {
       const nameParam = votefilterTitle || "Any";
@@ -140,21 +142,24 @@ export default function Mp() {
         `${config.mpsApiUrl}votingDetailsNeo?id=${mpDetails?.value?.id}&type=${type}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${nameParam}`
       ).json();
 
-      // @ts-ignore
-      const formattedResults = [];
+      // // @ts-ignore
+      // const formattedResults = [];
 
-      // @ts-ignore
-      response.records.forEach(i => {
-        const memberVotedAye = type === "votedAye" ? true : type === "votedNo" ? false : i._fields[3];
-        formattedResults.push({
-          divisionId: i._fields[0].low,
-          title: i._fields[1],
-          date: i._fields[2],
-          memberVotedAye
-        })
-      });
-      // @ts-ignore
-      setVotingHistory(formattedResults);
+      // // @ts-ignore
+      // response.records.forEach(i => {
+      // const memberVotedAye = type === "votedAye" ? true : type === "votedNo" ? false : i._fields[3];
+      //   formattedResults.push({
+      //     divisionId: i._fields[0].low,
+      //     title: i._fields[1],
+      //     date: i._fields[2],
+      //     memberVotedAye
+      //   })
+      // });
+      // // @ts-ignore
+      // setVotingHistory(formattedResults);      
+      // @ts-ignore      
+      setTableData(response.records);
+      setTableTitle(`${mpDetails?.value?.nameDisplayAs} voted ${type === "votedAye" ? "Aye" : type === "votedNo" ? "No" : ""}`);
       // @ts-ignore
       setProgress(undefined);
     } catch (error) {
@@ -565,6 +570,8 @@ export default function Mp() {
           </div>
 
         </fieldset>
+
+        <NeoTable data={tableData} title={tableTitle}/>
 
       </div>
 
