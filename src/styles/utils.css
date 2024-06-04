@@ -50,7 +50,7 @@
 	border-radius: 8px;
 } */
 
-.toggle {
+/* .toggle {
 	cursor: pointer;
 	display: inline-block;
 }
@@ -106,7 +106,7 @@
 	margin-left: 5px;
 	position: relative;
 	top: 2px;
-}
+} */
 /* 
 .votingHistory__table__sort {
 	fill: var(--clr-accent);

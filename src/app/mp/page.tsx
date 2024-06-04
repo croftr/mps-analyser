@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import ky from 'ky';
 import { config } from "../app.config";
 
+
 // import "../../styles/mpDetails.css"
 
 import {
@@ -14,8 +15,9 @@ import {
   VOTING_CATEGORIES
 } from "../config/constants";
 
-import Switch from "@/components/ui/switch";
-import { table } from 'console';
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+
 import NeoTable from '@/components/ui/neoTable';
 
 export default function Mp() {
@@ -53,7 +55,7 @@ export default function Mp() {
 
   const onApplyFilter = async () => {
     setFilterInProgress(true);
-    const result = await ky(`${config.mpsApiUrl}votecounts?id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${votefilterTitle}`).json();    
+    const result = await ky(`${config.mpsApiUrl}votecounts?id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${votefilterTitle}`).json();
     setFilterInProgress(false);
     setVotingSummary(result);
   }
@@ -90,7 +92,7 @@ export default function Mp() {
 
   const onChangeSummaryDatePicker = (type: string, value: string) => {
     console.log("check ", value);
-    
+
     if (type === "from") {
       setVotefilterFrom(value);
       // setFromDate(value);
@@ -340,6 +342,13 @@ export default function Mp() {
                 name="from-date"
                 onChange={(e) => onChangeSummaryDatePicker("from", e.target.value)}
                 value={votefilterFrom}
+                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out"
               />
 
               <input
@@ -351,6 +360,13 @@ export default function Mp() {
                 name="to-date"
                 onChange={(e) => onChangeSummaryDatePicker("to", e.target.value)}
                 value={votefilterTo}
+                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out"
               />
             </div>
 
@@ -359,7 +375,13 @@ export default function Mp() {
               <select
                 value={votefilterType}
                 onChange={(e) => setVotefilterType(e.target.value)}
-                className="select insights__select"
+                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out"
                 name="divisionCategory"
               >
                 {VOTING_CATEGORIES.map(i => (
@@ -378,7 +400,13 @@ export default function Mp() {
               <input
                 type="search"
                 placeholder="includes text"
-                className='input'
+                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out"
                 value={votefilterTitle}
                 onChange={(e) => setVotefilterTitle(e.target.value)}
               />
@@ -490,18 +518,29 @@ export default function Mp() {
 
           </legend>
 
-          <div className='mpDetails__actions'>
+          <div>
 
-            <div className="flex gap-4 p-2">
+          <div className="grid grid-cols-2 gap-4 gridContainer">
 
-              <Switch onToggle={() => onToggleExcludeInclude("exclude")} isChecked={isExcludingParties} label="Exclude" />
+
+              <div className='flex items-center gap-2 gridCell'>
+                <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
+                <Label htmlFor="vaexclude">Exclude</Label>
+              </div>
+
 
               <select
-                className="mpDetails__select select"
                 name="partiesToExclude"
                 onChange={(e) => setExcludeParties(e.target.value)}
                 value={excludeParties}
                 disabled={!isExcludingParties}
+                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out gridCell"
               >
                 {Object.keys(Party).map(i => (
                   <option
@@ -512,17 +551,27 @@ export default function Mp() {
                   </option>
                 ))}
               </select>
-            </div>
 
-            <div className="flex gap-4 p-2">
 
-              <Switch onToggle={() => onToggleExcludeInclude("include")} isChecked={isIncludingParties} label="Include" />
+
+
+              <div className='flex items-center gap-2 gridCell'>
+                <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
+                <Label htmlFor="vaInclude">Include</Label>
+              </div>
+
               <select
-                className="mpDetails__select select"
                 name="partiesToExclude"
                 onChange={(e) => setIncludeParties(e.target.value)}
                 value={includeParties}
                 disabled={!isIncludingParties}
+                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out gridCell"
               >
                 {Object.keys(Party).map(i => (
                   <option
@@ -534,20 +583,23 @@ export default function Mp() {
                 ))}
               </select>
 
-            </div>
 
-            <div className="flex gap-4 p-2">
-
-              <label className="mpDetails__label">Limit</label>
-
+              <Label htmlFor="valimit">Limit</Label>
               <input
-                className="mpDetails__select input"
+                id="valimit"
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
-                type="number">
-              </input>
-
+                type="number"
+                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out gridCell"
+              />
             </div>
+
 
             <div className='flex flex-col gap-2 p-4'>
               <button
@@ -571,7 +623,7 @@ export default function Mp() {
 
         </fieldset>
 
-        <NeoTable data={tableData} title={tableTitle}/>
+        <NeoTable data={tableData} title={tableTitle} />
 
       </div>
 
