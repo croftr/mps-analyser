@@ -52,9 +52,9 @@ export default function Mp() {
 
   const onApplyFilter = async () => {
     setFilterInProgress(true);
-
-    // await onApplyGlobalFilter(mpDetails?.value?.id, votefilterFrom, votefilterTo, votefilterType, votefilterTitle);
+    const result = await ky(`${config.mpsApiUrl}votecounts?id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${votefilterTitle}`).json();    
     setFilterInProgress(false);
+    setVotingSummary(result);
   }
 
   const onToggleExcludeInclude = (type: string) => {
