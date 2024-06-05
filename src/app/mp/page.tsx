@@ -170,7 +170,7 @@ export default function Mp() {
       console.error(error);
       setVotingHistory(undefined);
       // @ts-ignore
-      setGlobalMessage({ type: "error", text: error.message });
+      // setGlobalMessage({ type: "error", text: error.message });
     }
   };
 
@@ -179,15 +179,16 @@ export default function Mp() {
   const onGetVotingSimilarity = async (orderby: string) => {
     setProgress("Getting voting similarity...");
     //clear voting history to make space for similarity
+    setVotingSimilarity(undefined);
     setVotingHistory(undefined);
 
-    setTimeout(
-      () =>
-        document
-          .getElementsByClassName("container")[0]
-          .scrollTo(0, document.body.scrollHeight),
-      100
-    );
+    // setTimeout(
+    //   () =>
+    //     document
+    //       .getElementsByClassName("container")[0]
+    //       .scrollTo(0, document.body.scrollHeight),
+    //   100
+    // );
 
     let queryParams = '';
 
@@ -623,7 +624,9 @@ export default function Mp() {
 
         </fieldset>
 
-        <NeoTable data={tableData} title={tableTitle} />
+        {!votingSimilarity && <NeoTable data={tableData} title={tableTitle} />}
+
+        {votingSimilarity && JSON.stringify(votingSimilarity)}
 
       </div>
 
