@@ -39,6 +39,7 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
             fill 
             src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
             alt="MpImage"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
     </div>
 
