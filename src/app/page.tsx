@@ -3,6 +3,9 @@
 import MpCard from '@/components/ui/MpCard';
 import DivisionCard from '@/components/ui/DivisionCard';
 import { config } from './app.config';
+import ky from 'ky';
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { VOTING_CATEGORIES, PARTY_NAMES } from "./config/constants";
 
@@ -51,11 +54,6 @@ const divisionSortBy = [
   "Date"
 ]
 
-import ky from 'ky';
-import { useEffect, useState } from 'react';
-
-import { useRouter } from 'next/navigation';
-
 const EARLIEST_FROM_DATE = "2003-11-12";
 
 export default function Home() {
@@ -81,12 +79,6 @@ export default function Home() {
   const [divisions, setDivisions] = useState();
   const [filteredDivisions, setFilteredDivisions] = useState();
 
-  const getMps = async () => {
-    const result = await fetch("https://mps-api-production-8da5.up.railway.app/searchMps?party=Any");
-    const mpsResult = await result.json();
-    setMps(mpsResult);
-    setFilteredMps(mpsResult);
-  }
 
   const onSearchMps = async ({ party = "Any" }) => {
     console.log("onSearchMps ", filterTypeValue);
@@ -286,9 +278,16 @@ export default function Home() {
     }
   }
 
+  const getMps = useCallback(async () => {
+    const result = await fetch("https://mps-api-production-8da5.up.railway.app/searchMps?party=Any");
+    const mpsResult = await result.json();
+    setMps(mpsResult);
+    setFilteredMps(mpsResult);
+  }, []);
+
   useEffect(() => {
     getMps();
-  }, []);
+  }, [getMps]);
 
   const onChangeFilterTypeValue = (value) => {
     console.log("onChangeMpFilterTypeValue ", type, filterTypeKey, value);
