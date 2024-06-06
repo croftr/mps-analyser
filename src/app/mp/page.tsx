@@ -30,7 +30,7 @@ export default function Mp() {
   const [votefilterFrom, setVotefilterFrom] = useState(new Date(new Date(EARLIEST_FROM_DATE)).toISOString().substr(0, 10));
   const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substr(0, 10));
 
-  const [votefilterType, setVotefilterType] = useState("");
+  const [votefilterType, setVotefilterType] = useState("Any");
   const [filterInProgress, setFilterInProgress] = useState(false);
   const [votingSummary, setVotingSummary] = useState<any>(undefined);
   const [votingSimilarity, setVotingSimilarity] = useState();
