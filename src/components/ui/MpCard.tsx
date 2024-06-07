@@ -18,44 +18,42 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
 
   return (
 
-
-    
-<div 
-    className="relative p-4 border border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
-    onClick={() => onQueryMp(item.id)}
->
-    <div 
-        title={item.gender === "M" ? "Male" : "Female"} 
-        className="absolute top-2 right-2 flex items-center"
+    <div
+      className="relative p-4 border border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+      onClick={() => onQueryMp(item.id)}
     >
+      <div
+        title={item.gender === "M" ? "Male" : "Female"}
+        className="absolute top-2 right-2 flex items-center"
+      >
         {item.gender === "M" ? male : female}
-    </div>
-    
-    <h4 className="font-semibold text-lg mb-2">{item.name}</h4>
+      </div>
 
-    <div className="relative mb-1 aspect-square"> {/* Added aspect-square */}
+      <h4 className="font-semibold text-lg mb-2">{item.name}</h4>
+
+      <div className="relative mb-1 aspect-square"> {/* Added aspect-square */}
         <Image
-            className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
-            fill 
-            src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
-            alt="MpImage"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
+          fill
+          src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
+          alt="MpImage"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
+      </div>
+
+      <span className="block truncate text-gray-600 dark:text-gray-300">{item.party}</span>
+      <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>
+
+      <div className="mt-2 grid grid-cols-3 text-center text-sm border rounded-md border-gray-600">
+        <span className="py-1 border-b border-r border-gray-600 first:border-l">Votes</span>
+        <span className="py-1 border-b border-r border-gray-600">Aye</span>
+        <span className="py-1 border-b border-gray-600 last:border-r">No</span>
+        <span className="py-1"> {item.totalVotes} </span>
+        <span className="py-1 border-r border-l border-gray-600"> {item.ayeVotes} </span>
+        <span className="py-1"> {item.noVotes} </span>
+      </div>
+
     </div>
-
-    <span className="block truncate text-gray-600 dark:text-gray-300">{item.party}</span>
-    <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>
-
-    <div className="mt-2 grid grid-cols-3 text-center text-sm border rounded-md border-gray-600"> 
-    <span className="py-1 border-b border-r border-gray-600 first:border-l">Votes</span>
-    <span className="py-1 border-b border-r border-gray-600">Aye</span>
-    <span className="py-1 border-b border-gray-600 last:border-r">No</span>
-    <span className="py-1"> {item.totalVotes} </span>
-    <span className="py-1 border-r border-l border-gray-600"> {item.ayeVotes} </span>
-    <span className="py-1"> {item.noVotes} </span>
-</div>
-
-</div>
 
   )
 }
