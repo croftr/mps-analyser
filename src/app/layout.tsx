@@ -13,7 +13,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
+
 
   return (
     <html lang="en">
@@ -25,7 +25,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Nav />
-          <Search />          
+          <Search />
           <main className="mt-navbarHeight" style={{ height: "calc(100vh - 100px)", overflowY: "scroll", border: "1px solid" }}>
             {children}
           </main>
