@@ -21,9 +21,9 @@ export default function Nav() {
       <NavigationMenuList className="flex justify-between w-full">
       
         <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
+          <Link href="/browse?type=MP" legacyBehavior passHref>
             <NavigationMenuLink>
-              Search
+              Browse
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

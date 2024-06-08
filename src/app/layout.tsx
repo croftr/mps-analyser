@@ -26,7 +26,7 @@ export default function RootLayout({
         >
           <Nav />
           <Search />
-          <main className="mt-navbarHeight" style={{ height: "calc(100vh - 100px)", overflowY: "scroll", border: "1px solid" }}>
+          <main className="mt-navbarHeight h-[calc(100vh-100px)] overflow-y-scroll border border-gray-300">
             {children}
           </main>
         </ThemeProvider>
