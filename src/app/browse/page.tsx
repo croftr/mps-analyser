@@ -97,7 +97,7 @@ function PageContent() {
     console.log("party ", party);
 
     let paramKey = searchKey || filterTypeKey;
-    let paramValue = searchValue || filterTypeValue;
+    let paramValue = searchValue || filterTypeValue || "Any";
 
     if (filterTypeKey.endsWith(":")) {
       paramKey = filterTypeKey.slice(0, -1);
@@ -108,7 +108,7 @@ function PageContent() {
 
     setDivisions(undefined);
     setFilteredDivisions(undefined);
-
+    console.log("call 1");    
     let url = `${config.mpsApiUrl}searchMps?${paramKey.toLowerCase()}=${paramValue}`;
 
     if (name) {
@@ -155,7 +155,7 @@ function PageContent() {
     onChangeSortBy(sortBy, newDirection);
   }
 
-  const onChangeType = (value, changeUrl=true) => {
+  const onChangeType = (value, changeUrl = true) => {
 
     //if this is called from deep link url then dont change the url 
     if (changeUrl) {
@@ -163,7 +163,7 @@ function PageContent() {
     }
 
     setType(value);
-    setFilterTypeValue("Any")    
+    setFilterTypeValue("Any")
 
     if (value !== type) {
       if (value === 'MP') {
@@ -172,8 +172,7 @@ function PageContent() {
         setFilterTypeKey(mpFilterTypeKeys[0])
         setFilterTypeOptions(mpFilterTypeValues[mpFilterTypeKeys[0]])
 
-        if (changeUrl) {
-          //bobby
+        if (changeUrl) {          
           onSearchMps({ party: "Any", searchKey: mpFilterTypeKeys[0], searchValue: "Any" });
           setSortBy("Name");
         }
@@ -194,24 +193,17 @@ function PageContent() {
   }
 
   const onChangeMpParty = async (value) => {
-
-    console.log("step 1 ", filterTypeValue);
-
-
-
+    
     if (value !== filterTypeValue) {
       setMps(undefined);
       setFilteredMps(undefined);
-
+      console.log("call 2");    
       let url = `${config.mpsApiUrl}searchMps?party=${value}`;
       if (name) {
         url = `${url}&name=${name}`
       }
 
       const result = await ky(url).json();
-
-      console.log("gooo  ", result);
-
       setMps(result);
       setFilteredMps(result);
 
@@ -219,9 +211,7 @@ function PageContent() {
   }
 
   const onChangeSortBy = (value, direction = sortDirection) => {
-
-    console.log("onChangeSortBy ", type, value, direction);
-
+    
     setSortBy(value);
 
     let result;
@@ -293,7 +283,7 @@ function PageContent() {
         } else {
           result = [...divisions].sort((a, b) => b.ayeCount - a.ayeCount);
         }
-        console.log("go  ", result);
+        
         setFilteredDivisions(result);
 
       } else if (value === "Voted No Count") {
@@ -321,8 +311,8 @@ function PageContent() {
     }
   }
 
-  const getMps = useCallback(async () => {
-    const result = await fetch("https://mps-api-production-8da5.up.railway.app/searchMps?party=Any");
+  const getMps = useCallback(async ({ party = "Any", year = 0, sex  = "Any"}) => {    
+    const result = await fetch(`https://mps-api-production-8da5.up.railway.app/searchMps?party=${party|| "Any"}&year=${year || 0}&sex=${sex || "Any"}`);
     const mpsResult = await result.json();
     setMps(mpsResult);
     setFilteredMps(mpsResult);
@@ -332,7 +322,7 @@ function PageContent() {
 
     // http://localhost:3000/browse?type=Division&category=Tax
     console.log("bobby use effect-----------------------------------------------------");
-    let type, divisionCategory, party, year;
+    let type, divisionCategory, party, year, sex;
 
     //set vaues from url params if loading for the first time 
     if ((!mps || !mps.length) && (!divisions || !divisions.length)) {
@@ -345,6 +335,27 @@ function PageContent() {
 
         if (type === "MP") {
           party = searchParams.get('party');
+
+          if (party) {
+            setFilterTypeKey("Party")
+            setFilterTypeValue(party);
+          }
+
+          year = searchParams.get('year');
+
+          if (year) {
+            setFilterTypeValue(year);
+            onChangeFilterTypeKey("Year")
+          }
+
+          sex = searchParams.get('sex');
+
+          if (sex) {
+            setFilterTypeValue(sex);
+            onChangeFilterTypeKey("Sex")
+          }
+
+
         } else if (type === "Division") {
 
           divisionCategory = searchParams.get('category') || searchParams.get('Category');;
@@ -365,7 +376,7 @@ function PageContent() {
       }
 
       if (type === "MP") {
-        getMps();
+        getMps({ party, year, sex });
       } else if (type === "Division") {
         onSearchDivisions({ category: divisionCategory || "Any", year });
       }
@@ -381,32 +392,43 @@ function PageContent() {
     const params = new URLSearchParams(searchParams);
 
     //if querying by one of the exclusive query types then make sure other options are removed from url 
-    if (key === "Year" || key === "year") {
+    if (key.toLowerCase() === "year") {
       params.delete("category");
       params.delete("Category");
       params.delete("sex");
       params.delete("votes");
-    } else if (key === "votes") {
+      params.delete("party");
+    } else if (ke.toLowerCase() === "votes") {
       params.delete("category");
       params.delete("Category");
       params.delete("sex");
       params.delete("Year");
       params.delete("year");
-    } else if (key === "sex") {
+      params.delete("party");
+    } else if (key.toLowerCase() === "sex") {
       params.delete("category");
       params.delete("Category");
       params.delete("votes");
       params.delete("Year");
       params.delete("year");
-    } else if (key === "category" || key === "Category") {
+      params.delete("party");
+    } else if (key.toLowerCase() === "category") {
       params.delete("sex");
       params.delete("votes");
       params.delete("Year");
       params.delete("year");
+      params.delete("party");
+    } else if (key.toLowerCase() === "party") {
+      params.delete("category");
+      params.delete("Category");
+      params.delete("votes");
+      params.delete("Year");
+      params.delete("year");
+      params.delete("sex");
     }
-    
+
     params.set(key.toLowerCase(), value);
-    const newSearchParams = params.toString();    
+    const newSearchParams = params.toString();
     router.push(`${pathname}?${newSearchParams}`, { scroll: false });
   }
 
