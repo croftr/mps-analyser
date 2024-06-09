@@ -38,13 +38,13 @@ const divisionFilterTypeKeys = [
 const mpFilterTypeValues = {
   Party: PARTY_NAMES,
   Sex: ["Any", "M", "F"],
-  Year: ["Any", 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
+  Year: ["Any", 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
   Votes: ["Any", "> 100", "> 200", "> 300", "> 400", "> 500", "> 600", "> 700", "> 800", "> 900", "> 1000"]
 }
 
 const divisionFilterTypeValues = {
   Category: VOTING_CATEGORIES,
-  Year: ["Any", 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
+  Year: ["Any", 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
 }
 
 const divisionSortBy = [
@@ -92,12 +92,13 @@ function PageContent() {
   const [filteredDivisions, setFilteredDivisions] = useState();
 
 
-  const onSearchMps = async ({ party = "Any" }) => {
+  const onSearchMps = async ({ party = "Any", searchKey, searchValue }) => {
     console.log("onSearchMps ", filterTypeValue);
     console.log("party ", party);
 
-    let paramKey = filterTypeKey;
-    let paramValue = filterTypeValue;
+    let paramKey = searchKey || filterTypeKey;
+    let paramValue = searchValue || filterTypeValue;
+
     if (filterTypeKey.endsWith(":")) {
       paramKey = filterTypeKey.slice(0, -1);
     }
@@ -121,16 +122,24 @@ function PageContent() {
   };
 
 
-  const onSearchDivisions = async ({ category = filterTypeValue }) => {
+  const onSearchDivisions = async ({ category = filterTypeValue, year }) => {
 
     console.log("onSearchDivisions ", category);
+
 
     setMps(undefined);
     setFilteredMps(undefined);
 
-    //only set url when user changes value from dropdown not when value is triggered from deep link url 
+    //only set url when user changes value from dropdown not when value is triggered from deep link urfl 
 
-    let url = `${config.mpsApiUrl}searchDivisions?category=${category}`;
+    let url
+
+    if (year) {
+      url = `${config.mpsApiUrl}searchDivisions?year=${year}`;
+    } else {
+      url = `${config.mpsApiUrl}searchDivisions?category=${category}`;
+    }
+
     if (name) {
       url = `${url}&name=${name}`
     }
@@ -146,7 +155,7 @@ function PageContent() {
     onChangeSortBy(sortBy, newDirection);
   }
 
-  const onChangeType = (value, changeUrl) => {
+  const onChangeType = (value, changeUrl=true) => {
 
     //if this is called from deep link url then dont change the url 
     if (changeUrl) {
@@ -154,7 +163,7 @@ function PageContent() {
     }
 
     setType(value);
-    setFilterTypeValue("Any")
+    setFilterTypeValue("Any")    
 
     if (value !== type) {
       if (value === 'MP') {
@@ -164,7 +173,8 @@ function PageContent() {
         setFilterTypeOptions(mpFilterTypeValues[mpFilterTypeKeys[0]])
 
         if (changeUrl) {
-          onSearchMps({ party: "Any" });
+          //bobby
+          onSearchMps({ party: "Any", searchKey: mpFilterTypeKeys[0], searchValue: "Any" });
           setSortBy("Name");
         }
 
@@ -173,7 +183,7 @@ function PageContent() {
         setFilterTypeKeys(divisionFilterTypeKeys);
         setFilterTypeKey(divisionFilterTypeKeys[0])
         setFilterTypeOptions(divisionFilterTypeValues[divisionFilterTypeKeys[0]])
-        console.log("call 1");
+
         if (changeUrl) {
           onSearchDivisions({ category: "Any" });
           setSortBy("Title");
@@ -322,52 +332,81 @@ function PageContent() {
 
     // http://localhost:3000/browse?type=Division&category=Tax
     console.log("bobby use effect-----------------------------------------------------");
-    let type, divisionCategory, party;
+    let type, divisionCategory, party, year;
 
     //set vaues from url params if loading for the first time 
     if ((!mps || !mps.length) && (!divisions || !divisions.length)) {
 
-      console.log("populate from url ");
-
-      // //set state from url
       type = searchParams.get('type');
 
       if (type) {
         setType(type);
         onChangeType(type, false);
+
+        if (type === "MP") {
+          party = searchParams.get('party');
+        } else if (type === "Division") {
+
+          divisionCategory = searchParams.get('category') || searchParams.get('Category');;
+
+          if (divisionCategory) {
+            setFilterTypeKey("category")
+            setFilterTypeValue(divisionCategory);
+          }
+
+          year = searchParams.get('year');
+
+          if (year) {
+            setFilterTypeValue(year);
+            onChangeFilterTypeKey("Year")
+          }
+
+        }
       }
-
-
-      divisionCategory = searchParams.get('category') || searchParams.get('Category');;
-
-      console.log("divisionCategory ", divisionCategory);
-      if (divisionCategory) {
-        setFilterTypeKey("category")
-        setFilterTypeValue(divisionCategory);
-      }
-
-      party = searchParams.get('party');
-
-      // console.log("params ", type);
 
       if (type === "MP") {
         getMps();
       } else if (type === "Division") {
-        onSearchDivisions({ category: divisionCategory || "Any" });
+        onSearchDivisions({ category: divisionCategory || "Any", year });
       }
 
     }
-
-
-
 
   }, []);
 
 
   const onAddQueryParamToUrl = ({ key, value }) => {
+    console.log("change url", key, value);
+
     const params = new URLSearchParams(searchParams);
-    params.set(key, value);
-    const newSearchParams = params.toString();
+
+    //if querying by one of the exclusive query types then make sure other options are removed from url 
+    if (key === "Year" || key === "year") {
+      params.delete("category");
+      params.delete("Category");
+      params.delete("sex");
+      params.delete("votes");
+    } else if (key === "votes") {
+      params.delete("category");
+      params.delete("Category");
+      params.delete("sex");
+      params.delete("Year");
+      params.delete("year");
+    } else if (key === "sex") {
+      params.delete("category");
+      params.delete("Category");
+      params.delete("votes");
+      params.delete("Year");
+      params.delete("year");
+    } else if (key === "category" || key === "Category") {
+      params.delete("sex");
+      params.delete("votes");
+      params.delete("Year");
+      params.delete("year");
+    }
+    
+    params.set(key.toLowerCase(), value);
+    const newSearchParams = params.toString();    
     router.push(`${pathname}?${newSearchParams}`, { scroll: false });
   }
 
@@ -404,13 +443,12 @@ function PageContent() {
 
   const onChangeFilterTypeKey = (value) => {
 
-    const key = value.slice(0, -1);
     setFilterTypeKey(value);
 
     if (type === "MP") {
-      setFilterTypeOptions(mpFilterTypeValues[key]);
+      setFilterTypeOptions(mpFilterTypeValues[value]);
     } else {
-      setFilterTypeOptions(divisionFilterTypeValues[key]);
+      setFilterTypeOptions(divisionFilterTypeValues[value]);
     }
   }
 
@@ -434,24 +472,44 @@ function PageContent() {
     }
   }
 
+  const onChangeMpYear = async (value) => {
+
+    if (value !== filterTypeValue) {
+      setMps(undefined);
+      setFilteredMps(undefined);
+
+      let url = `${config.mpsApiUrl}searchMps?year=${value === "Any" ? 0 : value}`;
+      if (name) {
+        url = `${url}&name=${name}`
+      }
+
+      const result = await ky(url).json();
+
+      setMps(result);
+      setFilteredMps(result);
+
+    }
+  }
+
   const onChangeFilterTypeValue = (value) => {
+
     console.log("onChangeMpFilterTypeValue ", type, filterTypeKey, value);
     setFilterTypeValue(value);
 
     if (type === "MP") {
       if (filterTypeKey.startsWith("Party")) {
         onChangeMpParty(value);
-      } else if (filterTypeKey === "Sex:") {
+      } else if (filterTypeKey === "Sex") {
         onChangeMpSex(value);
-      } else if (filterTypeKey === "Year:") {
+      } else if (filterTypeKey === "Year") {
         onChangeMpYear(value);
-      } else if (filterTypeKey === "Votes:") {
+      } else if (filterTypeKey === "Votes") {
         onChangeMpVotes(value);
       }
     } else {
       if (filterTypeKey.toLocaleLowerCase() === "category") {
         onChangeDivisionCategory(value);
-      } else if (filterTypeKey === "Year:") {
+      } else if (filterTypeKey === "Year") {
         onChangeDivisionYear(value);
       } else {
         console.log("unknown div type ", filterTypeKey);
@@ -529,7 +587,7 @@ function PageContent() {
             value={filterTypeKey}
             onChange={(e) => onChangeFilterTypeKey(e.target.value)}
           >
-            {filterTypeKeys.map(i => <option disabled={i === "Votes"} key={i}>{i}:</option>)}
+            {filterTypeKeys.map(i => <option disabled={i === "Votes"} key={i}>{i}</option>)}
           </select>
 
           <select
