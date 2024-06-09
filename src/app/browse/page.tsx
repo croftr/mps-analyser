@@ -398,7 +398,7 @@ function PageContent() {
       params.delete("sex");
       params.delete("votes");
       params.delete("party");
-    } else if (ke.toLowerCase() === "votes") {
+    } else if (key.toLowerCase() === "votes") {
       params.delete("category");
       params.delete("Category");
       params.delete("sex");
