@@ -107,7 +107,7 @@ function PageContent() {
 
     setDivisions(undefined);
     setFilteredDivisions(undefined);
-    console.log("call 1");
+
     let url = `${config.mpsApiUrl}searchMps?${paramKey.toLowerCase()}=${paramValue}`;
 
     if (name) {
@@ -122,14 +122,18 @@ function PageContent() {
 
 
   const onSearchDivisions = async ({ category = filterTypeValue }) => {
+
+    console.log("onSearchDivisions ", category);
+
     setMps(undefined);
     setFilteredMps(undefined);
+
+    //only set url when user changes value from dropdown not when value is triggered from deep link url 
 
     let url = `${config.mpsApiUrl}searchDivisions?category=${category}`;
     if (name) {
       url = `${url}&name=${name}`
     }
-
     const result = await ky(url).json();
 
     setDivisions(result);
@@ -142,9 +146,12 @@ function PageContent() {
     onChangeSortBy(sortBy, newDirection);
   }
 
-  const onChangeType = (value) => {
+  const onChangeType = (value, changeUrl) => {
 
-    router.push(`browse/?type=${value}`, { scroll: false });
+    //if this is called from deep link url then dont change the url 
+    if (changeUrl) {
+      router.push(`browse/?type=${value}`, { scroll: false });
+    }
 
     setType(value);
     setFilterTypeValue("Any")
@@ -156,16 +163,22 @@ function PageContent() {
         setFilterTypeKey(mpFilterTypeKeys[0])
         setFilterTypeOptions(mpFilterTypeValues[mpFilterTypeKeys[0]])
 
-        onSearchMps({ party: "Any" });
-        setSortBy("Name");
+        if (changeUrl) {
+          onSearchMps({ party: "Any" });
+          setSortBy("Name");
+        }
+
       } else {
 
         setFilterTypeKeys(divisionFilterTypeKeys);
         setFilterTypeKey(divisionFilterTypeKeys[0])
         setFilterTypeOptions(divisionFilterTypeValues[divisionFilterTypeKeys[0]])
-        console.log("set to ", divisionFilterTypeValues[divisionFilterTypeKeys[0]]);
-        onSearchDivisions({ category: "Any" });
-        setSortBy("Title");
+        console.log("call 1");
+        if (changeUrl) {
+          onSearchDivisions({ category: "Any" });
+          setSortBy("Title");
+        }
+
       }
     }
   }
@@ -173,8 +186,8 @@ function PageContent() {
   const onChangeMpParty = async (value) => {
 
     console.log("step 1 ", filterTypeValue);
-    
-        
+
+
 
     if (value !== filterTypeValue) {
       setMps(undefined);
@@ -307,31 +320,48 @@ function PageContent() {
 
   useEffect(() => {
 
-    //MP or division
-    const type = searchParams.get('type');
+    // http://localhost:3000/browse?type=Division&category=Tax
+    console.log("bobby use effect-----------------------------------------------------");
+    let type, divisionCategory, party;
 
-    if (type) {
-      setType(type);
-      onChangeType(type);
+    //set vaues from url params if loading for the first time 
+    if ((!mps || !mps.length) && (!divisions || !divisions.length)) {
+
+      console.log("populate from url ");
+
+      // //set state from url
+      type = searchParams.get('type');
+
+      if (type) {
+        setType(type);
+        onChangeType(type, false);
+      }
+
+
+      divisionCategory = searchParams.get('category') || searchParams.get('Category');;
+
+      console.log("divisionCategory ", divisionCategory);
+      if (divisionCategory) {
+        setFilterTypeKey("category")
+        setFilterTypeValue(divisionCategory);
+      }
+
+      party = searchParams.get('party');
+
+      // console.log("params ", type);
+
+      if (type === "MP") {
+        getMps();
+      } else if (type === "Division") {
+        onSearchDivisions({ category: divisionCategory || "Any" });
+      }
+
     }
 
-    const divisionCategory = searchParams.get('category');
-
-    if (divisionCategory) {
-      setFilterTypeValue(divisionCategory);
-    }
-
-    console.log("params ", type);
-
-    if (type === "MP") {
-      getMps();
-    } else if (type === "Division") {
-      onSearchDivisions({ category: divisionCategory || "Any" });
-    }
 
 
 
-  }, [getMps]);
+  }, []);
 
 
   const onAddQueryParamToUrl = ({ key, value }) => {
@@ -356,7 +386,7 @@ function PageContent() {
     setDivisions(result);
     setFilteredDivisions(result);
 
-    onAddQueryParamToUrl({ key: "cetegory", value });
+    onAddQueryParamToUrl({ key: "category", value });
 
   }
 
@@ -373,7 +403,7 @@ function PageContent() {
   }
 
   const onChangeFilterTypeKey = (value) => {
-    //bobby
+
     const key = value.slice(0, -1);
     setFilterTypeKey(value);
 
@@ -384,7 +414,7 @@ function PageContent() {
     }
   }
 
-  
+
   const onChangeMpSex = async (value) => {
 
     if (value !== filterTypeValue) {
@@ -419,7 +449,7 @@ function PageContent() {
         onChangeMpVotes(value);
       }
     } else {
-      if (filterTypeKey === "Category") {
+      if (filterTypeKey.toLocaleLowerCase() === "category") {
         onChangeDivisionCategory(value);
       } else if (filterTypeKey === "Year:") {
         onChangeDivisionYear(value);
@@ -571,9 +601,13 @@ function PageContent() {
 
       <main className="grid p-1 gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
 
-        {Boolean(divisions && divisions.length) && filteredDivisions.map(i => (
-          <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.id} />
-        ))}
+        {Boolean(divisions && divisions.length) && filteredDivisions
+          .filter((item, index, self) =>
+            index === self.findIndex(t => t.id === item.id)  // Keep only the first occurrence of an id
+          )
+          .map(i => (
+            <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.id} />
+          ))}
 
         {Boolean(mps && mps.length) && filteredMps.map(i => (
           <MpCard item={i} onQueryMp={onQueryMp} key={i.id} />
