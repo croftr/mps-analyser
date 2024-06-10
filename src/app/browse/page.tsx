@@ -93,9 +93,7 @@ function PageContent() {
 
 
   const onSearchMps = async ({ party = "Any", searchKey, searchValue }) => {
-    console.log("onSearchMps ", filterTypeValue);
-    console.log("party ", party);
-
+    //bobby
     let paramKey = searchKey || filterTypeKey;
     let paramValue = searchValue || filterTypeValue || "Any";
 
@@ -113,6 +111,7 @@ function PageContent() {
 
     if (name) {
       url = `${url}&name=${name}`
+      onAddQueryParamToUrl({ key: "name", value: name });
     }
 
     const result = await ky(url).json();
@@ -142,6 +141,7 @@ function PageContent() {
 
     if (name) {
       url = `${url}&name=${name}`
+      onAddQueryParamToUrl({ key: "name", value: name });
     }
     const result = await ky(url).json();
 
