@@ -92,8 +92,10 @@ function PageContent() {
   const [filteredDivisions, setFilteredDivisions] = useState();
 
 
-  const onSearchMps = async ({ party = "Any", searchKey, searchValue }) => {
-    //bobby
+  const onSearchMps = async ({ searchKey, searchValue, searchName }) => {
+
+    console.log("onSearchMps ");
+
     let paramKey = searchKey || filterTypeKey;
     let paramValue = searchValue || filterTypeValue || "Any";
 
@@ -106,12 +108,11 @@ function PageContent() {
 
     setDivisions(undefined);
     setFilteredDivisions(undefined);
-    console.log("call 1");    
+    console.log("call 1");
     let url = `${config.mpsApiUrl}searchMps?${paramKey.toLowerCase()}=${paramValue}`;
 
-    if (name) {
-      url = `${url}&name=${name}`
-      onAddQueryParamToUrl({ key: "name", value: name });
+    if (searchName) {
+      url = `${url}&name=${searchName}`
     }
 
     const result = await ky(url).json();
@@ -121,16 +122,14 @@ function PageContent() {
   };
 
 
-  const onSearchDivisions = async ({ category = filterTypeValue, year }) => {
+  const onSearchDivisions = async ({ category = filterTypeValue, year, searchName }) => {
 
     console.log("onSearchDivisions ", category);
-
 
     setMps(undefined);
     setFilteredMps(undefined);
 
     //only set url when user changes value from dropdown not when value is triggered from deep link urfl 
-
     let url
 
     if (year) {
@@ -139,10 +138,10 @@ function PageContent() {
       url = `${config.mpsApiUrl}searchDivisions?category=${category}`;
     }
 
-    if (name) {
-      url = `${url}&name=${name}`
-      onAddQueryParamToUrl({ key: "name", value: name });
+    if (searchName) {
+      url = `${url}&name=${searchName}`
     }
+
     const result = await ky(url).json();
 
     setDivisions(result);
@@ -155,15 +154,38 @@ function PageContent() {
     onChangeSortBy(sortBy, newDirection);
   }
 
+  const removeAllQueryParams = (exclusions: Array<string> = []) => {
+
+    console.log("removeAllQueryParams except ", exclusions);
+
+
+    const params = new URLSearchParams(searchParams);
+
+    // Get all existing query parameter names
+    const currentParams = Array.from(params.keys());
+
+    // Filter parameters to remove (not in exclusions)
+    const paramsToRemove = currentParams.filter(param => !exclusions.includes(param));
+
+    // Delete the filtered parameters
+    paramsToRemove.forEach(param => params.delete(param));
+
+    return params; // Return the modified URLSearchParams object
+  };
+
   const onChangeType = (value, changeUrl = true) => {
 
     //if this is called from deep link url then dont change the url 
     if (changeUrl) {
+      //bobby
+      removeAllQueryParams();
       router.push(`browse/?type=${value}`, { scroll: false });
     }
 
     setType(value);
     setFilterTypeValue("Any")
+    setName("")
+
 
     if (value !== type) {
       if (value === 'MP') {
@@ -172,7 +194,7 @@ function PageContent() {
         setFilterTypeKey(mpFilterTypeKeys[0])
         setFilterTypeOptions(mpFilterTypeValues[mpFilterTypeKeys[0]])
 
-        if (changeUrl) {          
+        if (changeUrl) {
           onSearchMps({ party: "Any", searchKey: mpFilterTypeKeys[0], searchValue: "Any" });
           setSortBy("Name");
         }
@@ -193,11 +215,11 @@ function PageContent() {
   }
 
   const onChangeMpParty = async (value) => {
-    
+
     if (value !== filterTypeValue) {
       setMps(undefined);
       setFilteredMps(undefined);
-      console.log("call 2");    
+      console.log("call 2");
       let url = `${config.mpsApiUrl}searchMps?party=${value}`;
       if (name) {
         url = `${url}&name=${name}`
@@ -211,7 +233,7 @@ function PageContent() {
   }
 
   const onChangeSortBy = (value, direction = sortDirection) => {
-    
+
     setSortBy(value);
 
     let result;
@@ -283,7 +305,7 @@ function PageContent() {
         } else {
           result = [...divisions].sort((a, b) => b.ayeCount - a.ayeCount);
         }
-        
+
         setFilteredDivisions(result);
 
       } else if (value === "Voted No Count") {
@@ -311,8 +333,17 @@ function PageContent() {
     }
   }
 
-  const getMps = useCallback(async ({ party = "Any", year = 0, sex  = "Any"}) => {    
-    const result = await fetch(`https://mps-api-production-8da5.up.railway.app/searchMps?party=${party|| "Any"}&year=${year || 0}&sex=${sex || "Any"}`);
+  const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName }) => {
+
+    let url = `https://mps-api-production-8da5.up.railway.app/searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}`
+    
+    if (searchName) {
+      url = `${url}&name=${searchName}`
+    }
+
+    const result = await fetch(url);
+
+
     const mpsResult = await result.json();
     setMps(mpsResult);
     setFilteredMps(mpsResult);
@@ -322,7 +353,7 @@ function PageContent() {
 
     // http://localhost:3000/browse?type=Division&category=Tax
     console.log("bobby use effect-----------------------------------------------------");
-    let type, divisionCategory, party, year, sex;
+    let type, divisionCategory, party, year, sex, searchName;
 
     //set vaues from url params if loading for the first time 
     if ((!mps || !mps.length) && (!divisions || !divisions.length)) {
@@ -339,13 +370,6 @@ function PageContent() {
           if (party) {
             setFilterTypeKey("Party")
             setFilterTypeValue(party);
-          }
-
-          year = searchParams.get('year');
-
-          if (year) {
-            setFilterTypeValue(year);
-            onChangeFilterTypeKey("Year")
           }
 
           sex = searchParams.get('sex');
@@ -365,20 +389,27 @@ function PageContent() {
             setFilterTypeValue(divisionCategory);
           }
 
-          year = searchParams.get('year');
-
-          if (year) {
-            setFilterTypeValue(year);
-            onChangeFilterTypeKey("Year")
-          }
-
         }
       }
 
+      year = searchParams.get('year');
+
+      if (year) {
+        setFilterTypeValue(year);
+        onChangeFilterTypeKey("Year")
+      }
+
+      searchName = searchParams.get("name");
+      
+      if (searchName) {
+        setName(searchName);        
+      }
+
+
       if (type === "MP") {
-        getMps({ party, year, sex });
+        getMps({ party, year, sex, searchName });
       } else if (type === "Division") {
-        onSearchDivisions({ category: divisionCategory || "Any", year });
+        onSearchDivisions({ category: divisionCategory || "Any", year, searchName });
       }
 
     }
@@ -388,7 +419,7 @@ function PageContent() {
 
   const onAddQueryParamToUrl = ({ key, value }) => {
     console.log("change url", key, value);
-
+    //bobby
     const params = new URLSearchParams(searchParams);
 
     //if querying by one of the exclusive query types then make sure other options are removed from url 
@@ -552,6 +583,11 @@ function PageContent() {
     router.push(`/division?id=${id}`, { scroll: false });
   }
 
+  const applyName = type => {
+    onAddQueryParamToUrl({ key: "name", value: name });
+    type === "MP" ? onSearchMps({ searchName: name }) : onSearchDivisions({ searchName: name })
+  }
+
   return (
     <>
       <div className="browse__toolbar">
@@ -633,7 +669,7 @@ function PageContent() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <button className='button iconbutton' onClick={type === "MP" ? onSearchMps : onSearchDivisions}>
+          <button className='button iconbutton' onClick={() => applyName(type)}>
             Apply
           </button>
         </div>
