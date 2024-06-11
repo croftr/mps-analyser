@@ -416,6 +416,22 @@ function PageContent() {
 
   }, []);
 
+  const compareDates = (date1, date2) => {
+
+    // Compare years
+    if (date1.year.low !== date2.year.low) {
+      return date1.year.low - date2.year.low;
+    }
+
+    // Compare months
+    if (date1.month.low !== date2.month.low) {
+      return date1.month.low - date2.month.low;
+    }
+
+    // Compare days
+    return date1.day.low - date2.day.low;
+  }
+
 
   const onAddQueryParamToUrl = ({ key, value }) => {
     console.log("change url", key, value);
