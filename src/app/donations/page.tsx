@@ -27,8 +27,10 @@ const columns = [
 ];
 
 export default function Donations() {
+
   const [donations, setDonations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
 
   const onRowClick = (row) => {
     console.log("go ", row);    

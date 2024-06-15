@@ -27,18 +27,39 @@ export function NeoTable({ data, title }: DataTableProps) {
 
   useEffect(() => {
     console.log("neotable useeffect ");
-    
+
     setIsLoading(false); // Simulating data loading (replace with your actual data fetching)
   }, [data]);
 
+  const getValueForSorting = (row, id) => {
+    const index = row.original._fieldLookup[id];
+    const value = row.original._fields[index];
+
+    // Handle cases where value might not exist or be in the expected format
+    if (!value) return 0; // Or any default value you prefer for sorting
+    if (value.low !== undefined) return value.low; // Handle numerical fields
+    if (value.year) return new Date(value.year.low, value.month.low - 1, value.day.low); // Handle date fields
+
+    return value.toString(); // Default to string comparison for other types
+  };
+
   const columns = useMemo(() => {
-  
+
     if (data && data.length > 0 && data[0].keys) {
       return data[0].keys.map((header) => ({
-        header: header,
-        // Accessor function for the column
+        header: header,        
         accessorFn: (row) => row._fields[row._fieldLookup[header]],
-        cell: (info) => renderCell(info.getValue()),      
+        cell: (info) => renderCell(info.getValue()),
+        sortingFn: (rowA, rowB, id) => {
+          const aValue = getValueForSorting(rowA, id);
+          const bValue = getValueForSorting(rowB, id);
+
+          if (typeof aValue === "number" && typeof bValue === "number") {
+            return aValue - bValue; // Numerical sorting
+          } else {
+            return aValue === bValue ? 0 : aValue > bValue ? 1 : -1; // String comparison
+          }
+        },
       }));
     } else {
       return [];
@@ -46,7 +67,7 @@ export function NeoTable({ data, title }: DataTableProps) {
   }, [data]);
 
   const renderCell = (value) => {
-        
+
     if (!value) {
       return ""
     }
@@ -74,6 +95,7 @@ export function NeoTable({ data, title }: DataTableProps) {
       globalFilter,
       sorting
     },
+    enableSortingRemoval: false, 
     onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
   });
@@ -130,7 +152,7 @@ export function NeoTable({ data, title }: DataTableProps) {
                   <tr key={row.id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
                     {row.getVisibleCells().map((cell, cellIndex) => (
                       <TableCell key={cell.id} className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white">
-                         {renderCell(cell.row.original._fields[cellIndex])}
+                        {renderCell(cell.row.original._fields[cellIndex])}
                       </TableCell>
                     ))}
                   </tr>

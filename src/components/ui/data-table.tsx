@@ -19,6 +19,7 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
         columns,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        enableSortingRemoval: false, 
     });
 
     return (
