@@ -17,7 +17,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
-import NeoTable from '@/components/ui/neoTable';
+import { NeoTable } from '@/components/ui/neoTable'
 
 export default function Mp() {
 
@@ -58,7 +58,7 @@ function PageContent() {
   const [barChartData, setBarChartData] = useState();
   const searchParams = useSearchParams();
 
-  const [tableData, setTableData] = useState();
+  const [tableData, setTableData] = useState([]);
   const [tableTitle, setTableTitle] = useState("");
 
   const onApplyFilter = async () => {
@@ -633,7 +633,7 @@ function PageContent() {
 
         </fieldset>
 
-        {!votingSimilarity && <NeoTable data={tableData} title={tableTitle} />}
+        {!votingSimilarity && tableData && <NeoTable data={tableData} title={tableTitle} />}
 
         {votingSimilarity && JSON.stringify(votingSimilarity)}
 

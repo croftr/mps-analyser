@@ -1,77 +1,71 @@
+// @ts-nocheck
 'use client';
-import { useSearchParams } from 'next/navigation';
-import { useState, useEffect, Suspense } from 'react';
-import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
+
+import { useState, useEffect, useMemo } from 'react';
 import ky from 'ky';
 import { config } from '../app.config';
-import NeoTable from '@/components/ui/neoTable';
-
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { DataTable } from "@/components/ui/data-table"; // Make sure you have this component
+import { Skeleton } from "@/components/ui/skeleton";
 
 const columns = [
-  "partyName",
-  "memberCount",
-  "donationCount",
-  "totalDonationValue"
-]
+  {
+    accessorKey: 'partyName',
+    header: 'Party Name',
+  },
+  {
+    accessorKey: 'memberCount',
+    header: 'Member Count',
+  },
+  {
+    accessorKey: 'donationCount',
+    header: 'Donation Count',
+  },
+  {
+    accessorKey: 'totalDonationValue',
+    header: 'Total Donation Value',
+  },
+];
 
 export default function Donations() {
-
   const [donations, setDonations] = useState([]);
-  const [sorting, setSorting] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const onRowClick = (row) => {
+    console.log("go ", row);    
+  }
 
   useEffect(() => {
-
-    const getParties = async () => {
-
-      const donationsResponse: any = await ky(`${config.mpsApiUrl}donations`).json();
-      setDonations(donationsResponse);
-    }
-
-    getParties();
-
+    const getDonations = async () => {
+      try {
+        const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
+        setDonations(donationsResponse);
+      } catch (error) {
+        console.error("Error fetching donations:", error);
+        // Optionally, set an error state or display an error message
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getDonations();
   }, []);
 
+  const memoizedDonations = useMemo(() => donations, [donations]);
   return (
-    <div className="partiesPage">
 
-      <div className="partiesPage__header">
-        <h3>Total donations since 01-Jan-2000</h3>
-      </div>
-
-      {Array.isArray(donations) && (
-        <Table>
-          <TableCaption>donations</TableCaption>
-          <TableHeader>
-            <TableRow>
-              {columns.map((header, index) => (
-                <TableHead key={`head-${index}`}>{header}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {donations && Array.isArray(donations) && donations.map((donation: any, rowIndex) => (
-              <TableRow key={`row-${rowIndex}`}>
-
-                {columns.map((column, cellIndex) => (
-                   <TableCell key={`cell-${cellIndex}`} className="font-medium">{donation[columns[cellIndex]]}</TableCell>                  
-                  // <TableCell key={`cell-${cellIndex}`} className="font-medium">{JSON.stringify(donation)}</TableCell>
-                ))}
-
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <div className="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg"> {/* Scrolling container for the body */}
+      <h3>Total donations since 01-Jan-2000</h3>
+      {isLoading ? (
+        <Skeleton className="h-64 w-full" />
+      ) : (
+        <DataTable
+          data={memoizedDonations}
+          columns={columns}
+          onRowClick={onRowClick}
+        />
       )}
-
     </div>
+
   );
+
 }
+

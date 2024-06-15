@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
 import ky from 'ky';
 import { config } from '../app.config';
-import NeoTable from '@/components/ui/neoTable';
+import { NeoTable } from '@/components/ui/neoTable'
 
 const types = [
   "MP",

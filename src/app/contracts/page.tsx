@@ -2,17 +2,8 @@
 "use client"
 import { useEffect, useState } from "react";
 
-import NeoTable from "../../components/ui/neoTable";
+import { NeoTable } from '@/components/ui/neoTable'
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 
 export default function Contracts() {
 
@@ -82,7 +73,8 @@ export default function Contracts() {
 
         {!contracts && <progress value="" />}
 
-        <NeoTable data={contracts} title="contracts"/>
+        {contracts && <NeoTable data={contracts} title="contracts"/>} 
+        
 
       </div>
 
