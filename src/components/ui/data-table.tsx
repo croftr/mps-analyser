@@ -22,6 +22,35 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
         enableSortingRemoval: false, 
     });
 
+    //@ts-ignore
+    const renderCellContent = (cell) => {
+        // Get the actual value from the cell
+        let cellValue = cell.getValue(); // Use the getValue() method
+    
+        // Check if the column header indicates currency
+        if (cell.column.columnDef.header.toLowerCase().includes("amount")) {
+          
+          if (typeof cellValue === "number") {
+            cellValue = `£${cellValue.toLocaleString()}`;
+          } else if (typeof cellValue === "string") {          
+            const parsedValue = parseFloat(cellValue);
+            if (!isNaN(parsedValue)) {
+                cellValue = `£${parsedValue.toLocaleString()}`;
+            }
+          }
+        } else if (cell.column.columnDef.header.toLowerCase().includes("date")) {
+
+            const year = cellValue.year.low;
+            const month = cellValue.month.low - 1; // JavaScript months are 0-indexed
+            const day = cellValue.day.low;
+            return `${year}/${month}/${day}`;                      
+
+        }      
+      
+        return cellValue; 
+      };
+    
+
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -56,7 +85,8 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
                         <tr className="cursor-pointer" onClick={() => onRowClick(row)} key={row.id}>
                             {row.getVisibleCells().map((cell) => (
                                 <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                     {renderCellContent(cell)}
+                                    {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                                 </td>
                             ))}
                         </tr>
