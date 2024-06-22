@@ -86,8 +86,9 @@ function PageContent() {
   return (
 
     <div className="insights">
-      <div className="wrapper">
-        <div className="insights__query">
+
+      <div>
+        <div className="insights__query flex flex-col md:flex-row gap-4 md:gap-2 mb-4">
 
           <label htmlFor="type" className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
             Which
