@@ -88,40 +88,44 @@ function PageContent() {
     <div className="insights">
 
       <div>
-        <div className="insights__query flex flex-col md:flex-row gap-4 md:gap-2 mb-4">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-3 mb-4 items-baseline p-4 flex-wrap">
+          <div className='flex'>
+            <label htmlFor="type" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
+              Which
+            </label>
+            <select
+              id="type"
+              className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              name="type"
+              onChange={(e) => setType(e.target.value)}
+              value={type}
+            >
+              {types.map((type) => (
+                <option value={type} key={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
 
-          <label htmlFor="type" className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
-            Which
-          </label>
-          <select
-            id="type" // Added id for accessibility
-            className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            name="type"
-            onChange={(e) => setType(e.target.value)}
-            value={type}
-          >
-            {types.map((type) => (
-              <option value={type} key={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+          </div>
 
-          <label htmlFor="name" className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
-            {type === "MP" ? "Name" : "Title"}
-          </label>
-          <input
-            id="name"  // Added for accessibility
-            className="input fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            type="search"
-            placeholder="includes text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <div className='flex'>
+            <label htmlFor="name" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
+              {type === "MP" ? "Name" : "Title"}
+            </label>
+            <input
+              id="name"  // Added for accessibility
+              className="input fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              type="search"
+              placeholder="includes text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
 
           {type === 'Division' && (
-            <>
-              <label htmlFor="voteCategory" className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
+            <div className='flex'>
+              <label htmlFor="voteCategory" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
                 type
               </label>
               <select
@@ -137,76 +141,86 @@ function PageContent() {
                   </option>
                 ))}
               </select>
-            </>
+            </div>
           )}
 
           {type === 'MP' && (
-            <span className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
-              from
-            </span>
+
+            <div className='flex'>
+              <label htmlFor="partySelect" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
+                from
+              </label>
+
+              <select
+                id="partySelect"
+                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                name="party"
+                onChange={(e) => setParty(e.target.value)}
+                value={party}
+              >
+                {Object.values(Party)
+                  .filter((i) => i !== "Unknown")
+                  .map((i) => (
+                    <option value={i} key={i}>
+                      {i}
+                    </option>
+                  ))}
+              </select>
+            </div>
           )}
 
-          {type === 'MP' && (
-            <select
-              id="party" // Added id for accessibility
-              className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              name="party"
-              onChange={(e) => setParty(e.target.value)}
-              value={party}
-            >
-              {Object.values(Party)
-                .filter((i) => i !== "Unknown")
-                .map((i) => (
+          {type === 'Division' && (
+            <div className='flex'>
+
+              <label htmlFor="voteType" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">was voted</label>
+
+
+              <select
+                id="voteType"
+                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                name="voteType"
+                onChange={(e) => setVoteType(e.target.value)}
+                value={voteType}
+              >
+                {voteTyps.map(i => (
                   <option value={i} key={i}>
                     {i}
                   </option>
                 ))}
-            </select>
+              </select>
+
+            </div>
           )}
+          <div className="flex">
 
-          <span className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
-            {type === 'MP' ? "voted the" : "was voted"}
-          </span>
+            {type === 'Division' && <label htmlFor="leastMostSelct" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">the</label>}
+            {type === 'MP' && <label htmlFor="leastMostSelct" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">voted the</label>}
 
-          {type === 'Division' && (
             <select
-              id="voteType"
+              id="leastMostSelct"
               className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              name="voteType"
-              onChange={(e) => setVoteType(e.target.value)}
-              value={voteType}
+              name="query"
+              onChange={(e) => setQuery(e.target.value)}
+              value={query}
             >
-              {voteTyps.map(i => (
-                <option value={i} key={i}>
-                  {i}
+              {queries.map(query => (
+                <option
+                  value={query}
+                  key={query}
+                >
+                  {query}
                 </option>
               ))}
             </select>
-          )}
-
-          {type === 'Division' && <span className='fixedLabel'>the</span>}
-
-          <select
-            className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            name="query"
-            onChange={(e) => setQuery(e.target.value)}
-            value={query}
-          >
-            {queries.map(query => (
-              <option
-                value={query}
-                key={query}
-              >
-                {query}
-              </option>
-            ))}
-          </select>
+          </div>
 
           {type === 'MP' && (
-            <>
-              <span className='fixedLabel'>on</span>
+            <div className='flex'>
+
+              <label htmlFor="categorySelect" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">on</label>
 
               <select
+                id="categorySelect"
                 className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 name="voteCategory"
                 onChange={(e) => setVoteCategory(e.target.value)}
@@ -221,15 +235,16 @@ function PageContent() {
                   </option>
                 ))}
               </select>
-            </>
+            </div>
           )}
 
-          <label className='fixexLabel' htmlFor="start">Between</label>
-
           <div className="datePicker fixedInput flex items-center">
+
+            <label htmlFor="startSelect" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">Between</label>
+
             <input
               type="date"
-              id="start"
+              id="startSelect"
               name="from-date"
               className="min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               min={EARLIEST_FROM_DATE}
