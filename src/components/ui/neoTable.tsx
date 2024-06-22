@@ -101,72 +101,74 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   });
 
   return (
-    <div>
-      <h1>{title}</h1>
-      <h1>{`${data ? data.length : "0"} records`}</h1>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"> {/* Container styling */}
+      <h1 className="text-2xl font-semibold mb-2 dark:text-white">{title}</h1>
+      <p className="text-gray-600 dark:text-gray-400">
+        {`${data ? data.length : "0"} records`}
+      </p>
 
-      <div>
+      <div className="mb-4">
         <Input
           placeholder="Filter..."
-          value={(globalFilter ?? "")}
+          value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm mb-4"
+          className="max-w-sm dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600" // Dark mode input styling
         />
       </div>
 
+      {/* Skeleton Loader or Table */}
       {isLoading ? (
         <Skeleton className="h-64 w-full" />
       ) : (
-        <div className="overflow-x-auto shadow-md rounded-lg">
-          <div className="overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="sticky top-0 bg-gray-50 dark:bg-gray-800">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        colSpan={header.colSpan}
-                        onClick={header.column.getToggleSortingHandler()}
-                        className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                        {header.column.getIsSorted() ? (
-                          <span>
-                            {header.column.getIsSorted() === "desc" ? " 🔽" : " 🔼"}
-                          </span>
-                        ) : null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-
-              </thead>
-              <TableBody className="overflow-auto">
-                {table.getRowModel().rows.map((row) => (
-                  <tr 
-                    key={row.id} 
-                    onClick={() => onRowClick?.(row.original)}                     
-                    className={`hover:bg-gray-100 dark:hover:bg-gray-800 ${
-                      onRowClick ? "cursor-pointer" : ""
-                    }`} 
-                  >
-                    {row.getVisibleCells().map((cell, cellIndex) => (
-                      <TableCell key={cell.id} className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white">
-                        {renderCell(cell.row.original._fields[cellIndex])}
-                      </TableCell>
-                    ))}
-                  </tr>
-                ))}
-              </TableBody>
-
-            </table>
-          </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            {/* Table Header */}
+            <thead className="sticky top-0 bg-gray-50 dark:bg-gray-800">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      onClick={header.column.getToggleSortingHandler()}
+                      className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:bg-gray-800 dark:text-gray-100 cursor-pointer select-none"
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {header.column.getIsSorted() ? (
+                        <span>
+                          {header.column.getIsSorted() === "desc" ? " 🔽" : " 🔼"}
+                        </span>
+                      ) : null}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            {/* Table Body */}
+            <TableBody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+              {table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  onClick={() => onRowClick?.(row.original)}
+                  className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                    onRowClick ? "cursor-pointer" : ""
+                  }`}
+                >
+                  {row.getVisibleCells().map((cell, cellIndex) => (
+                    <TableCell
+                      key={cell.id}
+                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      {renderCell(cell.row.original._fields[cellIndex])}
+                    </TableCell>
+                  ))}
+                </tr>
+              ))}
+            </TableBody>
+          </table>
         </div>
       )}
     </div>

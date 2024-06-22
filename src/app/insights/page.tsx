@@ -49,7 +49,7 @@ function PageContent() {
   const [limit, setLimit] = useState(10);
 
   const onSearch = async () => {
-  
+
     setData([]);
     setProgress(true);
 
@@ -71,8 +71,9 @@ function PageContent() {
     setProgress(false);
   }
 
-  const getDetails = (row:any) => {
-    
+  const getDetails = (row: any) => {
+
+
     if (type === "MP") {
       const id = row._fields[3].low;
       router.push(`mp?id=${id}`, { scroll: false });
@@ -87,28 +88,30 @@ function PageContent() {
     <div className="insights">
       <div className="wrapper">
         <div className="insights__query">
-          <span className='fixedLabel'>Which</span>
 
+          <label htmlFor="type" className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
+            Which
+          </label>
           <select
-            className="select fixedInput"
+            id="type" // Added id for accessibility
+            className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             name="type"
             onChange={(e) => setType(e.target.value)}
             value={type}
           >
-            {types.map(type => (
-              <option
-                value={type}
-                key={type}
-              >
+            {types.map((type) => (
+              <option value={type} key={type}>
                 {type}
               </option>
             ))}
           </select>
 
-          <span className='fixedLabel'>{type === "MP" ? "Name" : "Title"}</span>
-
+          <label htmlFor="name" className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
+            {type === "MP" ? "Name" : "Title"}
+          </label>
           <input
-            className="input fixedInput"
+            id="name"  // Added for accessibility
+            className="input fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             type="search"
             placeholder="includes text"
             value={name}
@@ -117,18 +120,18 @@ function PageContent() {
 
           {type === 'Division' && (
             <>
-              <span className='fixedLabel'>type</span>
+              <label htmlFor="voteCategory" className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
+                type
+              </label>
               <select
-                className="select fixedInput"
+                id="voteCategory"  // Added id for accessibility
+                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 name="voteCategory"
                 onChange={(e) => setVoteCategory(e.target.value)}
                 value={voteCategory}
               >
-                {VOTING_CATEGORIES.map(value => (
-                  <option
-                    value={value}
-                    key={value}
-                  >
+                {VOTING_CATEGORIES.map((value) => (
+                  <option value={value} key={value}>
                     {value}
                   </option>
                 ))}
@@ -137,41 +140,43 @@ function PageContent() {
           )}
 
           {type === 'MP' && (
-            <span className='fixedLabel'>from</span>
+            <span className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
+              from
+            </span>
           )}
 
           {type === 'MP' && (
             <select
-              className="select fixedInput"
+              id="party" // Added id for accessibility
+              className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               name="party"
               onChange={(e) => setParty(e.target.value)}
               value={party}
             >
-              {Object.values(Party).filter(i => i !== "Unknown").map(i => (
-                <option
-                  value={i}
-                  key={i}
-                >
-                  {i}
-                </option>
-              ))}
+              {Object.values(Party)
+                .filter((i) => i !== "Unknown")
+                .map((i) => (
+                  <option value={i} key={i}>
+                    {i}
+                  </option>
+                ))}
             </select>
           )}
 
-          {type === 'MP' ? <span className='fixedLabel'>voted the</span> : <span className='fixedLabel'>was voted</span>}
+          <span className="fixedLabel min-w-[50px] text-right pr-2 text-gray-700 dark:text-gray-300">
+            {type === 'MP' ? "voted the" : "was voted"}
+          </span>
 
           {type === 'Division' && (
             <select
-              className="select fixedInput"
+              id="voteType"
+              className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               name="voteType"
               onChange={(e) => setVoteType(e.target.value)}
               value={voteType}
             >
               {voteTyps.map(i => (
-                <option
-                  value={i}
-                  key={i}
-                >
+                <option value={i} key={i}>
                   {i}
                 </option>
               ))}
@@ -181,7 +186,7 @@ function PageContent() {
           {type === 'Division' && <span className='fixedLabel'>the</span>}
 
           <select
-            className="select fixedInput"
+            className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             name="query"
             onChange={(e) => setQuery(e.target.value)}
             value={query}
@@ -201,7 +206,7 @@ function PageContent() {
               <span className='fixedLabel'>on</span>
 
               <select
-                className="select fixedInput"
+                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 name="voteCategory"
                 onChange={(e) => setVoteCategory(e.target.value)}
                 value={voteCategory}
@@ -219,23 +224,24 @@ function PageContent() {
           )}
 
           <label className='fixexLabel' htmlFor="start">Between</label>
-          <div style={{ padding: 0, paddingLeft: 0 }} className="datePicker fixedInput select">
 
+          <div className="datePicker fixedInput flex items-center">
             <input
               type="date"
               id="start"
               name="from-date"
+              className="min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               min={EARLIEST_FROM_DATE}
               max={new Date().toISOString().substr(0, 10)}
               onChange={(e) => setFromDate(e.target.value)}
               value={fromDate}
             />
-            
+
             <input
-              style={{ marginLeft: 8 }}
               type="date"
               id="toDate"
               name="to-date"
+              className="ml-2 min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               min={EARLIEST_FROM_DATE}
               max={new Date().toISOString().substr(0, 10)}
               onChange={(e) => setToDate(e.target.value)}
@@ -244,7 +250,7 @@ function PageContent() {
           </div>
 
           <button
-            className='button fixedButton'
+            className="button fixedButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={onSearch}
           >
             Go
@@ -253,26 +259,26 @@ function PageContent() {
         </div>
 
         <div className="wrapper">
-        <div className="insights__config">
-          <label>Limit</label>
+          <div className="insights__config">
+            <label>Limit</label>
 
-          <input
-            className="input"
-            value={limit}
-            onChange={(e) => setLimit(Number(e.target.value))}
-            onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-            type="number">
-          </input>
+            <input
+              className="input"
+              value={limit}
+              onChange={(e) => setLimit(Number(e.target.value))}
+              onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+              type="number">
+            </input>
 
-          <button
-            // style={{ width: '100%' }}
-            className='button'
-            onClick={onSearch}
-          >
-            Go
-          </button>
+            <button
+              // style={{ width: '100%' }}
+              className='button'
+              onClick={onSearch}
+            >
+              Go
+            </button>
+          </div>
         </div>
-      </div>
 
       </div>
 
