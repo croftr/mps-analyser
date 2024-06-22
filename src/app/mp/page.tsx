@@ -248,11 +248,11 @@ function PageContent() {
     setProgress(undefined);
   };
 
-  const onRowClick = (row:any) => {
+  const onRowClick = (row: any) => {
     console.log("click ", row);
 
     const id = row._fields[0].low
-  
+
     router.push(`division?id=${id}`, { scroll: false });
   }
 
@@ -330,7 +330,7 @@ function PageContent() {
 
       <div className="fieldsetsWrapper flex-1">
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative">
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
           <legend>
             <span className='flex'>
               <svg
@@ -349,9 +349,11 @@ function PageContent() {
           </legend>
 
           <div className="filterWrapper" style={{ paddingBottom: 8, display: "flex", flexDirection: "column", gap: 12 }}>
-            <div className="datePicker">
 
-              <label style={{ marginRight: 36 }} htmlFor="start">Between:</label>
+            <div className="flex flex-col sm:flex-row gap-2 items-baseline">
+
+              <label className="w-24 text-left sm:text-right" htmlFor="start">Between</label>
+
               <input
                 type="date"
                 id="start"
@@ -370,7 +372,6 @@ function PageContent() {
               />
 
               <input
-                style={{ marginLeft: 8 }}
                 type="date"
                 min={EARLIEST_FROM_DATE}
                 max={new Date().toISOString().substr(0, 10)}
@@ -388,8 +389,8 @@ function PageContent() {
               />
             </div>
 
-            <div className="filterCategory__wrapper">
-              <label style={{ marginRight: 4 }} htmlFor="divisionCategory fixedLabel">Division Type:</label>
+            <div className="flex flex-col sm:flex-row gap-2 items-baseline">
+              <label className="w-23 text-left sm:text-right" htmlFor="divisionCategory fixedLabel">Division Type</label>
               <select
                 value={votefilterType}
                 onChange={(e) => setVotefilterType(e.target.value)}
@@ -413,8 +414,8 @@ function PageContent() {
               </select>
             </div>
 
-            <div className="browse__toolbar__inputwrapper">
-              <label htmlFor="title">Division  Title:</label>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <label className="w-24 text-left sm:text-right" htmlFor="title">Division  Title</label>
               <input
                 type="search"
                 placeholder="includes text"
@@ -436,13 +437,10 @@ function PageContent() {
             >
               Apply
             </button>
-
-
           </div>
-
         </fieldset>
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative">
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
           <legend>
             <span className='flex'>
               <svg
@@ -492,7 +490,6 @@ function PageContent() {
                     No
                   </button>
 
-
                   {!filterInProgress && (
                     <>
                       <span className='votingSummary__buttons__count'>
@@ -506,7 +503,6 @@ function PageContent() {
                       </span>
                     </>
                   )}
-
                 </div>
 
                 {filterInProgress && (
@@ -519,7 +515,7 @@ function PageContent() {
           </div>
         </fieldset>
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative">
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
           <legend>
             <span className='flex'>
               <svg
@@ -533,26 +529,22 @@ function PageContent() {
               </svg>
               Voting analysis
             </span>
-
           </legend>
-
           <div>
 
-            <div className="grid grid-cols-2 gap-4 gridContainer">
-
+          <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
 
               <div className='flex items-center gap-2 gridCell'>
                 <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
                 <Label htmlFor="vaexclude">Exclude</Label>
               </div>
 
-
               <select
                 name="partiesToExclude"
                 onChange={(e) => setExcludeParties(e.target.value)}
                 value={excludeParties}
                 disabled={!isExcludingParties}
-                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                className="w-full md:w-1/3 xl:w-1/4
                 px-4 py-2 rounded-md
                 bg-gray-100 dark:bg-gray-700 
                 text-gray-800 dark:text-gray-200
@@ -599,7 +591,7 @@ function PageContent() {
               </select>
 
 
-              <Label htmlFor="valimit">Limit</Label>
+              <Label className="text-right" htmlFor="valimit">Limit</Label>
               <input
                 id="valimit"
                 value={limit}

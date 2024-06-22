@@ -85,12 +85,17 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   };
 
   const table = useReactTable({
+    // initialState: {
+    //   pagination: {
+    //     pageSize: 50, // Set a different page size
+    //   },
+    // },
     data: data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: undefined,
     state: {
       globalFilter,
       sorting
@@ -101,7 +106,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   });
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"> {/* Container styling */}
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
       <h1 className="text-2xl font-semibold mb-2 dark:text-white">{title}</h1>
       <p className="text-gray-600 dark:text-gray-400">
         {`${data ? data.length : "0"} records`}
