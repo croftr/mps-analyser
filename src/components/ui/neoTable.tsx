@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface DataTableProps {
   data: any[];
   title: string; 
-  onRowClick?: (id: number) => void; 
+  onRowClick?: (row: any) => void; 
 }
 
 export function NeoTable({ data, title, onRowClick }: DataTableProps) {
@@ -151,8 +151,10 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                 {table.getRowModel().rows.map((row) => (
                   <tr 
                     key={row.id} 
-                    onClick={() => onRowClick(row.original._fields[0].low)}
-                    className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={() => onRowClick?.(row.original)}                     
+                    className={`hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                      onRowClick ? "cursor-pointer" : ""
+                    }`} 
                   >
                     {row.getVisibleCells().map((cell, cellIndex) => (
                       <TableCell key={cell.id} className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white">

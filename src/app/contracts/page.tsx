@@ -1,17 +1,17 @@
 // @ts-nocheck
 "use client"
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
 import { NeoTable } from '@/components/ui/neoTable'
-
 
 export default function Contracts() {
 
   const [contracts, setContracts] = useState([]);
   const [contractCount, setContractCount] = useState(1000);
   const [awardedToName, setAwardedToName] = useState("");
+  const [type, setType] = useState("");
 
   const getContractsByCount = async () => {
+    setType("count");
     // @ts-ignore
     setContracts(undefined)
     const result = await fetch(`https://mps-api-production-8da5.up.railway.app/contracts?awardedCount=${contractCount}`);
@@ -20,6 +20,7 @@ export default function Contracts() {
   }
 
   const getContractsByName = async () => {
+    setType("name")
     // @ts-ignore
     setContracts(undefined)
     const result = await fetch(`https://mps-api-production-8da5.up.railway.app/contracts?orgName=${awardedToName}`);
@@ -27,26 +28,14 @@ export default function Contracts() {
     setContracts(contractsResult);
   }
 
-  const renderCell = (value) => {
-    let renderdValue = value;
-
-    if (value.low) {
-      renderdValue = value.low;
-    } else if (value.year) {
-      const jsDate = new Date(
-        value.year.low,
-        value.month.low - 1, // Months are 0-indexed in JS (0 = January)
-        value.day.low
-      );
-      renderdValue = jsDate.toLocaleDateString();
-    }
-
-    return renderdValue;
+  const onGetDetails = (data:any) => {
+    console.log("onGetDetails ", data);
+    if (type === "count") {
+      //TODO do we want any row click action for the counts?
+    } else {
+      window.open(data._fields[5], '_blank').focus();
+    }    
   }
-
-  useEffect(() => {
-    // getContracts();
-  }, []);
 
   return (
     <main className="flex flex-col p-8">
@@ -73,9 +62,8 @@ export default function Contracts() {
 
         {!contracts && <progress value="" />}
 
-        {contracts && <NeoTable data={contracts} title="contracts"/>} 
+        {contracts && <NeoTable data={contracts} title="contracts" onRowClick={type === "count" ? undefined : onGetDetails}/>} 
         
-
       </div>
 
     </main>

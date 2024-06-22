@@ -1,5 +1,5 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
 import ky from 'ky';
@@ -32,13 +32,11 @@ export default function insights() {
 
 function PageContent() {
 
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const [paramId, setParamId] = useState("");
 
   const [data, setData] = useState([]);
   const [name, setName] = useState("");
-  const [columns, setColumns] = useState([]);
-  const [sorting, setSorting] = useState([]);
   const [progress, setProgress] = useState(false);
   const [fromDate, setFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
   const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
@@ -50,16 +48,8 @@ function PageContent() {
   const [voteCategory, setVoteCategory] = useState(VOTING_CATEGORIES[0]);
   const [limit, setLimit] = useState(10);
 
-
-  useEffect(() => {
-    if (searchParams) {
-      const newParamId = searchParams.toString().split("=")[1];
-      setParamId(newParamId);
-    }
-  }, [searchParams]);
-
   const onSearch = async () => {
-    setColumns([]);
+  
     setData([]);
     setProgress(true);
 
@@ -81,14 +71,22 @@ function PageContent() {
     setProgress(false);
   }
 
+  const getDetails = (row:any) => {
+    
+    if (type === "MP") {
+      const id = row._fields[3].low;
+      router.push(`mp?id=${id}`, { scroll: false });
+    } else {
+      const id = row._fields[2].low;
+      router.push(`division?id=${id}`, { scroll: false });
+    }
+  }
+
   return (
 
     <div className="insights">
-
       <div className="wrapper">
-
         <div className="insights__query">
-
           <span className='fixedLabel'>Which</span>
 
           <select
@@ -120,7 +118,6 @@ function PageContent() {
           {type === 'Division' && (
             <>
               <span className='fixedLabel'>type</span>
-
               <select
                 className="select fixedInput"
                 name="voteCategory"
@@ -136,9 +133,7 @@ function PageContent() {
                   </option>
                 ))}
               </select>
-
             </>
-
           )}
 
           {type === 'MP' && (
@@ -146,7 +141,6 @@ function PageContent() {
           )}
 
           {type === 'MP' && (
-
             <select
               className="select fixedInput"
               name="party"
@@ -162,10 +156,7 @@ function PageContent() {
                 </option>
               ))}
             </select>
-
-
           )}
-
 
           {type === 'MP' ? <span className='fixedLabel'>voted the</span> : <span className='fixedLabel'>was voted</span>}
 
@@ -205,7 +196,6 @@ function PageContent() {
             ))}
           </select>
 
-
           {type === 'MP' && (
             <>
               <span className='fixedLabel'>on</span>
@@ -226,11 +216,9 @@ function PageContent() {
                 ))}
               </select>
             </>
-
           )}
 
           <label className='fixexLabel' htmlFor="start">Between</label>
-
           <div style={{ padding: 0, paddingLeft: 0 }} className="datePicker fixedInput select">
 
             <input
@@ -242,8 +230,7 @@ function PageContent() {
               onChange={(e) => setFromDate(e.target.value)}
               value={fromDate}
             />
-
-            {/* <label for="start" style={{ marginLeft: 8, marginRight: 8 }}>and:</label> */}
+            
             <input
               style={{ marginLeft: 8 }}
               type="date"
@@ -289,7 +276,7 @@ function PageContent() {
 
       </div>
 
-      <NeoTable data={data} title={"Insights"} />
+      <NeoTable data={data} title={"Insights"} onRowClick={getDetails} />
 
     </div>
 
