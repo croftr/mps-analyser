@@ -5,10 +5,15 @@ import DivisionCard from '@/components/ui/DivisionCard';
 import { config } from '../app.config';
 import ky from 'ky';
 import { useEffect, useState, useCallback, Suspense } from 'react';
-import { useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
+import MpCardSkeleton from "./MpCardSkeleton";
+import DivisionCardSkeleton from "./DivisionCardSkeleton";
+
 import { VOTING_CATEGORIES, PARTY_NAMES } from "../config/constants";
+
+const skeletonArray = Array.from({ length: 100 }, (_, index) => index);
 
 const types = [
   "MP",
@@ -336,7 +341,7 @@ function PageContent() {
   const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName }) => {
 
     let url = `https://mps-api-production-8da5.up.railway.app/searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}`
-    
+
     if (searchName) {
       url = `${url}&name=${searchName}`
     }
@@ -400,9 +405,9 @@ function PageContent() {
       }
 
       searchName = searchParams.get("name");
-      
+
       if (searchName) {
-        setName(searchName);        
+        setName(searchName);
       }
 
 
@@ -733,6 +738,9 @@ function PageContent() {
 
       <main className="grid p-1 gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
 
+        {type === "MP" && !filteredMps && skeletonArray.map((item, index) => <MpCardSkeleton key={'skel-' + index} />)}
+        {type === "Division" && !filteredDivisions && skeletonArray.map((item, index) => <DivisionCardSkeleton key={'skel' + index} />)}
+
         {Boolean(divisions && divisions.length) && filteredDivisions
           .filter((item, index, self) =>
             index === self.findIndex(t => t.id === item.id)  // Keep only the first occurrence of an id
@@ -741,9 +749,11 @@ function PageContent() {
             <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.id} />
           ))}
 
+
         {Boolean(mps && mps.length) && filteredMps.map(i => (
           <MpCard item={i} onQueryMp={onQueryMp} key={i.id} />
         ))}
+
 
       </main>
     </>

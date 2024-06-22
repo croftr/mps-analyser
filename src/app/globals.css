@@ -5,12 +5,15 @@
 :root {
   --navbar-height: 26px;
   --searchbar-height: 62px;
-  --clr-primary: #a972cb;
-  --background: #FFF7ED;
-  --foreground: #1a202c;
-  --input: grey;
-}
 
+  /* Primary Color (Light Mode) */
+  --clr-primary: #a972cb;
+  --clr-primary-dark: #8155a8; /* Darker shade for hover */
+
+  --background: #f8f9fa;
+  --foreground: #1a202c;
+  --input: #f3f4f6; /* Changed to a light gray for better contrast in light mode */
+}
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -61,11 +64,15 @@ body {
   padding: 4px;
 }
 
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1a202c;
-    --foreground: #f7fafc;
-    --clr-primary: #980c4c;
+      --background: #1a202c;
+      --foreground: #f7fafc;
+
+      /* Primary Color (Dark Mode) */
+      --clr-primary: #980c4c;
+      --clr-primary-dark: #74093a; /* Darker shade for hover in dark mode */
+
+      --input: #1f2937; /* Darker input background for dark mode */
   }
 }

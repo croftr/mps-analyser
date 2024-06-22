@@ -238,7 +238,7 @@ function PageContent() {
             </div>
           )}
 
-          <div className="datePicker fixedInput flex items-center">
+          <div className="fixedInput flex items-center">
 
             <label htmlFor="startSelect" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">Between</label>
 
@@ -246,7 +246,7 @@ function PageContent() {
               type="date"
               id="startSelect"
               name="from-date"
-              className="min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="min-w-[100px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               min={EARLIEST_FROM_DATE}
               max={new Date().toISOString().substr(0, 10)}
               onChange={(e) => setFromDate(e.target.value)}
@@ -257,44 +257,44 @@ function PageContent() {
               type="date"
               id="toDate"
               name="to-date"
-              className="ml-2 min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="ml-2 min-w-[100px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               min={EARLIEST_FROM_DATE}
               max={new Date().toISOString().substr(0, 10)}
               onChange={(e) => setToDate(e.target.value)}
               value={toDate}
             />
+
           </div>
 
-          <button
-            className="button fixedButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={onSearch}
-          >
-            Go
-          </button>
+          <div className='flex'>
 
-        </div>
-
-        <div className="wrapper">
-          <div className="insights__config">
-            <label>Limit</label>
+            <label htmlFor="insightsLimit" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">limit</label>
 
             <input
-              className="input"
+              id="insightsLimit"
+              className="input fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
               onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
               type="number">
             </input>
 
-            <button
-              // style={{ width: '100%' }}
-              className='button'
+
+          </div>
+
+          <div className='w-full' style={{ flexBasis: "100%" }}>
+          <button
+              className="button fixedButton w-full md:w-[700px] bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded"
               onClick={onSearch}
             >
               Go
             </button>
-          </div>
+            </div>
         </div>
+
+
+
+
 
       </div>
 

@@ -1,11 +1,11 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+// tailwind.config.js
+const config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class", // Enable dark mode using class strategy
   theme: {
     extend: {
       spacing: {
@@ -15,8 +15,11 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: "var(--clr-primary)",
-        input: "var(--input)"
+        primary: {
+          DEFAULT: "var(--clr-primary)", // Light mode primary
+          dark: "var(--clr-primary-dark)", // Dark mode primary
+        },
+        input: "var(--input)",
       },
     },
   },
