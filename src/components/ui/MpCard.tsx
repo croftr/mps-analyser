@@ -19,7 +19,7 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
   return (
 
     <div
-      className="relative p-4 border border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+      className="relative p-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
       onClick={() => onQueryMp(item.id)}
     >
       <div
@@ -44,12 +44,12 @@ const MpCard = ({ onQueryMp, item = { startDate: { year: {} } } }) => {
       <span className="block truncate text-gray-600 dark:text-gray-300">{item.party}</span>
       <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>
 
-      <div className="mt-2 grid grid-cols-3 text-center text-sm border rounded-md border-gray-600">
-        <span className="py-1 border-b border-r border-gray-600 first:border-l">Votes</span>
-        <span className="py-1 border-b border-r border-gray-600">Aye</span>
-        <span className="py-1 border-b border-gray-600 last:border-r">No</span>
+      <div className="mt-2 grid grid-cols-3 text-center text-sm border rounded-md border-gray-400 dark:border-gray-600">
+        <span className="py-1 border-b border-r border-gray-400 dark:border-gray-600">Votes</span>
+        <span className="py-1 border-b border-r border-gray-400 dark:border-gray-600">Aye</span>
+        <span className="py-1 border-b border-gray-600 last:border-r dark:border-gray-600">No</span>
         <span className="py-1"> {item.totalVotes} </span>
-        <span className="py-1 border-r border-l border-gray-600"> {item.ayeVotes} </span>
+        <span className="py-1 border-r border-l border-gray-400 dark:border-gray-600"> {item.ayeVotes} </span>
         <span className="py-1"> {item.noVotes} </span>
       </div>
 

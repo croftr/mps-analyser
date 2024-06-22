@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
 import { NeoTable } from '@/components/ui/neoTable'
+import { log } from 'console';
 
 export default function Mp() {
 
@@ -151,22 +152,10 @@ function PageContent() {
       const response = await ky(
         `${config.mpsApiUrl}votingDetailsNeo?id=${mpDetails?.value?.id}&type=${type}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${nameParam}`
       ).json();
-
-      // // @ts-ignore
-      // const formattedResults = [];
-
-      // // @ts-ignore
-      // response.records.forEach(i => {
-      // const memberVotedAye = type === "votedAye" ? true : type === "votedNo" ? false : i._fields[3];
-      //   formattedResults.push({
-      //     divisionId: i._fields[0].low,
-      //     title: i._fields[1],
-      //     date: i._fields[2],
-      //     memberVotedAye
-      //   })
-      // });
-      // // @ts-ignore
-      // setVotingHistory(formattedResults);      
+      
+      // @ts-ignore      
+      console.log(response.records[0]);
+      
       // @ts-ignore      
       setTableData(response.records);
       setTableTitle(`${mpDetails?.value?.nameDisplayAs} voted ${type === "votedAye" ? "Aye" : type === "votedNo" ? "No" : ""}`);
@@ -189,14 +178,6 @@ function PageContent() {
     //clear voting history to make space for similarity
     setVotingSimilarity(undefined);
     setVotingHistory(undefined);
-
-    // setTimeout(
-    //   () =>
-    //     document
-    //       .getElementsByClassName("container")[0]
-    //       .scrollTo(0, document.body.scrollHeight),
-    //   100
-    // );
 
     let queryParams = '';
 
@@ -348,7 +329,7 @@ function PageContent() {
 
           </legend>
 
-          <div className="filterWrapper" style={{ paddingBottom: 8, display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="flex flex-col gap-2">
 
             <div className="flex flex-col sm:flex-row gap-2 items-baseline">
 
@@ -390,7 +371,7 @@ function PageContent() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 items-baseline">
-              <label className="w-23 text-left sm:text-right" htmlFor="divisionCategory fixedLabel">Division Type</label>
+              <label className="w-24 text-left sm:text-right" htmlFor="divisionCategory fixedLabel">Division Type</label>
               <select
                 value={votefilterType}
                 onChange={(e) => setVotefilterType(e.target.value)}
@@ -532,7 +513,7 @@ function PageContent() {
           </legend>
           <div>
 
-          <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
+            <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
 
               <div className='flex items-center gap-2 gridCell'>
                 <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
@@ -630,7 +611,12 @@ function PageContent() {
 
         </fieldset>
 
-        {!votingSimilarity && tableData && <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />}
+
+        {!votingSimilarity && tableData && (
+          // <div className="overflow-x-auto sm:overflow-x-hidden ring w-full"> 
+            <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
+          // </div>
+        )}
 
         {votingSimilarity && JSON.stringify(votingSimilarity)}
 

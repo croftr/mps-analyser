@@ -15,12 +15,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface DataTableProps {
   data: any[];
-  title: string; 
-  onRowClick?: (row: any) => void; 
+  title: string;
+  onRowClick?: (row: any) => void;
 }
 
 export function NeoTable({ data, title, onRowClick }: DataTableProps) {
-  
+
   const [globalFilter, setGlobalFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [sorting, setSorting] = useState<any[]>([]);
@@ -47,7 +47,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
 
     if (data && data.length > 0 && data[0].keys) {
       return data[0].keys.map((header) => ({
-        header: header,        
+        header: header.split('.').pop() || header,
         accessorFn: (row) => row._fields[row._fieldLookup[header]],
         cell: (info) => renderCell(info.getValue()),
         sortingFn: (rowA, rowB, id) => {
@@ -85,11 +85,6 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   };
 
   const table = useReactTable({
-    // initialState: {
-    //   pagination: {
-    //     pageSize: 50, // Set a different page size
-    //   },
-    // },
     data: data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -100,17 +95,19 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
       globalFilter,
       sorting
     },
-    enableSortingRemoval: false, 
+    enableSortingRemoval: false,
     onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
   });
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-      <h1 className="text-2xl font-semibold mb-2 dark:text-white">{title}</h1>
-      <p className="text-gray-600 dark:text-gray-400">
-        {`${data ? data.length : "0"} records`}
-      </p>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-x-auto"> 
+      <div className="flex mb-4 items-baseline">
+        <h1 className="text-2xl font-semibold dark:text-white">{title}</h1>
+        <span className="text-gray-600 dark:text-gray-400 ml-2"> {/* Add margin-left */}
+          {`(${data.length} records)`} 
+        </span>
+      </div>
 
       <div className="mb-4">
         <Input
@@ -126,7 +123,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
         <Skeleton className="h-64 w-full" />
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <table className="divide-y divide-gray-200 dark:divide-gray-700 max-w-full w-full table-auto">
             {/* Table Header */}
             <thead className="sticky top-0 bg-gray-50 dark:bg-gray-800">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -158,9 +155,8 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                 <tr
                   key={row.id}
                   onClick={() => onRowClick?.(row.original)}
-                  className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    onRowClick ? "cursor-pointer" : ""
-                  }`}
+                  className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${onRowClick ? "cursor-pointer" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell, cellIndex) => (
                     <TableCell
