@@ -2,11 +2,9 @@
 
 import { Suspense, useEffect, useState } from 'react'
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import ky from 'ky';
 import { config } from "../app.config";
-
-// import "../../styles/mpDetails.css"
 
 import {
   Party,
@@ -29,6 +27,8 @@ export default function Mp() {
 }
 
 function PageContent() {
+
+  const router = useRouter()
 
   const male = <svg className="standalone-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"><path d="M16 2v2h3.586l-3.972 3.972c-1.54-1.231-3.489-1.972-5.614-1.972-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.125-.741-4.074-1.972-5.614l3.972-3.972v3.586h2v-7h-7zm-6 20c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" /></svg>
   const female = <svg className="standalone-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"><path d="M21 9c0-4.97-4.03-9-9-9s-9 4.03-9 9c0 4.632 3.501 8.443 8 8.941v2.059h-3v2h3v2h2v-2h3v-2h-3v-2.059c4.499-.498 8-4.309 8-8.941zm-16 0c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7-7-3.14-7-7z" /></svg>
@@ -247,6 +247,13 @@ function PageContent() {
     // @ts-ignore
     setProgress(undefined);
   };
+
+  const onRowClick = (id:number) => {
+    console.log("click ", id);
+    //bobby
+
+    router.push(`division?id=${id}/`, { scroll: false });
+  }
 
 
   return (
@@ -562,9 +569,6 @@ function PageContent() {
                 ))}
               </select>
 
-
-
-
               <div className='flex items-center gap-2 gridCell'>
                 <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
                 <Label htmlFor="vaInclude">Include</Label>
@@ -633,7 +637,7 @@ function PageContent() {
 
         </fieldset>
 
-        {!votingSimilarity && tableData && <NeoTable data={tableData} title={tableTitle} />}
+        {!votingSimilarity && tableData && <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />}
 
         {votingSimilarity && JSON.stringify(votingSimilarity)}
 

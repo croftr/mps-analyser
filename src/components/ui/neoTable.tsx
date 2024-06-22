@@ -10,17 +10,17 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableBody, TableCell } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { log } from "console";
-
 
 interface DataTableProps {
   data: any[];
-  title: string; // Added title prop
+  title: string; 
+  onRowClick?: (id: number) => void; 
 }
 
-export function NeoTable({ data, title }: DataTableProps) {
+export function NeoTable({ data, title, onRowClick }: DataTableProps) {
+  
   const [globalFilter, setGlobalFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [sorting, setSorting] = useState<any[]>([]);
@@ -149,7 +149,11 @@ export function NeoTable({ data, title }: DataTableProps) {
               </thead>
               <TableBody className="overflow-auto">
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <tr 
+                    key={row.id} 
+                    onClick={() => onRowClick(row.original._fields[0].low)}
+                    className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
                     {row.getVisibleCells().map((cell, cellIndex) => (
                       <TableCell key={cell.id} className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white">
                         {renderCell(cell.row.original._fields[cellIndex])}

@@ -1,13 +1,11 @@
 "use client"
-import { useMpStore } from "@/lib/store";
+
 import { Suspense, useEffect, useState } from 'react'
-import Image from 'next/image';
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import ky from 'ky';
 import DivisionTable from "./divisionTable";
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-
 
 export default function Division() {
 
@@ -20,6 +18,7 @@ export default function Division() {
 
 function PageContent() {
 
+  const router = useRouter()
 
   const [votedAye, setVotedAye] = useState(Array<any>);
   const [votedNo, setVotedNo] = useState(Array<any>);
@@ -34,6 +33,9 @@ function PageContent() {
   const searchParams = useSearchParams()
 
   const onQueryDivision = async (id: string) => {
+
+    console.log("onQueryDivision ", id);
+    
 
     setDivisionDetails(undefined);
 
@@ -58,14 +60,29 @@ function PageContent() {
 
   }
 
+  const onQueryMp = (id:number) => {
+    console.log("go ", id);    
+
+    router.push(`mp?id=${id}`, { scroll: false });
+    
+  }
+
   useEffect(() => {
-    const paramId = searchParams.toString().split("=")[1]
-    onQueryDivision(paramId);
+  
+    const regex = /id=(\d+)/; // Match "id=" followed by digits
+    const match = searchParams.toString().match(regex);
+    
+    if (match) {
+      const paramId = match[1]; 
+      console.log(paramId); // Output: 1815
+      onQueryDivision(paramId);
+    } else {
+      console.error("ID not found in the string ", searchParams);
+    }  
 
   }, [searchParams])
 
   return (
-
 
     <section id="mpDetailsPage" className="flex flex-col items-center justify-between">
 
@@ -101,11 +118,10 @@ function PageContent() {
         </div>
       </div>
 
-
       <div className="flex gap-8 flex-wrap justify-between w-full p-2">
-        {votedAye && showVotedAye && <DivisionTable data={votedAye} title="Voted Aye" />}
-        {votedAye && showVotedNo && <DivisionTable data={votedNo} title="Voted No" />}
-        {votedAye && showAbsent && <DivisionTable data={absent} title="Absent" />}
+        {votedAye && showVotedAye && <DivisionTable data={votedAye} title="Voted Aye" onQueryMp={onQueryMp} />}
+        {votedAye && showVotedNo && <DivisionTable data={votedNo} title="Voted No" onQueryMp={onQueryMp} />}
+        {votedAye && showAbsent && <DivisionTable data={absent} title="Absent" onQueryMp={onQueryMp} />}
       </div>
     </section>
   );
