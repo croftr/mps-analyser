@@ -20,9 +20,9 @@ function PageContent() {
 
   const router = useRouter()
 
-  const [votedAye, setVotedAye] = useState(Array<any>);
-  const [votedNo, setVotedNo] = useState(Array<any>);
-  const [absent, setAbsent] = useState(Array<any>);
+  const [votedAye, setVotedAye] = useState<any[] | undefined>(undefined);
+  const [votedNo, setVotedNo] = useState<any[] | undefined>(undefined);
+  const [absent, setAbsent] = useState<any[] | undefined>(undefined);
 
   const [showVotedAye, setShowVotedAye] = useState(true);
   const [showVotedNo, setShowVotedNo] = useState(true);
@@ -119,9 +119,9 @@ function PageContent() {
       </div>
 
       <div className="flex gap-8 flex-wrap justify-between w-full p-2">
-        {votedAye && showVotedAye && <DivisionTable data={votedAye} title="Voted Aye" onQueryMp={onQueryMp} />}
-        {votedAye && showVotedNo && <DivisionTable data={votedNo} title="Voted No" onQueryMp={onQueryMp} />}
-        {votedAye && showAbsent && <DivisionTable data={absent} title="Absent" onQueryMp={onQueryMp} />}
+        {showVotedAye && <DivisionTable data={votedAye} title="Voted Aye" onQueryMp={onQueryMp} />}
+        {showVotedNo && <DivisionTable data={votedNo} title="Voted No" onQueryMp={onQueryMp} />}
+        {showAbsent && <DivisionTable data={absent} title="Absent" onQueryMp={onQueryMp} />}
       </div>
     </section>
   );
