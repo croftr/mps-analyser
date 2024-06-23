@@ -47,6 +47,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
 
     if (data && data.length > 0 && data[0].keys) {
       return data[0].keys.map((header) => ({
+        id: header,
         header: header.split('.').pop() || header,        
         accessorFn: (row) => row._fields[row._fieldLookup[header]],
         cell: (info) => renderCell(info.getValue()),
