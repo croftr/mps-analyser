@@ -168,12 +168,9 @@ function PageContent() {
       setProgress(undefined);
       console.error(error);
       setVotingHistory(undefined);
-      // @ts-ignore
-      // setGlobalMessage({ type: "error", text: error.message });
+      
     }
   };
-
-
 
   const onGetVotingSimilarity = async (orderby: string) => {
 

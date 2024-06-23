@@ -35,7 +35,7 @@ function PageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   const [name, setName] = useState("");
   const [progress, setProgress] = useState(false);
   const [fromDate, setFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
@@ -48,9 +48,12 @@ function PageContent() {
   const [voteCategory, setVoteCategory] = useState(VOTING_CATEGORIES[0]);
   const [limit, setLimit] = useState(10);
 
+  const [isQuerying, setIsQuerying] = useState(false);
+
   const onSearch = async () => {
 
-    setData([]);
+    setIsQuerying(true);
+    setData(undefined);
     setProgress(true);
 
     const nameParam = name || "Any";
@@ -292,13 +295,9 @@ function PageContent() {
             </div>
         </div>
 
-
-
-
-
       </div>
 
-      <NeoTable data={data} title={"Insights"} onRowClick={getDetails} />
+      {isQuerying && <NeoTable data={data} title={"Insights"} onRowClick={getDetails} />}
 
     </div>
 

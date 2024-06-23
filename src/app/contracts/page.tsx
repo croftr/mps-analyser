@@ -6,12 +6,14 @@ import { config } from "../app.config";
 
 export default function Contracts() {
 
-  const [contracts, setContracts] = useState([]);
+  const [contracts, setContracts] = useState(undefined);
+  const [isQuerying, setIsQuerying] = useState(undefined);
   const [contractCount, setContractCount] = useState(1000);
   const [awardedToName, setAwardedToName] = useState("");
   const [type, setType] = useState("");
 
   const getContractsByCount = async () => {
+    setIsQuerying(true);
     setType("count");
     // @ts-ignore
     setContracts(undefined)
@@ -22,6 +24,7 @@ export default function Contracts() {
   }
 
   const getContractsByName = async () => {
+    setIsQuerying(true);
     setType("name")
     // @ts-ignore
     setContracts(undefined)
@@ -64,7 +67,7 @@ export default function Contracts() {
 
         {!contracts && <progress value="" />}
 
-        {contracts && <NeoTable data={contracts} title="contracts" onRowClick={type === "count" ? undefined : onGetDetails}/>} 
+        {isQuerying && <NeoTable data={contracts} title="contracts" onRowClick={type === "count" ? undefined : onGetDetails}/>} 
         
       </div>
 
