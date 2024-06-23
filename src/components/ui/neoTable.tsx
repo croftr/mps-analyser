@@ -47,7 +47,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
 
     if (data && data.length > 0 && data[0].keys) {
       return data[0].keys.map((header) => ({
-        header: header.split('.').pop() || header,
+        header: header.split('.').pop() || header,        
         accessorFn: (row) => row._fields[row._fieldLookup[header]],
         cell: (info) => renderCell(info.getValue()),
         sortingFn: (rowA, rowB, id) => {
@@ -161,7 +161,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                   {row.getVisibleCells().map((cell, cellIndex) => (
                     <TableCell
                       key={cell.id}
-                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"
+                      className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white whitespace-normal break-words" 
                     >
                       {renderCell(cell.row.original._fields[cellIndex])}
                     </TableCell>
