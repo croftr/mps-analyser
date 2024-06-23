@@ -24,11 +24,23 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [sorting, setSorting] = useState<any[]>([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   useEffect(() => {
     console.log("neotable useeffect ");
 
-    setIsLoading(false); // Simulating data loading (replace with your actual data fetching)
+    setIsLoading(false);
+  }, [data]);
+
+  useEffect(() => {
+    // Initial column visibility setup
+    const initialVisibility = {};
+    if (data && data.length > 0 && data[0].keys) {
+      data[0].keys.forEach((header) => {
+        initialVisibility[header] = !header.toLowerCase().includes("id");
+      });
+    }
+    setColumnVisibility(initialVisibility);
   }, [data]);
 
   const getValueForSorting = (row, id) => {
@@ -38,29 +50,42 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
     // Handle cases where value might not exist or be in the expected format
     if (!value) return 0; // Or any default value you prefer for sorting
     if (value.low !== undefined) return value.low; // Handle numerical fields
-    if (value.year) return new Date(value.year.low, value.month.low - 1, value.day.low); // Handle date fields
+    if (value.year)
+      return new Date(
+        value.year.low,
+        value.month.low - 1,
+        value.day.low
+      ); // Handle date fields
 
     return value.toString(); // Default to string comparison for other types
   };
 
-  const columns = useMemo(() => {
 
+  const columns = useMemo(() => {
     if (data && data.length > 0 && data[0].keys) {
       return data[0].keys.map((header) => ({
         id: header,
-        header: header.split('.').pop() || header,        
+        header: header.split(".").pop() || header,
         accessorFn: (row) => row._fields[row._fieldLookup[header]],
         cell: (info) => renderCell(info.getValue()),
         sortingFn: (rowA, rowB, id) => {
           const aValue = getValueForSorting(rowA, id);
           const bValue = getValueForSorting(rowB, id);
 
-          if (typeof aValue === "number" && typeof bValue === "number") {
+          if (
+            typeof aValue === "number" &&
+            typeof bValue === "number"
+          ) {
             return aValue - bValue; // Numerical sorting
           } else {
-            return aValue === bValue ? 0 : aValue > bValue ? 1 : -1; // String comparison
+            return aValue === bValue
+              ? 0
+              : aValue > bValue
+                ? 1
+                : -1; // String comparison
           }
         },
+        isVisible: !header.includes("ID"),
       }));
     } else {
       return [];
@@ -68,9 +93,8 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   }, [data]);
 
   const renderCell = (value) => {
-
     if (!value) {
-      return ""
+      return "";
     }
 
     let renderedValue = value;
@@ -78,7 +102,11 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
     if (value.low) {
       renderedValue = value.low;
     } else if (value.year) {
-      const jsDate = new Date(value.year.low, value.month.low - 1, value.day.low);
+      const jsDate = new Date(
+        value.year.low,
+        value.month.low - 1,
+        value.day.low
+      );
       renderedValue = jsDate.toLocaleDateString();
     }
 
@@ -94,19 +122,21 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
     getPaginationRowModel: undefined,
     state: {
       globalFilter,
-      sorting
+      sorting,
+      columnVisibility,
     },
+    onColumnVisibilityChange: setColumnVisibility,
     enableSortingRemoval: false,
     onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
   });
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-x-auto"> 
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-x-auto">
       <div className="flex mb-4 items-baseline">
         <h1 className="text-2xl font-semibold dark:text-white">{title}</h1>
         <span className="text-gray-600 dark:text-gray-400 ml-2"> {/* Add margin-left */}
-          {`(${data.length} records)`} 
+          {`(${data.length} records)`}
         </span>
       </div>
 
@@ -150,7 +180,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                 </tr>
               ))}
             </thead>
-            {/* Table Body */}
+            
             <TableBody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
               {table.getRowModel().rows.map((row) => (
                 <tr
@@ -159,14 +189,20 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                   className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${onRowClick ? "cursor-pointer" : ""
                     }`}
                 >
-                  {row.getVisibleCells().map((cell, cellIndex) => (
-                    <TableCell
-                      key={cell.id}
-                      className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white whitespace-normal break-words" 
-                    >
-                      {renderCell(cell.row.original._fields[cellIndex])}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell, visibleCellIndex) => {
+                    // Calculate the original (unfiltered) cellIndex
+                    const originalCellIndex = row.getAllCells().findIndex(
+                      (c) => c.id === cell.id
+                    );
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white whitespace-normal break-words"
+                      >
+                        {renderCell(row.original._fields[originalCellIndex])}
+                      </TableCell>
+                    );
+                  })}
                 </tr>
               ))}
             </TableBody>

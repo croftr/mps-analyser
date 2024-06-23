@@ -340,7 +340,7 @@ function PageContent() {
 
   const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName }) => {
 
-    let url = `https://mps-api-production-8da5.up.railway.app/searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}`
+    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}`
 
     if (searchName) {
       url = `${url}&name=${searchName}`

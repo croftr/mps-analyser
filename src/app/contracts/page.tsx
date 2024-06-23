@@ -2,6 +2,7 @@
 "use client"
 import { useState } from "react";
 import { NeoTable } from '@/components/ui/neoTable'
+import { config } from "../app.config";
 
 export default function Contracts() {
 
@@ -14,7 +15,8 @@ export default function Contracts() {
     setType("count");
     // @ts-ignore
     setContracts(undefined)
-    const result = await fetch(`https://mps-api-production-8da5.up.railway.app/contracts?awardedCount=${contractCount}`);
+
+    const result = await fetch(`${config.mpsApiUrl}contracts?awardedCount=${contractCount}`);
     const contractsResult = await result.json();
     setContracts(contractsResult);
   }
@@ -23,7 +25,7 @@ export default function Contracts() {
     setType("name")
     // @ts-ignore
     setContracts(undefined)
-    const result = await fetch(`https://mps-api-production-8da5.up.railway.app/contracts?orgName=${awardedToName}`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedToName}`);
     const contractsResult = await result.json();
     setContracts(contractsResult);
   }

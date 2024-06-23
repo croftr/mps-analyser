@@ -16,7 +16,6 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
 import { NeoTable } from '@/components/ui/neoTable'
-import { log } from 'console';
 
 export default function Mp() {
 
