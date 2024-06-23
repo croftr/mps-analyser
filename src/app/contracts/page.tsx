@@ -64,9 +64,7 @@ export default function Contracts() {
       <div>
 
       {contracts && !contracts.map && <h1>No data</h1>}
-
-        {!contracts && <progress value="" />}
-
+        
         {isQuerying && <NeoTable data={contracts} title="contracts" onRowClick={type === "count" ? undefined : onGetDetails}/>} 
         
       </div>

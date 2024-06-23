@@ -54,12 +54,23 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
     return value.toString(); // Default to string comparison for other types
   };
 
+  const formatHeader = (value: string) => {
+    console.log("check ", value);
+
+    if (value.toLowerCase().includes("nameDisplayAs")) {
+      return "count"
+    } else if (value.toLowerCase().includes("count")) {
+      return "count"
+    }
+
+    return value.split(".").pop() || value
+  }
 
   const columns = useMemo(() => {
     if (data && data.length > 0 && data[0].keys) {
       return data[0].keys.map((header) => ({
         id: header,
-        header: header.split(".").pop() || header,
+        header: () => formatHeader(header),
         accessorFn: (row) => row._fields[row._fieldLookup[header]],
         cell: (info) => renderCell(info.getValue()),
         sortingFn: (rowA, rowB, id) => {
@@ -126,6 +137,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   });
 
   return (
+
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-x-auto">
 
       {data && (
@@ -148,15 +160,11 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
         </>
       )}
 
-
-
-
       {!data ? (
         <NeoTableSkeleton columns={10} />
-      ) : (
+      ) : data.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="divide-y divide-gray-200 dark:divide-gray-700 max-w-full w-full table-auto">
-            {/* Table Header */}
             <thead className="sticky top-0 bg-gray-50 dark:bg-gray-800">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -191,7 +199,6 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                     }`}
                 >
                   {row.getVisibleCells().map((cell, visibleCellIndex) => {
-                    // Calculate the original (unfiltered) cellIndex
                     const originalCellIndex = row.getAllCells().findIndex(
                       (c) => c.id === cell.id
                     );
@@ -208,6 +215,10 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
               ))}
             </TableBody>
           </table>
+        </div>
+      ) : (
+        <div className="text-center text-gray-500 dark:text-gray-400">
+          No data returned
         </div>
       )}
     </div>
