@@ -6,15 +6,15 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
 import { TableBody, TableCell } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import NeoTableSkeleton from "./neoTableSkeleton";
 
 interface DataTableProps {
-  data: any[];
+  data: any[] | undefined;
   title: string;
   onRowClick?: (row: any) => void;
 }
@@ -22,15 +22,9 @@ interface DataTableProps {
 export function NeoTable({ data, title, onRowClick }: DataTableProps) {
 
   const [globalFilter, setGlobalFilter] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [sorting, setSorting] = useState<any[]>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
 
-  useEffect(() => {
-    console.log("neotable useeffect ");
-
-    setIsLoading(false);
-  }, [data]);
 
   useEffect(() => {
     // Initial column visibility setup
@@ -133,25 +127,32 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-x-auto">
-      <div className="flex mb-4 items-baseline">
-        <h1 className="text-2xl font-semibold dark:text-white">{title}</h1>
-        <span className="text-gray-600 dark:text-gray-400 ml-2"> {/* Add margin-left */}
-          {`(${data.length} records)`}
-        </span>
-      </div>
 
-      <div className="mb-4">
-        <Input
-          placeholder="Filter..."
-          value={globalFilter ?? ""}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600" // Dark mode input styling
-        />
-      </div>
+      {data && (
+        <>
+          <div className="flex mb-4 items-baseline">
+            <h1 className="text-2xl font-semibold dark:text-white">{title}</h1>
+            <span className="text-gray-600 dark:text-gray-400 ml-2">
+              {`(${data.length} records)`}
+            </span>
+          </div>
 
-      {/* Skeleton Loader or Table */}
-      {isLoading ? (
-        <Skeleton className="h-64 w-full" />
+          <div className="mb-4">
+            <Input
+              placeholder="Filter..."
+              value={globalFilter ?? ""}
+              onChange={(event) => setGlobalFilter(event.target.value)}
+              className="max-w-sm dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600" // Dark mode input styling
+            />
+          </div>
+        </>
+      )}
+
+
+
+
+      {!data ? (
+        <NeoTableSkeleton columns={10} />
       ) : (
         <div className="overflow-x-auto">
           <table className="divide-y divide-gray-200 dark:divide-gray-700 max-w-full w-full table-auto">
@@ -180,7 +181,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                 </tr>
               ))}
             </thead>
-            
+
             <TableBody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
               {table.getRowModel().rows.map((row) => (
                 <tr

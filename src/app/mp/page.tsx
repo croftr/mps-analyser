@@ -42,7 +42,7 @@ function PageContent() {
   const [filterInProgress, setFilterInProgress] = useState(false);
   const [votingSummary, setVotingSummary] = useState<any>(undefined);
   const [votingSimilarity, setVotingSimilarity] = useState();
-
+  const [queryType, setQueryType] = useState("none");
 
   const [votefilterTitle, setVotefilterTitle] = useState("");
 
@@ -58,7 +58,7 @@ function PageContent() {
   const [barChartData, setBarChartData] = useState();
   const searchParams = useSearchParams();
 
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState();
   const [tableTitle, setTableTitle] = useState("");
 
   const onApplyFilter = async () => {
@@ -130,6 +130,9 @@ function PageContent() {
   }, [searchParams])
 
   const onGetVotingHistory = async (type: string) => {
+
+    setQueryType("history");
+    setTableData(undefined);
     setProgress("Analysing voting history...");
 
     //clear similarity to make space for voting history
@@ -151,10 +154,10 @@ function PageContent() {
       const response = await ky(
         `${config.mpsApiUrl}votingDetailsNeo?id=${mpDetails?.value?.id}&type=${type}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${nameParam}`
       ).json();
-      
+
       // @ts-ignore      
       console.log(response.records[0]);
-      
+
       // @ts-ignore      
       setTableData(response.records);
       setTableTitle(`${mpDetails?.value?.nameDisplayAs} voted ${type === "votedAye" ? "Aye" : type === "votedNo" ? "No" : ""}`);
@@ -173,6 +176,10 @@ function PageContent() {
 
 
   const onGetVotingSimilarity = async (orderby: string) => {
+
+    setQueryType("similarity");
+    setTableData(undefined);
+
     setProgress("Getting voting similarity...");
     //clear voting history to make space for similarity
     setVotingSimilarity(undefined);
@@ -611,13 +618,13 @@ function PageContent() {
         </fieldset>
 
 
-        {!votingSimilarity && tableData && (
-          // <div className="overflow-x-auto sm:overflow-x-hidden ring w-full"> 
-            <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
-          // </div>
+        {queryType === "history" && (
+          <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
         )}
 
-        {votingSimilarity && JSON.stringify(votingSimilarity)}
+        {queryType === "similarity" && (JSON.stringify(votingSimilarity))}
+
+
 
       </div>
 
