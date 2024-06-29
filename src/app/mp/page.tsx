@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation'
 import ky from 'ky';
 import { config } from "../app.config";
+import BarChart from "./BarChart.jsx";
 
 import {
   Party,
@@ -168,7 +169,7 @@ function PageContent() {
       setProgress(undefined);
       console.error(error);
       setVotingHistory(undefined);
-      
+
     }
   };
 
@@ -199,7 +200,7 @@ function PageContent() {
 
     //TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
     const chartData = {
-      labels: [],
+      labels: [mpDetails?.value?.nameDisplayAs],
       datasets: [
         {
           label: "Voting Similarity",
@@ -213,7 +214,7 @@ function PageContent() {
           // barThickness: 5,
           indexAxis: "y",
           width: "40px",
-          data: [],
+          data: [1], // Start with the queried MP's score (1 for self-similarity)        
         },
       ],
     };
@@ -238,6 +239,20 @@ function PageContent() {
     const id = row._fields[0].low
 
     router.push(`division?id=${id}`, { scroll: false });
+  }
+
+  const onQueryMpByName = async (name:string) => {
+
+    setMpDetails(undefined);
+
+    const result = await ky(`https://members-api.parliament.uk/api/Members/Search?Name=${name}`).json();
+    //@ts-ignore
+    if (result && result.items && result.items[0]) {
+      //@ts-ignore
+      setMpDetails(result.items[0]);
+      //@ts-ignore
+      onGetVotingSummary(result.items[0]?.value?.id);
+    }
   }
 
 
@@ -619,8 +634,12 @@ function PageContent() {
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
         )}
 
-        {queryType === "similarity" && (JSON.stringify(votingSimilarity))}
-
+        {queryType === "similarity" && barChartData && (
+          <BarChart
+            barChartData={barChartData}            
+            onQueryMpByName={onQueryMpByName}
+          />
+        )}
 
 
       </div>
