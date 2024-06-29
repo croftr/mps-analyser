@@ -257,7 +257,7 @@ function PageContent() {
 
 
   return (
-    <section id="mpDetailsPage" className="flex justify-around p-4 gap-4 flex-wrap">
+    <section id="mpDetailsPage" className="flex justify-around p-4 gap-4 flex-wrap items-start">
 
       <div className="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white">
 
