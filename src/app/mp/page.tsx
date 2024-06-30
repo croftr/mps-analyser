@@ -173,6 +173,25 @@ function PageContent() {
     }
   };
 
+  function darkenColor(hexColor: string, factor: number): string {
+    // Ensure factor is between 0 and 1
+    factor = Math.max(0, Math.min(1, factor)); 
+  
+    // Parse the hex color
+    let r = parseInt(hexColor.slice(1, 3), 16);
+    let g = parseInt(hexColor.slice(3, 5), 16);
+    let b = parseInt(hexColor.slice(5, 7), 16);
+  
+    // Darken each RGB component proportionally
+    r = Math.round(r * (1 - factor));  // Corrected this line
+    g = Math.round(g * (1 - factor));  // Corrected this line
+    b = Math.round(b * (1 - factor));  // Corrected this line
+  
+    // Convert back to hex string
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  }
+  
+
   const onGetVotingSimilarity = async (orderby: string) => {
 
     setQueryType("similarity");
@@ -193,25 +212,29 @@ function PageContent() {
 
     const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpDetails?.value?.nameDisplayAs}&id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
 
-    const result = await ky(url).json();
+    const result:Array<any> = await ky(url).json();
+
+    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     // @ts-ignore
     setVotingSimilarity(result);
 
     //TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
     const chartData = {
-      labels: [mpDetails?.value?.nameDisplayAs],
+      labels: [mpDetails?.value?.nameDisplayAs],    
       datasets: [
         {
           label: "Voting Similarity",
-          backgroundColor:
-            window.localStorage.getItem("theme") ===
-              "light-mode"
-              ? "#a972cb"
-              : "#980c4c",
+          backgroundColor: result.map((_, index) => {
+
+            const baseColor = isDarkMode ? "#980c4c" : "#a972cb"; 
+            
+            // Darken the first bar by 20%
+            return index === 0 ? isDarkMode ? "#600b32" : "#6e0da9"  : baseColor;
+          }),
+          // borderColor: result.map((_, index) => index === 0 ? '#FFF' : "#262a32"),
           borderColor: "#262a32",
-          borderWidth: 2,
-          // barThickness: 5,
+          borderWidth: 2,          
           indexAxis: "y",
           width: "40px",
           data: [1], // Start with the queried MP's score (1 for self-similarity)        

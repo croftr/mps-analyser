@@ -82,11 +82,10 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
                     {table.getRowModel().rows.map((row) => (
-                        <tr className="cursor-pointer" onClick={() => onRowClick(row)} key={row.id}>
+                        <tr className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${onRowClick ? "cursor-pointer" : ""}`} onClick={() => onRowClick(row)} key={row.id}>
                             {row.getVisibleCells().map((cell) => (
                                 <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                                     {renderCellContent(cell)}
-                                    {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
+                                     {renderCellContent(cell)}                                    
                                 </td>
                             ))}
                         </tr>

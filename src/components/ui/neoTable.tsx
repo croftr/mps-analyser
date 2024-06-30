@@ -195,8 +195,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                 <tr
                   key={row.id}
                   onClick={() => onRowClick?.(row.original)}
-                  className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${onRowClick ? "cursor-pointer" : ""
-                    }`}
+                  className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${onRowClick ? "cursor-pointer" : ""}`}
                 >
                   {row.getVisibleCells().map((cell, visibleCellIndex) => {
                     const originalCellIndex = row.getAllCells().findIndex(
