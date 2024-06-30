@@ -355,9 +355,7 @@ function PageContent() {
   }, []);
 
   useEffect(() => {
-
-    // http://localhost:3000/browse?type=Division&category=Tax
-    console.log("bobby use effect-----------------------------------------------------");
+        
     let type, divisionCategory, party, year, sex, searchName;
 
     //set vaues from url params if loading for the first time 

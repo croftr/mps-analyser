@@ -10,6 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
+import NeoTableSkeleton from '@/components/ui/neoTableSkeleton';
+
 const donationColumns = [
   {
     accessorKey: 'partyName',
@@ -76,7 +78,7 @@ const TYPES = {
 export default function Donations() {
 
   const router = useRouter();
-  const searchParams = useSearchParams();  
+  const searchParams = useSearchParams();
   const pathname = usePathname();
 
   const [tableData, setTableData] = useState([]);
@@ -157,7 +159,7 @@ export default function Donations() {
 
   }
 
-  useEffect(() => {    
+  useEffect(() => {
     refreshData();
   }, [pathname, router, searchParams]);
 
@@ -165,11 +167,15 @@ export default function Donations() {
 
   return (
 
-    <div className="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg"> {/* Scrolling container for the body */}
-      <h3>Total donations since 01-Jan-2000</h3>
-      <h3>{tableText}</h3>
+    <div class="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg">
+      <div class="flex flex-col md:flex-row md:justify-between p-4">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2>
+        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
+      </div>
+
+
       {isLoading ? (
-        <Skeleton className="h-64 w-full" />
+        <NeoTableSkeleton columns={4} />
       ) : (
         <DataTable
           data={memoizedDonations}

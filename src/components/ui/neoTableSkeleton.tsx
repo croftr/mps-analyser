@@ -41,7 +41,7 @@ function NeoTableSkeleton({ columns }: { columns: number }) {
                         </thead>
                         {/* Skeleton Table Body */}
                         <tbody>
-                            {Array.from({ length: 10 }, (_, i) => (
+                            {Array.from({ length: 40 }, (_, i) => (
                                 <tr key={i}>
                                     {Array.from({ length: columns }, (_, j) => (
                                         <td
