@@ -28,7 +28,7 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
         let cellValue = cell.getValue(); // Use the getValue() method
     
         // Check if the column header indicates currency
-        if (cell.column.columnDef.header.toLowerCase().includes("amount")) {
+        if (cell.column.columnDef.header.toLowerCase().includes("amount") || cell.column.columnDef.header.toLowerCase().includes("value")) {
           
           if (typeof cellValue === "number") {
             cellValue = `£${cellValue.toLocaleString()}`;
