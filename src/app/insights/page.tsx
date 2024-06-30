@@ -282,12 +282,11 @@ function PageContent() {
               type="number">
             </input>
 
-
           </div>
 
-          <div className='w-full' style={{ flexBasis: "100%" }}>
+          <div className='w-full justify-center items-center' >
           <button
-              className="button fixedButton w-full md:w-[700px] bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded"
+              className="w-full md:w-[700px] bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded"
               onClick={onSearch}
             >
               Go
