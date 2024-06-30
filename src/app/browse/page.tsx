@@ -73,7 +73,7 @@ export default function Browse() {
 
 function PageContent() {
 
-  const router = useRouter()
+  const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 

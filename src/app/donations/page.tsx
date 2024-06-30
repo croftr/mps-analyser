@@ -7,6 +7,9 @@ import { config } from '../app.config';
 import { DataTable } from "@/components/ui/data-table"; // Make sure you have this component
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { useSearchParams, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+
 const donationColumns = [
   {
     accessorKey: 'partyName',
@@ -67,32 +70,46 @@ const donarDetailsColumns = [
 const TYPES = {
   ALL_PARTIES: "ALL_PARTIES",
   PARTY: "PARTY",
-  DONAR: "DONAR" 
+  DONAR: "DONAR"
 };
 
 export default function Donations() {
+
+  const router = useRouter();
+  const searchParams = useSearchParams();  
+  const pathname = usePathname();
 
   const [tableData, setTableData] = useState([]);
   const [tableColumns, setTableColumns] = useState(donationColumns);
   const [isLoading, setIsLoading] = useState(true);
   const [tableText, setTableText] = useState("");
   const [type, setType] = useState(TYPES.ALL_PARTIES)
-  
 
-  const onQueryForParty = async (row) => {
-    
+
+  const onQueryForParty = async (row, updateUrl = true) => {
+
+    if (updateUrl) {
+      router.push(`?party=${row.original.partyName}`, { scroll: false });
+    }
+
     const donationsResponse = await ky(`${config.mpsApiUrl}donations?partyname=${row.original.partyName}`).json();
 
     setTableColumns(partyDonarColumns);
     setTableData(donationsResponse);
     setTableText(`Donations to ${row.original.partyName}`)
     setType(TYPES.PARTY);
-    
+
+    setIsLoading(false);
+
   }
 
-  const onQueryForPartyDonar = async (row) => {
+  const onQueryForPartyDonar = async (row, updateUrl = true) => {
 
-    const donationsResponse = await ky(`${config.mpsApiUrl}donations?donar=${row.original.donar}`).json();    
+    if (updateUrl) {
+      router.push(`?party=${tableText.split(" ")[2]}&donar=${row.original.donar}`, { scroll: false });
+    }
+
+    const donationsResponse = await ky(`${config.mpsApiUrl}donations?donar=${row.original.donar}`).json();
     const headerInfo = Array.isArray(donationsResponse) ? donationsResponse[0] : undefined;
 
     if (headerInfo) {
@@ -100,29 +117,52 @@ export default function Donations() {
     }
 
     setTableColumns(donarDetailsColumns);
-    setTableData(donationsResponse);    
-    
-    setType(TYPES.DONAR);    
+    setTableData(donationsResponse);
+
+    setType(TYPES.DONAR);
+
+    setIsLoading(false);
   }
 
+  const refreshData = async () => {
 
-  useEffect(() => {
-    const getDonations = async () => {
-      try {
-        const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
-        setTableData(donationsResponse);
-        setTableText("Donations to all parties")
-      } catch (error) {
-        console.error("Error fetching donations:", error);
-        // Optionally, set an error state or display an error message
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getDonations();
-  }, []);
+    setIsLoading(true);
+
+    const partyName = searchParams.get('party');
+    const donar = searchParams.get('donar');
+
+    console.log("refreshData ", partyName, donar);
+
+    if (donar && partyName) {
+      onQueryForPartyDonar({ original: { donar } }, false);
+    } else if (partyName) {
+      onQueryForParty({ original: { partyName } }), false;
+    } else {
+      console.log("call 3");
+
+      const getDonations = async () => {
+        try {
+          const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
+          setTableData(donationsResponse);
+          setTableText("Donations to all parties")
+        } catch (error) {
+          console.error("Error fetching donations:", error);
+          // Optionally, set an error state or display an error message
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      getDonations();
+    }
+
+  }
+
+  useEffect(() => {    
+    refreshData();
+  }, [pathname, router, searchParams]);
 
   const memoizedDonations = useMemo(() => tableData, [tableData]);
+
   return (
 
     <div className="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg"> {/* Scrolling container for the body */}
