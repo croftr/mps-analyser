@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 import * as React from 'react';
 import {
@@ -10,7 +11,7 @@ import {
 interface DataTableProps {
     data: any[]; // Assuming your data is an array of objects
     columns: any[]; // Make sure to define the correct types for your columns
-    onRowClick: Function;    
+    onRowClick: Function;
 }
 
 export function DataTable({ data, columns, onRowClick }: DataTableProps) {
@@ -19,37 +20,36 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
         columns,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        enableSortingRemoval: false, 
+        enableSortingRemoval: false,
     });
 
     //@ts-ignore
     const renderCellContent = (cell) => {
         // Get the actual value from the cell
-        let cellValue = cell.getValue(); // Use the getValue() method
-    
+        let cellValue = cell.getValue(); // Use the getValue() method        
+
         // Check if the column header indicates currency
         if (cell.column.columnDef.header.toLowerCase().includes("amount") || cell.column.columnDef.header.toLowerCase().includes("value")) {
-          
-          if (typeof cellValue === "number") {
-            cellValue = `£${cellValue.toLocaleString()}`;
-          } else if (typeof cellValue === "string") {          
-            const parsedValue = parseFloat(cellValue);
-            if (!isNaN(parsedValue)) {
-                cellValue = `£${parsedValue.toLocaleString()}`;
+
+            if (typeof cellValue === "number") {
+                cellValue = `£${cellValue.toLocaleString()}`;
+            } else if (typeof cellValue === "string") {
+                const parsedValue = parseFloat(cellValue);
+                if (!isNaN(parsedValue)) {
+                    cellValue = `£${parsedValue.toLocaleString()}`;
+                }
             }
-          }
         } else if (cell.column.columnDef.header.toLowerCase().includes("date")) {
 
             const year = cellValue.year.low;
             const month = cellValue.month.low - 1; // JavaScript months are 0-indexed
             const day = cellValue.day.low;
-            return `${year}/${month}/${day}`;                      
+            return `${year}/${month}/${day}`;
+        }
 
-        }      
-      
-        return cellValue; 
-      };
-    
+        return cellValue;
+    };
+
 
     return (
         <div className="overflow-x-auto">
@@ -82,10 +82,14 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
                     {table.getRowModel().rows.map((row) => (
-                        <tr className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${onRowClick ? "cursor-pointer" : ""}`} onClick={() => onRowClick(row)} key={row.id}>
+                        <tr
+                        className={`${onRowClick ? "hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" : ""} ${onRowClick === undefined && 'no-hover'}`} 
+                            onClick={onRowClick ? () => onRowClick(row) : () => {}}
+                            key={row.id}
+                        >
                             {row.getVisibleCells().map((cell) => (
                                 <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                                     {renderCellContent(cell)}                                    
+                                    {renderCellContent(cell)}
                                 </td>
                             ))}
                         </tr>

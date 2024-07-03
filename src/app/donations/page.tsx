@@ -33,20 +33,16 @@ const donationColumns = [
 
 const partyDonarColumns = [
   {
-    accessorKey: 'partyName',
-    header: 'Party Name',
-  },
-  {
     accessorKey: 'donar',
-    header: 'Member Count',
+    header: 'Donar',
   },
   {
     accessorKey: 'donatedCout',
-    header: 'Donated Count',
+    header: 'Donation Count',
   },
   {
     accessorKey: 'totalDonationValue',
-    header: 'Total Donation Value',
+    header: 'Total Value',
   }
 ]
 
@@ -58,11 +54,7 @@ const donarDetailsColumns = [
   {
     accessorKey: 'receivedDate',
     header: 'Date',
-  },
-  {
-    accessorKey: 'partyName',
-    header: 'Donated to',
-  },
+  },  
   {
     accessorKey: 'amount',
     header: 'Amount',
@@ -91,6 +83,7 @@ export default function Donations() {
   const onQueryForParty = async (row, updateUrl = true) => {
 
     if (updateUrl) {
+      console.log("update url party");
       router.push(`?party=${row.original.partyName}`, { scroll: false });
     }
 
@@ -108,6 +101,8 @@ export default function Donations() {
   const onQueryForPartyDonar = async (row, updateUrl = true) => {
 
     if (updateUrl) {
+      console.log("update url donars");
+      
       router.push(`?party=${tableText.split(" ")[2]}&donar=${row.original.donar}`, { scroll: false });
     }
 
@@ -115,7 +110,7 @@ export default function Donations() {
     const headerInfo = Array.isArray(donationsResponse) ? donationsResponse[0] : undefined;
 
     if (headerInfo) {
-      setTableText(`Donation by ${headerInfo.donar} ${headerInfo.accountingUnitName} ${headerInfo.donorStatus} ${headerInfo.postcode} `)
+      setTableText(`Donation to ${donationsResponse[0].partyName} by ${headerInfo.donar} ${headerInfo.accountingUnitName} ${headerInfo.donorStatus} ${headerInfo.postcode} `)
     }
 
     setTableColumns(donarDetailsColumns);
@@ -135,26 +130,32 @@ export default function Donations() {
 
     console.log("refreshData ", partyName, donar);
 
-    if (donar && partyName) {
+    if (donar && partyName && partyName !== "all") {
+      setTableColumns(donarDetailsColumns);
+      console.log("call 1");      
       onQueryForPartyDonar({ original: { donar } }, false);
-    } else if (partyName) {
+    } else if (partyName && partyName !== "all") {
+      setTableColumns(partyDonarColumns);
       onQueryForParty({ original: { partyName } }), false;
     } else {
-      console.log("call 3");
 
-      const getDonations = async () => {
-        try {
-          const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
-          setTableData(donationsResponse);
-          setTableText("Donations to all parties")
-        } catch (error) {
-          console.error("Error fetching donations:", error);
-          // Optionally, set an error state or display an error message
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      getDonations();
+      try {
+
+        setType(TYPES.ALL_PARTIES);
+        setTableColumns(donationColumns);
+
+        const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
+        console.log("all parties ", donationsResponse[0]);
+
+        setTableData(donationsResponse);
+        setTableText("Donations to all parties")
+      } catch (error) {
+        console.error("Error fetching donations:", error);
+        // Optionally, set an error state or display an error message
+      } finally {
+        setIsLoading(false);
+      }
+
     }
 
   }
@@ -180,7 +181,13 @@ export default function Donations() {
         <DataTable
           data={memoizedDonations}
           columns={tableColumns}
-          onRowClick={type === TYPES.ALL_PARTIES ? onQueryForParty : onQueryForPartyDonar}
+          onRowClick={
+            type === TYPES.ALL_PARTIES
+              ? onQueryForParty
+              : type === TYPES.PARTY
+              ? onQueryForPartyDonar
+              : undefined
+          }          
         />
       )}
     </div>
