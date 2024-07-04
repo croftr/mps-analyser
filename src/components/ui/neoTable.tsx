@@ -55,8 +55,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   };
 
   const formatHeader = (value: string) => {
-    console.log("check ", value);
-
+    
     if (value.toLowerCase().includes("nameDisplayAs")) {
       return "count"
     } else if (value.toLowerCase().includes("count")) {
