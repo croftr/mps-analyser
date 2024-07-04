@@ -5,7 +5,10 @@ import { useState, useEffect, useMemo } from 'react';
 import ky from 'ky';
 import { config } from '../app.config';
 import { DataTable } from "@/components/ui/data-table"; // Make sure you have this component
-import { Skeleton } from "@/components/ui/skeleton";
+
+import TradeUnionIcon from './TradeUnionIcon'; 
+import IndividualIcon from './IndividualIcon'; 
+import CompanyIcon from './CompanyIcon'; 
 
 import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -67,6 +70,13 @@ const TYPES = {
   DONAR: "DONAR"
 };
 
+const donationSourceTypes = {
+  "Trade Union" : <TradeUnionIcon />,
+  "Individual" : <IndividualIcon />,
+  "Company" : <CompanyIcon />   
+}
+
+
 export default function Donations() {
 
   const router = useRouter();
@@ -78,6 +88,7 @@ export default function Donations() {
   const [isLoading, setIsLoading] = useState(true);
   const [tableText, setTableText] = useState("");
   const [type, setType] = useState(TYPES.ALL_PARTIES)
+  const [donarStatus, setDonarStatus] = useState("")
 
 
   const onQueryForParty = async (row, updateUrl = true) => {
@@ -110,9 +121,10 @@ export default function Donations() {
     const headerInfo = Array.isArray(donationsResponse) ? donationsResponse[0] : undefined;
 
     if (headerInfo) {
-      setTableText(`Donation to ${donationsResponse[0].partyName} by ${headerInfo.donar} ${headerInfo.accountingUnitName} ${headerInfo.donorStatus} ${headerInfo.postcode} `)
+      setTableText(`Donation to ${donationsResponse[0].partyName} by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
     }
 
+    setDonarStatus(headerInfo.donorStatus);
     setTableColumns(donarDetailsColumns);
     setTableData(donationsResponse);
 
@@ -168,9 +180,11 @@ export default function Donations() {
 
   return (
 
-    <div class="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg">
-      <div class="flex flex-col md:flex-row md:justify-between p-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2>
+    <div class="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring">
+
+      
+      <div class="flex flex-col md:flex-row md:justify-between p-4">        
+        <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : "" } <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
         <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
       </div>
 
