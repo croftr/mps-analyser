@@ -1,7 +1,7 @@
 // @ts-nocheck
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import ky from 'ky';
 import { config } from '../app.config';
 import { DataTable } from "@/components/ui/data-table"; // Make sure you have this component
@@ -78,6 +78,16 @@ const donationSourceTypes = {
 
 
 export default function Donations() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContent />
+    </Suspense>
+  );
+}
+
+
+
+function PageContent() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
