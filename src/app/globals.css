@@ -14,54 +14,10 @@
   --foreground: #1a202c;
   --input: #f3f4f6; /* Changed to a light gray for better contrast in light mode */
 }
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-}
 
+/* seem to need this to get the nav bar content to fill the width of the page */
 #pageNav>div {
   width: 100%;
-}
-
-.standalone-svg {
-	fill: var(--foreground);
-}
-
-/* toolbar */
-.browse__toolbar {
-  width: 100%;
-  display: flex;  
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 12px;
-  border-bottom: 1px solid var(--clr-lightgrey);
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.browse__toolbar label {
-  width: 70px;
-}
-
-.browse__toolbar select {
-  width: 180px;
-}
-
-.browse__toolbar input {
-  width: 180px;
-}
-
-.labelWrapper {
-  display: grid;
-  grid-template-columns: 30px 1fr;
-  align-items: baseline;
-}
-
-.browse__toolbar__inputwrapper {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
-  padding: 4px;
 }
 
 @media (prefers-color-scheme: dark) {

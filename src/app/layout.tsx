@@ -1,7 +1,5 @@
 // @ts-nocheck
 import "./globals.css";
-import "../styles/utils.css";
-import "../styles/browse.css"
 
 import Nav from "@/components/ui/nav";
 import Search from "@/components/ui/search";
@@ -17,7 +15,8 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body style={{ overflow: "hidden" }}>
+      
+      <body className="bg-background text-foreground overflow-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

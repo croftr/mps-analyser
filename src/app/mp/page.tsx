@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label"
 
 import { NeoTable } from '@/components/ui/neoTable'
 
+import CustomSvg from '@/components/custom/customSvg';
+
 export default function Mp() {
 
   return (
@@ -31,8 +33,8 @@ function PageContent() {
 
   const router = useRouter();
 
-  const male = <svg className="standalone-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"><path d="M16 2v2h3.586l-3.972 3.972c-1.54-1.231-3.489-1.972-5.614-1.972-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.125-.741-4.074-1.972-5.614l3.972-3.972v3.586h2v-7h-7zm-6 20c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" /></svg>
-  const female = <svg className="standalone-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"><path d="M21 9c0-4.97-4.03-9-9-9s-9 4.03-9 9c0 4.632 3.501 8.443 8 8.941v2.059h-3v2h3v2h2v-2h3v-2h-3v-2.059c4.499-.498 8-4.309 8-8.941zm-16 0c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7-7-3.14-7-7z" /></svg>
+  const male = <CustomSvg path="M16 2v2h3.586l-3.972 3.972c-1.54-1.231-3.489-1.972-5.614-1.972-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.125-.741-4.074-1.972-5.614l3.972-3.972v3.586h2v-7h-7zm-6 20c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" />
+  const female = <CustomSvg path="M21 9c0-4.97-4.03-9-9-9s-9 4.03-9 9c0 4.632 3.501 8.443 8 8.941v2.059h-3v2h3v2h2v-2h3v-2h-3v-2.059c4.499-.498 8-4.309 8-8.941zm-16 0c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7-7-3.14-7-7z" />
 
   const [mpDetails, setMpDetails] = useState<Record<string, any> | undefined>({});
 
@@ -175,22 +177,22 @@ function PageContent() {
 
   function darkenColor(hexColor: string, factor: number): string {
     // Ensure factor is between 0 and 1
-    factor = Math.max(0, Math.min(1, factor)); 
-  
+    factor = Math.max(0, Math.min(1, factor));
+
     // Parse the hex color
     let r = parseInt(hexColor.slice(1, 3), 16);
     let g = parseInt(hexColor.slice(3, 5), 16);
     let b = parseInt(hexColor.slice(5, 7), 16);
-  
+
     // Darken each RGB component proportionally
     r = Math.round(r * (1 - factor));  // Corrected this line
     g = Math.round(g * (1 - factor));  // Corrected this line
     b = Math.round(b * (1 - factor));  // Corrected this line
-  
+
     // Convert back to hex string
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
-  
+
 
   const onGetVotingSimilarity = async (orderby: string) => {
 
@@ -212,7 +214,7 @@ function PageContent() {
 
     const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpDetails?.value?.nameDisplayAs}&id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
 
-    const result:Array<any> = await ky(url).json();
+    const result: Array<any> = await ky(url).json();
 
     const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
@@ -221,20 +223,20 @@ function PageContent() {
 
     //TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
     const chartData = {
-      labels: [mpDetails?.value?.nameDisplayAs],    
+      labels: [mpDetails?.value?.nameDisplayAs],
       datasets: [
         {
           label: "Voting Similarity",
           backgroundColor: result.map((_, index) => {
 
-            const baseColor = isDarkMode ? "#980c4c" : "#a972cb"; 
-            
+            const baseColor = isDarkMode ? "#980c4c" : "#a972cb";
+
             // Darken the first bar by 20%
-            return index === 0 ? isDarkMode ? "#600b32" : "#6e0da9"  : baseColor;
+            return index === 0 ? isDarkMode ? "#600b32" : "#6e0da9" : baseColor;
           }),
           // borderColor: result.map((_, index) => index === 0 ? '#FFF' : "#262a32"),
           borderColor: "#262a32",
-          borderWidth: 2,          
+          borderWidth: 2,
           indexAxis: "y",
           width: "40px",
           data: [1], // Start with the queried MP's score (1 for self-similarity)        
@@ -264,7 +266,7 @@ function PageContent() {
     router.push(`division?id=${id}`, { scroll: false });
   }
 
-  const onQueryMpByName = async (name:string) => {
+  const onQueryMpByName = async (name: string) => {
 
     setMpDetails(undefined);
 
@@ -355,16 +357,10 @@ function PageContent() {
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
           <legend>
             <span className='flex'>
-              <svg
-                style={{ position: "relative", top: 0, marginRight: 4 }}
-                className="standalone-svg"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24">
-                <path d="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z" />
-              </svg>
-
+              <CustomSvg
+                className='mr-2'
+                path="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z"
+              />
               Filters
             </span>
 
@@ -465,16 +461,10 @@ function PageContent() {
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
           <legend>
             <span className='flex'>
-              <svg
-                style={{ position: "relative", top: 0, marginRight: 4 }}
-                className="standalone-svg"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24">
-                <path d="M2 0v24h20v-24h-20zm18 22h-16v-15h16v15zm-3-4h-10v-1h10v1zm0-3h-10v-1h10v1zm0-3h-10v-1h10v1z" />
-              </svg>
-
+              <CustomSvg
+                className='mr-2'
+                path="M2 0v24h20v-24h-20zm18 22h-16v-15h16v15zm-3-4h-10v-1h10v1zm0-3h-10v-1h10v1zm0-3h-10v-1h10v1z"
+              />
               Voting details
             </span>
           </legend>
@@ -540,15 +530,10 @@ function PageContent() {
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
           <legend>
             <span className='flex'>
-              <svg
-                style={{ position: "relative", top: 0, marginRight: 4 }}
-                className="standalone-svg"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24">
-                <path d="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z" />
-              </svg>
+              <CustomSvg
+                className='mr-2'
+                path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
+              />              
               Voting analysis
             </span>
           </legend>
@@ -659,7 +644,7 @@ function PageContent() {
 
         {queryType === "similarity" && barChartData && (
           <BarChart
-            barChartData={barChartData}            
+            barChartData={barChartData}
             onQueryMpByName={onQueryMpByName}
           />
         )}
