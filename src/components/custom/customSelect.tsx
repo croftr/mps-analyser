@@ -22,7 +22,7 @@ const CustomSelect = ({ value, onValueChange, options }: CustomSelectProps) => {
       <SelectContent className="bg-white dark:bg-slate-800 text-black dark:text-white">
         <SelectGroup>
           {options.map(option => (
-            <SelectItem value={option.value} key={option.value}>{option.label}</SelectItem>
+            <SelectItem  onClick={(e) => e.stopPropagation()}  value={option.value} key={option.value}>{option.label}</SelectItem>
           ))}
         </SelectGroup>
       </SelectContent>
