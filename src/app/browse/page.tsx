@@ -99,7 +99,7 @@ function PageContent() {
   const [sortBy, setSortBy] = useState("Name");
   const [sortDirection, setSortDirection] = useState("ASC");
   const [name, setName] = useState("");
-  const [statusValue, setStatusValue] = useState("All");
+  const [statusValue, setStatusValue] = useState("Active");
 
   const [filterTypeOptions, setFilterTypeOptions] = useState(mpFilterTypeValues[mpFilterTypeKeys[0]]);
   const [filterTypeKey, setFilterTypeKey] = useState(mpFilterTypeKeys[0]);
@@ -129,7 +129,7 @@ function PageContent() {
 
     setDivisions(undefined);
     setFilteredDivisions(undefined);
-    console.log("call 1");
+    
     let url = `${config.mpsApiUrl}searchMps?${paramKey.toLowerCase()}=${paramValue}&status=${statusValue}`;
 
     if (searchName) {
@@ -241,7 +241,7 @@ function PageContent() {
     if (value !== filterTypeValue) {
       setMps(undefined);
       setFilteredMps(undefined);
-      console.log("call 2");
+      
       let url = `${config.mpsApiUrl}searchMps?party=${value}&status=${statusValue}`;
       if (name) {
         url = `${url}&name=${name}`
@@ -358,9 +358,9 @@ function PageContent() {
     }
   }
 
-  const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName, status="All" }) => {
-
-    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}&status=${status}`
+  const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName, status = "All" }) => {
+    console.log("call 1 ", status);
+    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}&status=${status||"Active"}`
 
     if (searchName) {
       url = `${url}&name=${searchName}`
