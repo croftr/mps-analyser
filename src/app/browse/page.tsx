@@ -242,7 +242,7 @@ function PageContent() {
       setMps(undefined);
       setFilteredMps(undefined);
       console.log("call 2");
-      let url = `${config.mpsApiUrl}searchMps?party=${value}`;
+      let url = `${config.mpsApiUrl}searchMps?party=${value}&status=${statusValue}`;
       if (name) {
         url = `${url}&name=${name}`
       }
@@ -358,9 +358,9 @@ function PageContent() {
     }
   }
 
-  const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName }) => {
+  const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName, status="All" }) => {
 
-    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}`
+    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}&status=${status}`
 
     if (searchName) {
       url = `${url}&name=${searchName}`
@@ -376,7 +376,7 @@ function PageContent() {
 
   useEffect(() => {
 
-    let type, divisionCategory, party, year, sex, searchName;
+    let type, divisionCategory, party, year, sex, searchName, status;
 
     //set vaues from url params if loading for the first time 
     if ((!mps || !mps.length) && (!divisions || !divisions.length)) {
@@ -400,6 +400,12 @@ function PageContent() {
           if (sex) {
             setFilterTypeValue(sex);
             onChangeFilterTypeKey("Sex")
+          }
+
+          status = searchParams.get('status');
+
+          if (status) {
+            setStatusValue(status);            
           }
 
 
@@ -430,7 +436,7 @@ function PageContent() {
 
 
       if (type === "MP") {
-        getMps({ party, year, sex, searchName });
+        getMps({ party, year, sex, searchName, status });
       } else if (type === "Division") {
         onSearchDivisions({ category: divisionCategory || "Any", year, searchName });
       }
@@ -556,7 +562,7 @@ function PageContent() {
       setMps(undefined);
       setFilteredMps(undefined);
 
-      let url = `${config.mpsApiUrl}searchMps?sex=${value}`;
+      let url = `${config.mpsApiUrl}searchMps?sex=${value}&status=${statusValue}`;
       if (name) {
         url = `${url}&name=${name}`
       }
@@ -575,7 +581,7 @@ function PageContent() {
       setMps(undefined);
       setFilteredMps(undefined);
 
-      let url = `${config.mpsApiUrl}searchMps?year=${value === "Any" ? 0 : value}`;
+      let url = `${config.mpsApiUrl}searchMps?year=${value === "Any" ? 0 : value}&status=${statusValue}`;
       if (name) {
         url = `${url}&name=${name}`
       }
@@ -638,7 +644,7 @@ function PageContent() {
       setMps(undefined);
       setFilteredMps(undefined);
 
-      let url = `${config.mpsApiUrl}searchMps?votes=${value === "Any" ? 0 : value}`;
+      let url = `${config.mpsApiUrl}searchMps?votes=${value === "Any" ? 0 : value}&status=${statusValue}`;
       if (name) {
         url = `${url}&name=${name}`
       }
@@ -657,7 +663,7 @@ function PageContent() {
     onAddQueryParamToUrl({ key: "status", value });
     setStatusValue(value);
 
-    let url = `${config.mpsApiUrl}searchMps?${filterTypeKey}=${filterTypeValue}&status=${value}`;
+    let url = `${config.mpsApiUrl}searchMps?${filterTypeKey.toLowerCase()}=${filterTypeValue}&status=${value}`;
   
     if (name) {
       url = `${url}&name=${name}`
@@ -781,8 +787,9 @@ function PageContent() {
             <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.id} />
           ))}
 
-
+        
         {Boolean(mps && mps.length) && filteredMps.map(i => (
+          
           <MpCard item={i} onQueryMp={onQueryMp} key={i.id} />
         ))}
 

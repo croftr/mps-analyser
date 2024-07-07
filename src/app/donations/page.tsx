@@ -190,10 +190,10 @@ function PageContent() {
 
   return (
 
-    <div class="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring">
+    <div className="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring">
 
       
-      <div class="flex flex-col md:flex-row md:justify-between p-4">        
+      <div className="flex flex-col md:flex-row md:justify-between p-4">        
         <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : "" } <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
         <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
       </div>
