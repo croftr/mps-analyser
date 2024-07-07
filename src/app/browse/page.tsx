@@ -30,6 +30,13 @@ const types = [
   "Division"
 ]
 
+const status = [
+  "Active",
+  "Inactive",
+  "All"
+]
+
+
 const mpSortBy = [
   "Total Votes",
   "Voted Aye Count",
@@ -92,6 +99,7 @@ function PageContent() {
   const [sortBy, setSortBy] = useState("Name");
   const [sortDirection, setSortDirection] = useState("ASC");
   const [name, setName] = useState("");
+  const [statusValue, setStatusValue] = useState("All");
 
   const [filterTypeOptions, setFilterTypeOptions] = useState(mpFilterTypeValues[mpFilterTypeKeys[0]]);
   const [filterTypeKey, setFilterTypeKey] = useState(mpFilterTypeKeys[0]);
@@ -109,8 +117,6 @@ function PageContent() {
 
   const onSearchMps = async ({ searchKey, searchValue, searchName }) => {
 
-    console.log("onSearchMps ");
-
     let paramKey = searchKey || filterTypeKey;
     let paramValue = searchValue || filterTypeValue || "Any";
 
@@ -124,13 +130,15 @@ function PageContent() {
     setDivisions(undefined);
     setFilteredDivisions(undefined);
     console.log("call 1");
-    let url = `${config.mpsApiUrl}searchMps?${paramKey.toLowerCase()}=${paramValue}`;
+    let url = `${config.mpsApiUrl}searchMps?${paramKey.toLowerCase()}=${paramValue}&status=${statusValue}`;
 
     if (searchName) {
       url = `${url}&name=${searchName}`
     }
 
     const result = await ky(url).json();
+
+    console.log("onSearchMps ", result.length);
 
     setMps(result);
     setFilteredMps(result);
@@ -643,6 +651,25 @@ function PageContent() {
     }
   }
 
+  const onChangeStatus = async (value) => {
+    console.log("change status bobby", value);
+
+    onAddQueryParamToUrl({ key: "status", value });
+    setStatusValue(value);
+
+    let url = `${config.mpsApiUrl}searchMps?${filterTypeKey}=${filterTypeValue}&status=${value}`;
+  
+    if (name) {
+      url = `${url}&name=${name}`
+    }
+
+    const result = await ky(url).json();
+
+    setMps(result);
+    setFilteredMps(result);
+
+  }
+
 
   return (
     <>
@@ -705,6 +732,17 @@ function PageContent() {
 
         <div className="flex gap-2 items-baseline p-1">
 
+          <Label htmlFor="soryBy">Status:</Label>
+          <CustomSelect
+            value={statusValue}
+            onValueChange={onChangeStatus}
+            options={status.map(str => ({ value: str, label: str }))}
+          />
+        </div>
+
+
+        <div className="flex gap-2 items-baseline p-1">
+
           <Label htmlFor="soryBy">Sort:</Label>
 
           <CustomSelect
@@ -723,7 +761,7 @@ function PageContent() {
             {sortDirection === "DESC" && (
               <CustomSvg
                 path='M6 21l6-8h-4v-10h-4v10h-4l6 8zm16-4h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z'
-              />            
+              />
             )}
 
           </Button>
@@ -754,3 +792,5 @@ function PageContent() {
 
   );
 }
+
+
