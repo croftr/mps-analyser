@@ -66,7 +66,7 @@ export default function Search() {
     const handleOnFocus = () => { }
 
     const formatResult = (item) => {
-        const icon = item.type === 'mp' ? <MpSvg className='fill-black'/> : <DivisionSvg className='fill-black' />            
+        const icon = item.type === 'mp' ? <MpSvg className='fill-red-700'/> : <DivisionSvg className='fill-black' />            
         return (
             <div style={{ display: 'flex', alignItems: 'center', width: '100%', overflowX: 'auto' }}>
                 <span>{icon}</span>
