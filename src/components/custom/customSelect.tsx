@@ -19,10 +19,10 @@ const CustomSelect = ({ value, onValueChange, options }: CustomSelectProps) => {
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={options[0].label}>{value}</SelectValue>
       </SelectTrigger>
-      <SelectContent
+      <SelectContent      
         ref={(ref:any) => {
           if (!ref) return;
-          ref.ontouchstart = (e) => {
+          ref.ontouchstart = (e:any) => {
             e.preventDefault();
           };
         }}
