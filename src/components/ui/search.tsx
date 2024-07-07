@@ -38,8 +38,7 @@ export default function Search() {
         console.log("handleOnSearch");
     }
 
-    const handleOnHover = () => {
-        // the item hovered
+    const handleOnHover = () => {        
         console.log("handleOnHover");
     }
 
