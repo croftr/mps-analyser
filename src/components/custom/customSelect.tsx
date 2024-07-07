@@ -10,19 +10,27 @@ interface CustomSelectProps extends SelectProps {
   value?: string;
   onValueChange?: (value: string) => void;
   options: SelectOption[];
-  placeholder?: string; 
+  placeholder?: string;
 }
 
 const CustomSelect = ({ value, onValueChange, options }: CustomSelectProps) => {
   return (
     <Select onValueChange={(value) => onValueChange?.(value)} value={value}>
       <SelectTrigger className="w-[180px]">
-      <SelectValue placeholder={options[0].label}>{value}</SelectValue>
+        <SelectValue placeholder={options[0].label}>{value}</SelectValue>
       </SelectTrigger>
-      <SelectContent className="bg-white dark:bg-slate-800 text-black dark:text-white">
+      <SelectContent
+        ref={(ref) => {
+          if (!ref) return;
+          ref.ontouchstart = (e) => {
+            e.preventDefault();
+          };
+        }}
+        className="bg-white dark:bg-slate-800 text-black dark:text-white"
+      >
         <SelectGroup>
           {options.map(option => (
-            <SelectItem  onClick={(e) => e.stopPropagation()}  value={option.value} key={option.value}>{option.label}</SelectItem>
+            <SelectItem onClick={(e) => e.stopPropagation()} value={option.value} key={option.value}>{option.label}</SelectItem>
           ))}
         </SelectGroup>
       </SelectContent>

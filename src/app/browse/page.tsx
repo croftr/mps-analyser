@@ -788,8 +788,7 @@ function PageContent() {
           ))}
 
         
-        {Boolean(mps && mps.length) && filteredMps.map(i => (
-          
+        {Boolean(mps && mps.length) && filteredMps.map(i => (          
           <MpCard item={i} onQueryMp={onQueryMp} key={i.id} />
         ))}
 

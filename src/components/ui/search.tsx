@@ -43,18 +43,6 @@ export default function Search() {
         console.log("handleOnHover");
     }
 
-    const onGetVotingSummary = async (id, fromDate = EARLIEST_FROM_DATE, toDate, divisionCategory = "Any", name = "Any") => {
-        
-        if (!toDate) {
-            toDate = new Date().toISOString().substr(0, 10);
-        }
-
-        const result = await ky(`${config.mpsApiUrl}votecounts?id=${id}&fromDate=${fromDate}&toDate=${toDate}&category=${divisionCategory}&name=${name}`).json();
-        console.log('votecounts ', result);
-        
-        setVotingSummary(result);
-    }
-
     const handleOnSelect = async (item: any) => {
         console.log("handle select ", item);
             
@@ -79,7 +67,7 @@ export default function Search() {
     const handleOnFocus = () => { }
 
     const formatResult = (item) => {
-        const icon = item.type === 'mp' ? <MpSvg className='fill-background'/> : <DivisionSvg className='fill-background' />            
+        const icon = item.type === 'mp' ? <MpSvg className='fill-black'/> : <DivisionSvg className='fill-black' />            
         return (
             <div style={{ display: 'flex', alignItems: 'center', width: '100%', overflowX: 'auto' }}>
                 <span>{icon}</span>
