@@ -7,6 +7,8 @@ import ky from 'ky';
 import { config } from "../app.config";
 import BarChart from "./BarChart.jsx";
 
+import MpCard from '@/components/ui/MpCard';
+
 import {
   Party,
   EARLIEST_FROM_DATE,
@@ -37,6 +39,7 @@ function PageContent() {
   const female = <CustomSvg path="M21 9c0-4.97-4.03-9-9-9s-9 4.03-9 9c0 4.632 3.501 8.443 8 8.941v2.059h-3v2h3v2h2v-2h3v-2h-3v-2.059c4.499-.498 8-4.309 8-8.941zm-16 0c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7-7-3.14-7-7z" />
 
   const [mpDetails, setMpDetails] = useState<Record<string, any> | undefined>({});
+  const [synopsis, setSynopsis] = useState("");
 
   const [votefilterFrom, setVotefilterFrom] = useState(new Date(new Date(EARLIEST_FROM_DATE)).toISOString().substr(0, 10));
   const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substr(0, 10));
@@ -96,6 +99,9 @@ function PageContent() {
 
     setMpDetails(result);
 
+    const synopsisResult: any = await ky(`https://members-api.parliament.uk/api/Members/${id}/Synopsis`).json();
+
+    setSynopsis(synopsisResult.value);
 
     onGetVotingSummary(result.value.id);
 
@@ -193,7 +199,6 @@ function PageContent() {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
 
-
   const onGetVotingSimilarity = async (orderby: string) => {
 
     setQueryType("similarity");
@@ -280,81 +285,35 @@ function PageContent() {
     }
   }
 
-
   return (
-    <section id="mpDetailsPage" className="flex justify-around p-4 gap-4 flex-wrap items-start">
 
-      <div className="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white">
+    <section id="mpDetailsPage" className="flex flex-col w-full justify-around p-4 gap-4 flex-wrap">
 
-        <div className="flex items-center relative pr-8">
+      <div className="flex w-full gap-4">
+        {mpDetails && mpDetails.value && mpDetails.value.id && (
+          <MpCard
+            item={{
+              id: mpDetails?.value.id,
+              name: mpDetails?.value.nameDisplayAs,
+              party: mpDetails?.value?.latestParty?.name,
+              isActive: mpDetails?.value?.latestHouseMembership.membershipStatus?.statusIsActive,
+              startDate: new Date(mpDetails?.value?.latestHouseMembership?.membershipStartDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }),
+              endDate: new Date(mpDetails?.value?.latestHouseMembership?.membershipEndDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }),
+            }}
+            onQueryMp={undefined}
+            isDisplayingTable={false}
+            isFormatedDates={true}
+          />
+        )}
 
-          <div
-            title={mpDetails?.value?.gender === "M" ? "Male" : "Female"}
-            className="absolute top-2 right-2 flex items-center"
-          >
-            {mpDetails?.value?.gender === "M" ? male : female}
-          </div>
-
-          <div className="relative w-20 h-20 rounded-full overflow-hidden mr-4">
-            {mpDetails?.value?.thumbnailUrl && (
-              <Image
-                src={mpDetails?.value?.thumbnailUrl}
-                alt={`${mpDetails?.value?.nameDisplayAs} Thumbnail`}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                fill
-              />
-            )}
-          </div>
-          <div>
-
-            <h2 className="text-xl font-bold text-gray-600">{mpDetails?.value?.nameDisplayAs}</h2>
-
-            <dd className="mt-1 text-sm text-gray-900">
-              <span
-                className={`px-2 py-1 rounded-full text-white text-xs font-medium uppercase tracking-wide ${mpDetails?.value?.latestParty?.backgroundColour}`}
-                style={{ backgroundColor: `#${mpDetails?.value?.latestParty?.backgroundColour}`, color: `${mpDetails?.value?.latestParty?.foregroundColour}` }}
-              >
-                {mpDetails?.value?.latestParty?.name}
-              </span>
-            </dd>
-            <p className="text-gray-600 mt-1">{mpDetails?.value?.latestHouseMembership?.membershipFrom}</p>
-          </div>
+        <div className='flex-1'>
+          <div dangerouslySetInnerHTML={{ __html: synopsis }} />
         </div>
-
-        <div className="bg-white shadow-md dark:bg-gray-800 dark:text-white rounded-md p-6">
-
-          <h2 className="text-lg font-semibold mb-2">House Membership</h2>
-
-          <div className="grid grid-cols-2 gap-4">
-
-            <div>
-              <p className="text-gray-600">Start Date:</p>
-              <p className="font-medium">{new Date(mpDetails?.value?.latestHouseMembership?.membershipStartDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-600">End Date:</p>
-              <p className="font-medium">{new Date(mpDetails?.value?.latestHouseMembership?.membershipEndDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-            </div>
-
-            <div className="col-span-2">
-              <p className="text-gray-600">End Reason:</p>
-              <p className="font-medium">{mpDetails?.value?.latestHouseMembership?.membershipEndReasonNotes}</p>
-            </div>
-
-            <div className="col-span-2">
-              <p className="text-gray-600">Status:</p>
-              {Boolean(mpDetails?.value?.latestHouseMembership.membershipStatus?.statusIsActive) ? <p className="font-medium text-green-500">{mpDetails?.value?.latestHouseMembership.membershipStatus?.statusDescription}</p> : <p className="font-medium text-red-400">{mpDetails?.value?.latestHouseMembership.membershipStatus?.statusDescription}</p>}
-            </div>
-
-          </div>
-        </div>
-
       </div>
 
-      <div className="fieldsetsWrapper flex-1">
+      <div className="fieldsetsWrapper flex flex-col w-full"> {/* Flex container for fieldsets */}
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
           <legend>
             <span className='flex'>
               <CustomSvg
@@ -458,7 +417,7 @@ function PageContent() {
           </div>
         </fieldset>
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
           <legend>
             <span className='flex'>
               <CustomSvg
@@ -527,13 +486,13 @@ function PageContent() {
           </div>
         </fieldset>
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2">
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
           <legend>
             <span className='flex'>
               <CustomSvg
                 className='mr-2'
                 path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
-              />              
+              />
               Voting analysis
             </span>
           </legend>
@@ -597,7 +556,6 @@ function PageContent() {
                 ))}
               </select>
 
-
               <Label className="text-right" htmlFor="valimit">Limit</Label>
               <input
                 id="valimit"
@@ -614,7 +572,6 @@ function PageContent() {
               />
             </div>
 
-
             <div className='flex flex-col gap-2 p-4'>
               <button
                 className='text-primary border border-primary rounded'
@@ -629,14 +586,9 @@ function PageContent() {
               >
                 Least Similar Voting Mps
               </button>
-
             </div>
-
-
           </div>
-
         </fieldset>
-
 
         {queryType === "history" && (
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
@@ -648,10 +600,7 @@ function PageContent() {
             onQueryMpByName={onQueryMpByName}
           />
         )}
-
-
       </div>
-
     </section>
   );
 }
