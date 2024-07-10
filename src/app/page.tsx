@@ -4,7 +4,8 @@ import * as React from "react"
 import { Calendar } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
 import ky from 'ky';
-import DivisionCard from "@/components/ui/DivisionCard";
+import { useRouter } from 'next/navigation'
+import DivisionSvg from "@/components/custom/divisionSvg";
 
 import {
   Card,
@@ -29,9 +30,12 @@ const chartConfig = {
 
 export default function Home() {
 
+  const router = useRouter();
+
   interface Vote {
     DivisionId: number,
-    Title: string
+    Title: string,
+    Date: string
   }
 
   const [chartData, setChartData] = React.useState([]);
@@ -105,14 +109,15 @@ export default function Home() {
     getRecentVotes();
   }, []);
 
-  const onQueryDivision = async () => {
-
+  const onQueryDivision = async (id: number) => {
+    console.log("query ", id);
+    router.push(`division?id=${id}`, { scroll: false });
   }
 
-
+  
   return (
 
-    <div>
+    <div className="p-4">
 
       <Card className="flex flex-col">
         <CardHeader className="items-center pb-0">
@@ -156,9 +161,9 @@ export default function Home() {
                           <tspan
                             x={viewBox.cx}
                             y={(viewBox.cy || 0) + 24}
-                            className="fill-muted-foreground"
+                            className="fill-foreground"
                           >
-                            Visitors
+                            Mps
                           </tspan>
                         </text>
                       )
@@ -178,14 +183,35 @@ export default function Home() {
       </Card>
 
       {!recentVotes && <h1>getting data....</h1>}
-      {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}      
+      {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
       {recentVotes && recentVotes.length > 0 && (
         <div className="flex flex-col gap-2">
           <h1>Recent votes</h1>
-          {recentVotes.map(i => <div className="p-2 ring" key={i.DivisionId}>{i.Title}</div>)}  
+          {recentVotes.map(i => (
+            <div className="" key={i.DivisionId}>
+
+
+              <div className="p-4 bg-white shadow-lg rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 cursor-pointer flex flex-col justify-between" onClick={() => onQueryDivision(i.DivisionId)}>
+                <div className="flex align-top gap-2">
+                  <div>
+                    <DivisionSvg />
+                  </div>
+
+                  <h4 className="text-xl font-semibold dark:text-white line-clamp-3" style={{}}>
+                    {i.Title}
+                  </h4>
+                </div>
+             
+                <span className="font-medium text-gray-400 dark:text-gray-500">{i.Date}</span>
+
+             
+              </div>
+
+
+            </div>))}
         </div>
         // recentVotes.map(i => <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.DivisionId} />)
-        
+
       )}
     </div>
 
