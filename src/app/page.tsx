@@ -164,12 +164,10 @@ export default function Home() {
           <CardFooter className="flex-col gap-2 text-sm">
             <div className="flex items-center gap-2 font-medium leading-none">
               <Calendar className="h-4 w-4" />
-              {`${new Date().toISOString()}`}
+              {`${new Date().toLocaleDateString()}`}
             </div>
           </CardFooter>
         </Card>
-
-
       </div>
 
 
@@ -177,10 +175,11 @@ export default function Home() {
       {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
       {recentVotes && recentVotes.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h1>Recent votes</h1>
+          <h3 className="mt-4 text-xl md:text-2xl font-bold text-gray-900 dark:text-white text-center md:text-left">
+            Recent Votes
+          </h3>
           {recentVotes.map(i => (
-            <div className="" key={i.DivisionId}>
-
+            <div className="mt-2" key={i.DivisionId}>
 
               <div className="p-4 bg-white shadow-lg rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 cursor-pointer flex flex-col justify-between" onClick={() => onQueryDivision(i.DivisionId)}>
                 <div className="flex align-top gap-2">
