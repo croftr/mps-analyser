@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import ky from 'ky';
 import { config } from "../app.config";
 import BarChart from "./BarChart.jsx";
+import SimilarityChart from "./simiarityChart";
 
 import MpCard from '@/components/ui/MpCard';
 
@@ -58,11 +59,21 @@ function PageContent() {
   const [excludeParties, setExcludeParties] = useState("");
   const [includeParties, setIncludeParties] = useState("");
   const [limit, setLimit] = useState(10);
+  
+
+  enum SimilarityType {
+    MOST = 'Most',
+    LEAST = 'Least',
+  }
+  
+  const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST); 
 
   const [progress, setProgress] = useState("");
   const [votingHistory, setVotingHistory] = useState();
   const [barChartData, setBarChartData] = useState();
   const searchParams = useSearchParams();
+  const [similarityResult, setSimilarityResult] = useState([]);
+
 
   const [tableData, setTableData] = useState();
   const [tableTitle, setTableTitle] = useState("");
@@ -147,6 +158,8 @@ function PageContent() {
     //clear similarity to make space for voting history
     setVotingSimilarity(undefined);
     setBarChartData(undefined);
+    //@ts-ignore
+    setSimilarityResult(undefined);
     setVotingHistory(undefined);
 
     //TODO scroll to bottom probably should be for mobile only
@@ -201,6 +214,12 @@ function PageContent() {
 
   const onGetVotingSimilarity = async (orderby: string) => {
 
+
+    if (orderby === "ASCENDING") {
+      setSimilarityType(SimilarityType.LEAST);      
+    } else {
+      setSimilarityType(SimilarityType.MOST);
+    }
     setQueryType("similarity");
     setTableData(undefined);
 
@@ -248,7 +267,8 @@ function PageContent() {
         },
       ],
     };
-
+    //@ts-ignore
+    setSimilarityResult(result);
     // @ts-ignore
     result.forEach((element) => {
       // @ts-ignore
@@ -271,18 +291,17 @@ function PageContent() {
     router.push(`division?id=${id}`, { scroll: false });
   }
 
-  const onQueryMpByName = async (name: string) => {
+  const onQueryMpByName = async (data: any) => {
+    console.log("check ", data);
+    
+    
+    // setMpDetails(undefined);
 
-    setMpDetails(undefined);
+    const result = await ky(`https://members-api.parliament.uk/api/Members/Search?Name=${data.name}`).json();
 
-    const result = await ky(`https://members-api.parliament.uk/api/Members/Search?Name=${name}`).json();
     //@ts-ignore
-    if (result && result.items && result.items[0]) {
-      //@ts-ignore
-      setMpDetails(result.items[0]);
-      //@ts-ignore
-      onGetVotingSummary(result.items[0]?.value?.id);
-    }
+    router.push(`mp?id=${result.items[0]?.value?.id}`, { scroll: false });
+
   }
 
   return (
@@ -590,10 +609,18 @@ function PageContent() {
           </div>
         </fieldset>
 
+        <SimilarityChart 
+          mpData={similarityResult} 
+          comparedMpName={mpDetails?.value?.nameDisplayAs} 
+          type={similarityType} 
+          onQueryMpByName={onQueryMpByName}
+        />
+     
+
         {queryType === "history" && (
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
         )}
-
+        
         {queryType === "similarity" && barChartData && (
           <BarChart
             barChartData={barChartData}

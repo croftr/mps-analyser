@@ -21,6 +21,12 @@ import CustomSelect from "@/components/custom/customSelect";
 import MpCardSkeleton from "./MpCardSkeleton";
 import DivisionCardSkeleton from "./DivisionCardSkeleton";
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+
 import { VOTING_CATEGORIES, PARTY_NAMES } from "../config/constants";
 
 const skeletonArray = Array.from({ length: 100 }, (_, index) => index);
@@ -106,6 +112,8 @@ function PageContent() {
   const [filterTypeValue, setFilterTypeValue] = useState("Any");
   const [filterTypeKeys, setFilterTypeKeys] = useState(mpFilterTypeKeys);
 
+  const [isOpen, setIsOpen] = useState(false)
+
   //mps
   const [mps, setMps] = useState();
   const [filteredMps, setFilteredMps] = useState();
@@ -129,7 +137,7 @@ function PageContent() {
 
     setDivisions(undefined);
     setFilteredDivisions(undefined);
-    
+
     let url = `${config.mpsApiUrl}searchMps?${paramKey.toLowerCase()}=${paramValue}&status=${statusValue}`;
 
     if (searchName) {
@@ -241,7 +249,7 @@ function PageContent() {
     if (value !== filterTypeValue) {
       setMps(undefined);
       setFilteredMps(undefined);
-      
+
       let url = `${config.mpsApiUrl}searchMps?party=${value}&status=${statusValue}`;
       if (name) {
         url = `${url}&name=${name}`
@@ -255,9 +263,6 @@ function PageContent() {
   }
 
   const onChangeSortBy = (value, direction = sortDirection) => {
-
-    console.log("go ");
-
 
     setSortBy(value);
 
@@ -360,7 +365,7 @@ function PageContent() {
 
   const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName, status = "All" }) => {
     console.log("call 1 ", status);
-    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}&status=${status||"Active"}`
+    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}&status=${status || "Active"}`
 
     if (searchName) {
       url = `${url}&name=${searchName}`
@@ -405,7 +410,7 @@ function PageContent() {
           status = searchParams.get('status');
 
           if (status) {
-            setStatusValue(status);            
+            setStatusValue(status);
           }
 
 
@@ -664,7 +669,7 @@ function PageContent() {
     setStatusValue(value);
 
     let url = `${config.mpsApiUrl}searchMps?${filterTypeKey.toLowerCase()}=${filterTypeValue}&status=${value}`;
-  
+
     if (name) {
       url = `${url}&name=${name}`
     }
@@ -673,37 +678,70 @@ function PageContent() {
 
     setMps(result);
     setFilteredMps(result);
-
   }
-
 
   return (
     <>
       <div className="w-full flex justify-between items-baseline p-3 border-b border-clr-lightgrey flex-wrap gap-2">
 
-        <div className="flex gap-2 items-baseline p-1">
-          <Label
-            htmlFor="type"
-          >
-            <span className='labelWrapper'>
-              {type === "MP" && (
-                <MpSvg className='mr-2' />
-              )}
-              {type === "Division" && (
-                <DivisionSvg className='mr-2' />
-              )}
+        <div className="flex items-baseline p-1 justify-center">
+
+          <span>
+            {type === "MP" && (
+              <MpSvg className='' />
+            )}
+            {type === "Division" && (
+              <DivisionSvg className='' />
+            )}
+          </span>
+
+          <span className="w-[40px] ml-2">
+            <Label
+              htmlFor="selectType"
+            >
               {type === "MP" && filteredMps && filteredMps.length}
               {type === "Division" && filteredDivisions && filteredDivisions.length}
-            </span>
-          </Label>
+              {!filteredMps && !filteredDivisions && <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-400"></div>}
+            </Label>
+          </span>
 
           <CustomSelect
+            id="selectType"
             value={type}
             onValueChange={onChangeType}
             options={types.map(str => ({ value: str, label: `${str}'s`, }))}
           />
 
         </div>
+
+        {/* <Collapsible
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          className="w-[350px] space-y-2"
+        >
+          <div className="flex items-center justify-between space-x-4 px-4">
+            <h4 className="text-sm font-semibold">
+              peduarte starred 3 repositories
+            </h4>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm">                
+                <span className="sr-only">Toggle</span>
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
+            radix-ui/primitives
+          </div>
+          <CollapsibleContent className="space-y-2">
+            <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
+              radix-ui/colors
+            </div>
+            <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
+              stitches/react
+            </div>
+          </CollapsibleContent>
+        </Collapsible> */}
+
 
         <div className="flex gap-2 items-baseline p-1">
 
@@ -787,8 +825,8 @@ function PageContent() {
             <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.id} />
           ))}
 
-        
-        {Boolean(mps && mps.length) && filteredMps.map(i => (          
+
+        {Boolean(mps && mps.length) && filteredMps.map(i => (
           <MpCard item={i} onQueryMp={onQueryMp} key={i.id} />
         ))}
 
