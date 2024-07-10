@@ -85,24 +85,9 @@ export default function Home() {
 
     //@ts-ignore
     setRecentVotes(result);
-    // if (Array.isArray(result) && result.length === 0) {
-    //   //@ts-ignore
-    //   setRecentVotes(result);
-    // } else {
-
-    //   //@ts-ignore
-    //   result.forEach(item => {
-    //     console.log("item ", item);
-
-    //   })
-    // }
-
-
-
     const data: Array<any> = [];
 
   }
-
 
   useEffect(() => {
     getPartyCounts();
@@ -114,73 +99,79 @@ export default function Home() {
     router.push(`division?id=${id}`, { scroll: false });
   }
 
-  
+
   return (
 
     <div className="p-4">
 
-      <Card className="flex flex-col">
-        <CardHeader className="items-center pb-0">
-          <CardTitle>Current Mps</CardTitle>
-          <CardDescription>House of commons</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-1 pb-0">
-          <ChartContainer
-            config={chartConfig}
-            className="mx-auto aspect-square max-h-[250px]"
-          >
-            <PieChart>
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Pie
-                data={chartData}
-                dataKey="members"
-                nameKey="party"
-                innerRadius={60}
-                strokeWidth={5}
-              >
-                <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        >
-                          <tspan
+      <div id="chartcontainer">
+
+        <Card className="flex flex-col">
+          <CardHeader className="items-center pb-0">
+            <CardTitle>Current Mps</CardTitle>
+            <CardDescription>House of commons</CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 pb-0">
+            <ChartContainer
+              config={chartConfig}
+              className="mx-auto aspect-square max-h-[250px]"
+            >
+              <PieChart>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
+                <Pie
+                  data={chartData}
+                  dataKey="members"
+                  nameKey="party"
+                  innerRadius={60}
+                  strokeWidth={5}
+                >
+                  <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        return (
+                          <text
                             x={viewBox.cx}
                             y={viewBox.cy}
-                            className="fill-foreground text-3xl font-bold"
+                            textAnchor="middle"
+                            dominantBaseline="middle"
                           >
-                            {total}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 24}
-                            className="fill-foreground"
-                          >
-                            Mps
-                          </tspan>
-                        </text>
-                      )
-                    }
-                  }}
-                />
-              </Pie>
-            </PieChart>
-          </ChartContainer>
-        </CardContent>
-        <CardFooter className="flex-col gap-2 text-sm">
-          <div className="flex items-center gap-2 font-medium leading-none">
-            <Calendar className="h-4 w-4" />
-            {`${new Date().toISOString()}`}
-          </div>
-        </CardFooter>
-      </Card>
+                            <tspan
+                              x={viewBox.cx}
+                              y={viewBox.cy}
+                              className="fill-foreground text-3xl font-bold"
+                            >
+                              {total}
+                            </tspan>
+                            <tspan
+                              x={viewBox.cx}
+                              y={(viewBox.cy || 0) + 24}
+                              className="fill-foreground"
+                            >
+                              Mps
+                            </tspan>
+                          </text>
+                        )
+                      }
+                    }}
+                  />
+                </Pie>
+              </PieChart>
+            </ChartContainer>
+          </CardContent>
+          <CardFooter className="flex-col gap-2 text-sm">
+            <div className="flex items-center gap-2 font-medium leading-none">
+              <Calendar className="h-4 w-4" />
+              {`${new Date().toISOString()}`}
+            </div>
+          </CardFooter>
+        </Card>
+
+
+      </div>
+
 
       {!recentVotes && <h1>getting data....</h1>}
       {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
@@ -201,16 +192,14 @@ export default function Home() {
                     {i.Title}
                   </h4>
                 </div>
-             
+
                 <span className="font-medium text-gray-400 dark:text-gray-500">{i.Date}</span>
 
-             
               </div>
-
 
             </div>))}
         </div>
-        // recentVotes.map(i => <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.DivisionId} />)
+
 
       )}
     </div>
