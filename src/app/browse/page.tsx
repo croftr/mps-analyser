@@ -120,6 +120,8 @@ function PageContent() {
   const [isOpen, setIsOpen] = useState(false)
   const [isControlsDown, setIsControlsDown] = useState(false);
 
+  const [buttonHighlight, setButtonHighlight] = useState(false);
+
   //mps
   const [mps, setMps] = useState();
   const [filteredMps, setFilteredMps] = useState();
@@ -644,7 +646,13 @@ function PageContent() {
 
   const applyName = type => {
     onAddQueryParamToUrl({ key: "name", value: name });
-    type.startsWith("MP") ? onSearchMps({ searchName: name }) : onSearchDivisions({ searchName: name })
+    type.startsWith("MP") ? onSearchMps({ searchName: name }) : onSearchDivisions({ searchName: name });
+    setButtonHighlight(false);
+  }
+
+  const onChangeName = value => {
+    setName(value);
+    setButtonHighlight(true);
   }
 
   const onChangeMpVotes = async (value) => {
@@ -764,11 +772,12 @@ function PageContent() {
                 placeholder={type.startsWith("MP") ? 'filter by MP name' : 'filter by division title'}
                 className='input'
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                // onChange={(e) => setName(e.target.value)}                
+                onChange={(e) => onChangeName(e.target.value)}                
               />
 
               <Button
-                variant="outline"
+                variant={buttonHighlight ? "default" : "outline" }                 
                 className='button iconbutton'
                 onClick={() => applyName(type)}
               >
@@ -779,7 +788,7 @@ function PageContent() {
             {type.startsWith("MP") && (
               <div className="flex gap-2 items-baseline pl-3">
 
-                <Label htmlFor="soryBy">Status:</Label>
+                <Label htmlFor="soryBy">Status</Label>
                 <CustomSelect
                   value={statusValue}
                   onValueChange={onChangeStatus}
@@ -791,15 +800,13 @@ function PageContent() {
             <div className="flex gap-2 pl-3 w-full justify-between">
 
               <div className="flex items-baseline flex-1">
-                <Label htmlFor="soryBy">Sort</Label>
+                <Label htmlFor="soryBy" className='min-w-[46px]'>Sort</Label>
                 <CustomSelect
                   value={sortBy}
                   onValueChange={onChangeSortBy}
                   options={type.startsWith("MP") ? mpSortBy.map(str => ({ value: str, label: str })) : divisionSortBy.map(str => ({ value: str, label: str }))}
                 />
               </div>
-
-
 
               <Button
                 variant="outline"
