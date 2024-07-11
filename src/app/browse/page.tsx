@@ -757,7 +757,7 @@ function PageContent() {
             </div>
 
             <div className="flex gap-2 items-baseline pl-3">
-              <Label htmlFor="party">{type.startsWith("MP") ? "Name" : "Title"}:</Label>
+              <Label htmlFor="party">{type.startsWith("MP") ? "Name" : "Title"}</Label>
               <Input
                 type="search"
                 title="name"
@@ -788,19 +788,21 @@ function PageContent() {
               </div>
             )}
 
-            <div className="flex gap-2 items-baseline pl-3 w-full justify-between">
+            <div className="flex gap-2 pl-3 w-full justify-between">
 
-
-                <Label htmlFor="soryBy">Sort:</Label>
+              <div className="flex items-baseline flex-1">
+                <Label htmlFor="soryBy">Sort</Label>
                 <CustomSelect
                   value={sortBy}
                   onValueChange={onChangeSortBy}
                   options={type.startsWith("MP") ? mpSortBy.map(str => ({ value: str, label: str })) : divisionSortBy.map(str => ({ value: str, label: str }))}
                 />
-              
+              </div>
+
+
 
               <Button
-                variant="outline"                
+                variant="outline"
                 className="min-w-[71px]"
                 onClick={onToggleSortDirection}
               >
