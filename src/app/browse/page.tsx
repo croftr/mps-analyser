@@ -632,7 +632,6 @@ function PageContent() {
     onAddQueryParamToUrl({ key: filterTypeKey, value });
   }
 
-
   const onQueryMp = async (id: number) => {
     router.push(`/mp?id=${id}`, { scroll: false });
     // const mp = await ky.get(`${config.apiUrl}/mp/${id}`).json();
@@ -692,7 +691,6 @@ function PageContent() {
   return (
     <>
       <div className="w-full flex justify-between items-baseline p-3 flex-wrap gap-2">
-
         <div className="flex items-baseline w-full justify-between md:w-2/3 lg:w-1/2 xl:w-1/3">
 
           <span className="w-[100px] flex items-baseline gap-3">
@@ -732,7 +730,6 @@ function PageContent() {
             Controls
             {isControlsDown ? <ArrowUp /> : <ArrowDown />}
           </Button>
-
         </div>
 
         <Collapsible
@@ -791,23 +788,20 @@ function PageContent() {
               </div>
             )}
 
-
-
-
             <div className="flex gap-2 items-baseline pl-3 w-full justify-between">
 
-              <div className='flex items-baseline gap-4'>
+
                 <Label htmlFor="soryBy">Sort:</Label>
                 <CustomSelect
                   value={sortBy}
                   onValueChange={onChangeSortBy}
                   options={type.startsWith("MP") ? mpSortBy.map(str => ({ value: str, label: str })) : divisionSortBy.map(str => ({ value: str, label: str }))}
                 />
-              </div>
+              
 
               <Button
-                variant="outline"
-                className='button iconbutton'
+                variant="outline"                
+                className="min-w-[71px]"
                 onClick={onToggleSortDirection}
               >
                 {sortDirection === "ASC" && (
@@ -821,15 +815,10 @@ function PageContent() {
                     path='M6 21l6-8h-4v-10h-4v10h-4l6 8zm16-4h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z'
                   />
                 )}
-
               </Button>
             </div>
-
-
           </CollapsibleContent>
         </Collapsible>
-
-
 
       </div>
 
@@ -846,12 +835,9 @@ function PageContent() {
             <DivisionCard item={i} onQueryDivision={onQueryDivision} key={i.id} />
           ))}
 
-
         {Boolean(mps && mps.length) && filteredMps.map(i => (
           <MpCard item={i} onQueryMp={onQueryMp} key={i.id} />
         ))}
-
-
       </main>
     </>
 
