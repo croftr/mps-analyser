@@ -12,6 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
+import { ArrowUp } from "lucide-react"
+import { ArrowDown } from "lucide-react"
+
 import CustomSvg from '@/components/custom/customSvg';
 import MpSvg from '@/components/custom/mpSvg';
 import DivisionSvg from '@/components/custom/divisionSvg';
@@ -113,6 +116,7 @@ function PageContent() {
   const [filterTypeKeys, setFilterTypeKeys] = useState(mpFilterTypeKeys);
 
   const [isOpen, setIsOpen] = useState(false)
+  const [isControlsDown, setIsControlsDown] = useState(false);
 
   //mps
   const [mps, setMps] = useState();
@@ -469,7 +473,6 @@ function PageContent() {
 
   const onAddQueryParamToUrl = ({ key, value }) => {
     console.log("change url", key, value);
-    //bobby
     const params = new URLSearchParams(searchParams);
 
     //if querying by one of the exclusive query types then make sure other options are removed from url 
@@ -680,6 +683,11 @@ function PageContent() {
     setFilteredMps(result);
   }
 
+  const onToggleControls = () => {
+    setIsControlsDown(!isControlsDown);
+  }
+
+
   return (
     <>
       <div className="w-full flex justify-between items-baseline p-3 border-b border-clr-lightgrey flex-wrap gap-2">
@@ -695,7 +703,7 @@ function PageContent() {
             )}
           </span>
 
-          <span className="w-[40px] ml-2">
+          <span className="w-[40px] ml-4">
             <Label
               htmlFor="selectType"
             >
@@ -712,104 +720,100 @@ function PageContent() {
             options={types.map(str => ({ value: str, label: `${str}'s`, }))}
           />
 
+          <Button
+            variant='outline'
+            onClick={onToggleControls}
+            className='flex gap-2'
+          >
+            Controls
+            {isControlsDown ? <ArrowUp /> : <ArrowDown />}
+          </Button>
+
         </div>
 
-        {/* <Collapsible
-          open={isOpen}
+        <Collapsible
+          open={isControlsDown}
           onOpenChange={setIsOpen}
-          className="w-[350px] space-y-2"
+          className="flex w-full"
         >
-          <div className="flex items-center justify-between space-x-4 px-4">
-            <h4 className="text-sm font-semibold">
-              peduarte starred 3 repositories
-            </h4>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm">                
-                <span className="sr-only">Toggle</span>
+
+          <CollapsibleContent className="flex flex-col w-full">
+
+            <div className="flex gap-2 items-baseline">
+
+              <CustomSelect
+                value={filterTypeKey}
+                onValueChange={onChangeFilterTypeKey}
+                options={filterTypeKeys.map(str => ({ value: str, label: str }))}
+              />
+
+              <CustomSelect
+                value={filterTypeValue}
+                onValueChange={onChangeFilterTypeValue}
+                options={filterTypeOptions.map(str => ({ value: str, label: str }))}
+              />
+
+            </div>
+
+            <div className="flex gap-2 items-baseline pl-3">
+              <Label htmlFor="party">{type === "MP" ? "Name" : "Title"}:</Label>
+              <Input
+                type="search"
+                title="name"
+                placeholder={type === "MP" ? 'filter by MP name' : 'filter by division title'}
+                className='input'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <Button className='button iconbutton' onClick={() => applyName(type)}>
+                Apply
               </Button>
-            </CollapsibleTrigger>
-          </div>
-          <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
-            radix-ui/primitives
-          </div>
-          <CollapsibleContent className="space-y-2">
-            <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
-              radix-ui/colors
             </div>
-            <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
-              stitches/react
+
+            <div className="flex gap-2 items-baseline pl-3">
+
+              <Label htmlFor="soryBy">Status:</Label>
+              <CustomSelect
+                value={statusValue}
+                onValueChange={onChangeStatus}
+                options={status.map(str => ({ value: str, label: str }))}
+              />
             </div>
+
+
+            <div className="flex gap-2 items-baseline pl-3 w-full justify-between">
+
+              <div className='flex items-baseline gap-4'>
+                <Label htmlFor="soryBy">Sort:</Label>
+                <CustomSelect
+                  value={sortBy}
+                  onValueChange={onChangeSortBy}
+                  options={type === "MP" ? mpSortBy.map(str => ({ value: str, label: str })) : divisionSortBy.map(str => ({ value: str, label: str }))}
+                />
+              </div>
+
+              <Button className='button iconbutton' onClick={onToggleSortDirection}>
+                {sortDirection === "ASC" && (
+                  <CustomSvg
+                    path='M6 3l-6 8h4v10h4v-10h4l-6-8zm16 14h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z"'
+                  />
+                )}
+
+                {sortDirection === "DESC" && (
+                  <CustomSvg
+                    path='M6 21l6-8h-4v-10h-4v10h-4l6 8zm16-4h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z'
+                  />
+                )}
+
+              </Button>
+            </div>
+
+
           </CollapsibleContent>
-        </Collapsible> */}
+        </Collapsible>
 
 
-        <div className="flex gap-2 items-baseline p-1">
 
-          <CustomSelect
-            value={filterTypeKey}
-            onValueChange={onChangeFilterTypeKey}
-            options={filterTypeKeys.map(str => ({ value: str, label: str }))}
-          />
-
-          <CustomSelect
-            value={filterTypeValue}
-            onValueChange={onChangeFilterTypeValue}
-            options={filterTypeOptions.map(str => ({ value: str, label: str }))}
-          />
-
-        </div>
-
-        <div className="flex gap-2 items-baseline p-1">
-          <Label htmlFor="party">{type === "MP" ? "Name" : "Title"}:</Label>
-          <Input
-            type="search"
-            title="name"
-            placeholder={type === "MP" ? 'filter by MP name' : 'filter by division title'}
-            className='input'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Button className='button iconbutton' onClick={() => applyName(type)}>
-            Apply
-          </Button>
-        </div>
-
-        <div className="flex gap-2 items-baseline p-1">
-
-          <Label htmlFor="soryBy">Status:</Label>
-          <CustomSelect
-            value={statusValue}
-            onValueChange={onChangeStatus}
-            options={status.map(str => ({ value: str, label: str }))}
-          />
-        </div>
-
-
-        <div className="flex gap-2 items-baseline p-1">
-
-          <Label htmlFor="soryBy">Sort:</Label>
-
-          <CustomSelect
-            value={sortBy}
-            onValueChange={onChangeSortBy}
-            options={type === "MP" ? mpSortBy.map(str => ({ value: str, label: str })) : divisionSortBy.map(str => ({ value: str, label: str }))}
-          />
-
-          <Button className='button iconbutton' onClick={onToggleSortDirection}>
-            {sortDirection === "ASC" && (
-              <CustomSvg
-                path='M6 3l-6 8h4v10h4v-10h4l-6-8zm16 14h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z"'
-              />
-            )}
-
-            {sortDirection === "DESC" && (
-              <CustomSvg
-                path='M6 21l6-8h-4v-10h-4v10h-4l6 8zm16-4h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z'
-              />
-            )}
-
-          </Button>
-        </div>
       </div>
 
       <main className="grid p-1 gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
