@@ -733,7 +733,7 @@ function PageContent() {
 
         </div>
 
-        <Separator className="my-4" />
+        {/* <Separator className="bg-primary" /> */}
 
         <Collapsible
           open={isControlsDown}
