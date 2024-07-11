@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button"
 import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
 
+import { Separator } from "@/components/ui/separator"
+
 import CustomSvg from '@/components/custom/customSvg';
 import MpSvg from '@/components/custom/mpSvg';
 import DivisionSvg from '@/components/custom/divisionSvg';
@@ -690,7 +692,7 @@ function PageContent() {
 
   return (
     <>
-      <div className="w-full flex justify-between items-baseline p-3 border-b border-clr-lightgrey flex-wrap gap-2">
+      <div className="w-full flex justify-between items-baseline p-3 flex-wrap gap-2">
 
         <div className="flex items-baseline p-1 justify-center">
 
@@ -709,7 +711,7 @@ function PageContent() {
             >
               {type === "MP" && filteredMps && filteredMps.length}
               {type === "Division" && filteredDivisions && filteredDivisions.length}
-              {!filteredMps && !filteredDivisions && <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-400"></div>}
+              {!filteredMps && !filteredDivisions && <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div>}
             </Label>
           </span>
 
@@ -731,13 +733,15 @@ function PageContent() {
 
         </div>
 
+        <Separator className="my-4" />
+
         <Collapsible
           open={isControlsDown}
           onOpenChange={setIsOpen}
           className="flex w-full"
         >
 
-          <CollapsibleContent className="flex flex-col w-full">
+          <CollapsibleContent className="flex flex-col w-full md:w-2/3 lg:w-1/2 xl:w-1/3">
 
             <div className="flex gap-2 items-baseline">
 
@@ -765,7 +769,12 @@ function PageContent() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <Button className='button iconbutton' onClick={() => applyName(type)}>
+
+              <Button
+                variant="outline"
+                className='button iconbutton'
+                onClick={() => applyName(type)}
+              >
                 Apply
               </Button>
             </div>
@@ -792,7 +801,11 @@ function PageContent() {
                 />
               </div>
 
-              <Button className='button iconbutton' onClick={onToggleSortDirection}>
+              <Button
+                variant="outline"
+                className='button iconbutton'
+                onClick={onToggleSortDirection}
+              >
                 {sortDirection === "ASC" && (
                   <CustomSvg
                     path='M6 3l-6 8h4v10h4v-10h4l-6-8zm16 14h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z"'
