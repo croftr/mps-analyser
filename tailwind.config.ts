@@ -1,5 +1,5 @@
 // tailwind.config.js
-const config = {
+module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -16,13 +16,16 @@ const config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "var(--clr-primary)", // Light mode primary
-          dark: "var(--clr-primary-dark)", // Dark mode primary
+          DEFAULT: "var(--clr-primary)",
+          dark: "var(--clr-primary-dark)",
         },
         input: "var(--input)",
+      },
+      borderColor: { // Add this section
+        DEFAULT: 'currentColor',
+        input: 'var(--border-input)', // Map the CSS variable here
       },
     },
   },
   plugins: [],
 };
-export default config;

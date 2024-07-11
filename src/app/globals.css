@@ -13,6 +13,8 @@
   --background: #f8f9fa;
   --foreground: #1a202c;
   --input: #f3f4f6; /* Changed to a light gray for better contrast in light mode */
+
+  --border-input: f3f4f6;
 }
 
 /* seem to need this to get the nav bar content to fill the width of the page */
@@ -30,5 +32,6 @@
       --clr-primary-dark: #74093a; /* Darker shade for hover in dark mode */
 
       --input: #1f2937; /* Darker input background for dark mode */
+      --border-input: #2d3239;
   }
 }

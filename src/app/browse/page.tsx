@@ -735,15 +735,13 @@ function PageContent() {
 
         </div>
 
-        {/* <Separator className="bg-primary" /> */}
-
         <Collapsible
           open={isControlsDown}
           onOpenChange={setIsOpen}
           className="flex w-full"
         >
 
-          <CollapsibleContent className="flex flex-col w-full md:w-2/3 lg:w-1/2 xl:w-1/3">
+          <CollapsibleContent className="flex flex-col w-full md:w-2/3 lg:w-1/2 xl:w-1/3 gap-2">
 
             <div className="flex gap-2 items-baseline">
 
