@@ -16,7 +16,7 @@ interface CustomSelectProps extends SelectProps {
 const CustomSelect = ({ value, onValueChange, options }: CustomSelectProps) => {
   return (
     <Select onValueChange={(value) => onValueChange?.(value)} value={value}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="">
         <SelectValue placeholder={options[0].label}>{value}</SelectValue>
       </SelectTrigger>
       <SelectContent      

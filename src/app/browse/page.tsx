@@ -106,7 +106,7 @@ function PageContent() {
   const pathname = usePathname();
 
   //toolbar options
-  const [type, setType] = useState("MP");
+  const [type, setType] = useState("MP's");
   const [sortBy, setSortBy] = useState("Name");
   const [sortDirection, setSortDirection] = useState("ASC");
   const [name, setName] = useState("");
@@ -224,7 +224,7 @@ function PageContent() {
 
 
     if (value !== type) {
-      if (value === 'MP') {
+      if (value.startsWith('MP')) {
 
         setFilterTypeKeys(mpFilterTypeKeys);
         setFilterTypeKey(mpFilterTypeKeys[0])
@@ -274,7 +274,7 @@ function PageContent() {
 
     let result;
 
-    if (type === "MP") {
+    if (type.startsWith("MP")) {
 
       if (value === "Name") {
 
@@ -398,7 +398,7 @@ function PageContent() {
         setType(type);
         onChangeType(type, false);
 
-        if (type === "MP") {
+        if (type.startsWith("MP")) {
           party = searchParams.get('party');
 
           if (party) {
@@ -420,7 +420,7 @@ function PageContent() {
           }
 
 
-        } else if (type === "Division") {
+        } else if (type.startsWith("Division")) {
 
           divisionCategory = searchParams.get('category') || searchParams.get('Category');;
 
@@ -446,9 +446,9 @@ function PageContent() {
       }
 
 
-      if (type === "MP") {
+      if (type?.startsWith("MP")) {
         getMps({ party, year, sex, searchName, status });
-      } else if (type === "Division") {
+      } else if (type.startsWith("Division")) {
         onSearchDivisions({ category: divisionCategory || "Any", year, searchName });
       }
 
@@ -558,7 +558,7 @@ function PageContent() {
 
     setFilterTypeKey(value);
 
-    if (type === "MP") {
+    if (type.startsWith("MP")) {
       setFilterTypeOptions(mpFilterTypeValues[value]);
     } else {
       setFilterTypeOptions(divisionFilterTypeValues[value]);
@@ -609,7 +609,7 @@ function PageContent() {
     console.log("onChangeMpFilterTypeValue ", type, filterTypeKey, value);
     setFilterTypeValue(value);
 
-    if (type === "MP") {
+    if (type.startsWith("MP")) {
       if (filterTypeKey.startsWith("Party")) {
         onChangeMpParty(value);
       } else if (filterTypeKey === "Sex") {
@@ -645,7 +645,7 @@ function PageContent() {
 
   const applyName = type => {
     onAddQueryParamToUrl({ key: "name", value: name });
-    type === "MP" ? onSearchMps({ searchName: name }) : onSearchDivisions({ searchName: name })
+    type.startsWith("MP") ? onSearchMps({ searchName: name }) : onSearchDivisions({ searchName: name })
   }
 
   const onChangeMpVotes = async (value) => {
@@ -668,7 +668,6 @@ function PageContent() {
   }
 
   const onChangeStatus = async (value) => {
-    console.log("change status bobby", value);
 
     onAddQueryParamToUrl({ key: "status", value });
     setStatusValue(value);
@@ -694,33 +693,36 @@ function PageContent() {
     <>
       <div className="w-full flex justify-between items-baseline p-3 flex-wrap gap-2">
 
-        <div className="flex items-baseline p-1 justify-center">
+        <div className="flex items-baseline w-full justify-between md:w-2/3 lg:w-1/2 xl:w-1/3">
 
-          <span>
-            {type === "MP" && (
-              <MpSvg className='' />
-            )}
-            {type === "Division" && (
-              <DivisionSvg className='' />
-            )}
-          </span>
+          <span className="w-[100px] flex items-baseline gap-3">
 
-          <span className="w-[40px] ml-4">
+            <span className='ml-2'>
+              {type.includes("MP") && (
+                <MpSvg className='' />
+              )}
+              {type.includes("Division") && (
+                <DivisionSvg className='' />
+              )}
+            </span>
+
             <Label
               htmlFor="selectType"
             >
-              {type === "MP" && filteredMps && filteredMps.length}
-              {type === "Division" && filteredDivisions && filteredDivisions.length}
+              {type.startsWith("MP") && filteredMps && filteredMps.length}
+              {type.startsWith("Division") && filteredDivisions && filteredDivisions.length}
               {!filteredMps && !filteredDivisions && <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div>}
             </Label>
           </span>
 
-          <CustomSelect
-            id="selectType"
-            value={type}
-            onValueChange={onChangeType}
-            options={types.map(str => ({ value: str, label: `${str}'s`, }))}
-          />
+          <div style={{ width: 150 }}>
+            <CustomSelect
+              id="selectType"
+              value={type}
+              onValueChange={onChangeType}
+              options={types.map(str => ({ value: `${str}'s`, label: `${str}'s`, }))}
+            />
+          </div>
 
           <Button
             variant='outline'
@@ -760,11 +762,11 @@ function PageContent() {
             </div>
 
             <div className="flex gap-2 items-baseline pl-3">
-              <Label htmlFor="party">{type === "MP" ? "Name" : "Title"}:</Label>
+              <Label htmlFor="party">{type.startsWith("MP") ? "Name" : "Title"}:</Label>
               <Input
                 type="search"
                 title="name"
-                placeholder={type === "MP" ? 'filter by MP name' : 'filter by division title'}
+                placeholder={type.startsWith("MP") ? 'filter by MP name' : 'filter by division title'}
                 className='input'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -779,15 +781,19 @@ function PageContent() {
               </Button>
             </div>
 
-            <div className="flex gap-2 items-baseline pl-3">
+            {type.startsWith("MP") && (
+              <div className="flex gap-2 items-baseline pl-3">
 
-              <Label htmlFor="soryBy">Status:</Label>
-              <CustomSelect
-                value={statusValue}
-                onValueChange={onChangeStatus}
-                options={status.map(str => ({ value: str, label: str }))}
-              />
-            </div>
+                <Label htmlFor="soryBy">Status:</Label>
+                <CustomSelect
+                  value={statusValue}
+                  onValueChange={onChangeStatus}
+                  options={status.map(str => ({ value: str, label: str }))}
+                />
+              </div>
+            )}
+
+
 
 
             <div className="flex gap-2 items-baseline pl-3 w-full justify-between">
@@ -797,7 +803,7 @@ function PageContent() {
                 <CustomSelect
                   value={sortBy}
                   onValueChange={onChangeSortBy}
-                  options={type === "MP" ? mpSortBy.map(str => ({ value: str, label: str })) : divisionSortBy.map(str => ({ value: str, label: str }))}
+                  options={type.startsWith("MP") ? mpSortBy.map(str => ({ value: str, label: str })) : divisionSortBy.map(str => ({ value: str, label: str }))}
                 />
               </div>
 
@@ -831,8 +837,8 @@ function PageContent() {
 
       <main className="grid p-1 gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
 
-        {type === "MP" && !filteredMps && skeletonArray.map((item, index) => <MpCardSkeleton key={'skel-' + index} />)}
-        {type === "Division" && !filteredDivisions && skeletonArray.map((item, index) => <DivisionCardSkeleton key={'skel' + index} />)}
+        {type.startsWith("MP") && !filteredMps && skeletonArray.map((item, index) => <MpCardSkeleton key={'skel-' + index} />)}
+        {type.startsWith("Division") && !filteredDivisions && skeletonArray.map((item, index) => <DivisionCardSkeleton key={'skel' + index} />)}
 
         {Boolean(divisions && divisions.length) && filteredDivisions
           .filter((item, index, self) =>
