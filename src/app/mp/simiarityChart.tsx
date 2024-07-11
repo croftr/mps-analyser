@@ -88,14 +88,14 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          {type} similar voting to {comparedMpName}
-        </CardTitle>
-        {/* <CardDescription>January - June 2024</CardDescription> */}
-      </CardHeader>
-      <CardContent>
+    // <Card>
+    //   <CardHeader>
+    //     <CardTitle>
+    //       {type} similar voting to {comparedMpName}
+    //     </CardTitle>
+    //     {/* <CardDescription>January - June 2024</CardDescription> */}
+    //   </CardHeader>
+      <div>
 
         {mpData && (
           <ChartContainer config={chartConfig}>
@@ -116,7 +116,7 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="score" layout="vertical" radius={5} onClick={handleClick} cursor="pointer">
+              <Bar dataKey="score" layout="vertical" radius={5} onClick={onQueryMpByName} cursor="pointer">
                 {mpData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
@@ -138,15 +138,7 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
             </BarChart>
           </ChartContainer>
         )}
-      </CardContent>
-      {/* <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
-    </Card>
+      </div>
+
   )
 }

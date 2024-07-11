@@ -10,6 +10,11 @@ import SimilarityChart from "./simiarityChart";
 
 import MpCard from '@/components/ui/MpCard';
 
+// import {
+//   ToggleGroup,
+//   ToggleGroupItem,
+// } from "@/components/ui/toggle-group"
+
 import {
   Party,
   EARLIEST_FROM_DATE,
@@ -59,14 +64,14 @@ function PageContent() {
   const [excludeParties, setExcludeParties] = useState("");
   const [includeParties, setIncludeParties] = useState("");
   const [limit, setLimit] = useState(10);
-  
+
 
   enum SimilarityType {
     MOST = 'Most',
     LEAST = 'Least',
   }
-  
-  const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST); 
+
+  const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST);
 
   const [progress, setProgress] = useState("");
   const [votingHistory, setVotingHistory] = useState();
@@ -116,6 +121,8 @@ function PageContent() {
 
     onGetVotingSummary(result.value.id);
 
+    onGetVotingSimilarity('DESCENDING', result); // Fetch most similar MPs by default
+
   }
 
   const onChangeSummaryDatePicker = (type: string, value: string) => {
@@ -142,12 +149,11 @@ function PageContent() {
   }
 
   useEffect(() => {
-    const paramId = searchParams.toString().split("=")[1]
-    console.log(paramId);
+    const paramId = searchParams.toString().split("=")[1];
 
     onQueryMp(paramId);
 
-  }, [searchParams])
+  }, [searchParams]);
 
   const onGetVotingHistory = async (type: string) => {
 
@@ -212,11 +218,10 @@ function PageContent() {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
 
-  const onGetVotingSimilarity = async (orderby: string) => {
-
+  const onGetVotingSimilarity = async (orderby: string, mpData = mpDetails) => {
 
     if (orderby === "ASCENDING") {
-      setSimilarityType(SimilarityType.LEAST);      
+      setSimilarityType(SimilarityType.LEAST);
     } else {
       setSimilarityType(SimilarityType.MOST);
     }
@@ -236,7 +241,7 @@ function PageContent() {
       queryParams = `&partyIncludes=${includeParties}`;
     }
 
-    const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpDetails?.value?.nameDisplayAs}&id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
+    const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpData?.value?.nameDisplayAs}&id=${mpData?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
 
     const result: Array<any> = await ky(url).json();
 
@@ -247,7 +252,7 @@ function PageContent() {
 
     //TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
     const chartData = {
-      labels: [mpDetails?.value?.nameDisplayAs],
+      labels: [mpData?.value?.nameDisplayAs],
       datasets: [
         {
           label: "Voting Similarity",
@@ -293,8 +298,8 @@ function PageContent() {
 
   const onQueryMpByName = async (data: any) => {
     console.log("check ", data);
-    
-    
+
+
     // setMpDetails(undefined);
 
     const result = await ky(`https://members-api.parliament.uk/api/Members/Search?Name=${data.name}`).json();
@@ -591,7 +596,9 @@ function PageContent() {
               />
             </div>
 
+
             <div className='flex flex-col gap-2 p-4'>
+
               <button
                 className='text-primary border border-primary rounded'
                 onClick={() => onGetVotingSimilarity('DESCENDING')}
@@ -607,26 +614,28 @@ function PageContent() {
               </button>
             </div>
           </div>
+
+          <SimilarityChart
+            mpData={similarityResult}
+            comparedMpName={mpDetails?.value?.nameDisplayAs}
+            type={similarityType}
+            onQueryMpByName={onQueryMpByName}
+          />
         </fieldset>
 
-        <SimilarityChart 
-          mpData={similarityResult} 
-          comparedMpName={mpDetails?.value?.nameDisplayAs} 
-          type={similarityType} 
-          onQueryMpByName={onQueryMpByName}
-        />
-     
+
+
 
         {queryType === "history" && (
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
         )}
-        
-        {queryType === "similarity" && barChartData && (
+
+        {/* {queryType === "similarity" && barChartData && (
           <BarChart
             barChartData={barChartData}
             onQueryMpByName={onQueryMpByName}
           />
-        )}
+        )} */}
       </div>
     </section>
   );
