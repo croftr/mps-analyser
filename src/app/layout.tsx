@@ -25,7 +25,7 @@ export default function RootLayout({
         >
           <Nav />
           <Search />
-          <main className="h-[calc(100vh-118px)] overflow-y-scroll pb-4">
+          <main className="h-[calc(100vh-130px)] overflow-y-scroll pb-4">
             {children}
           </main>
         </ThemeProvider>
