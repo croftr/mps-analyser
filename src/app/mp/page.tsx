@@ -296,14 +296,14 @@ function PageContent() {
 
   }
 
-  const onChangeVoteTitle = (value:string) => {
+  const onChangeVoteTitle = (value: string) => {
     setIsFilterChanged(true);
     setVotefilterTitle(value);
   }
 
-  const onChangeVoteCategory = (value:string) => {
+  const onChangeVoteCategory = (value: string) => {
     setIsFilterChanged(true);
-    setVotefilterType(value)    
+    setVotefilterType(value)
   }
 
   return (
@@ -333,6 +333,84 @@ function PageContent() {
       </div>
 
       <div className="fieldsetsWrapper flex flex-col w-full">
+
+      <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
+          <legend>
+            <span className='flex'>
+              <CustomSvg
+                className='mr-2'
+                path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
+              />
+              Voting analysis
+            </span>
+          </legend>
+          <div>
+
+            <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
+
+              <div className='flex items-center gap-2 gridCell'>
+                <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
+                <Label htmlFor="vaexclude">Exclude</Label>
+              </div>
+
+              <CustomSelect
+                id="vaexclude"
+                value={excludeParties}
+                disabled={!isExcludingParties}
+                onValueChange={setExcludeParties}
+                options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
+              />
+
+              <div className='flex items-center gap-2 gridCell'>
+                <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
+                <Label htmlFor="vaInclude">Include</Label>
+              </div>
+
+              <CustomSelect
+                id="vaInclude"
+                value={includeParties}
+                disabled={!isIncludingParties}
+                onValueChange={setIncludeParties}
+                options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
+              />
+
+              <Label className="text-right" htmlFor="valimit">Limit</Label>
+              <Input
+                id="valimit"
+                value={limit}
+                onChange={(e) => setLimit(Number(e.target.value))}
+                type="number"
+              />
+            </div>
+
+
+            <div className='flex gap-2 p-4 justify-center'>
+
+              <Button
+                className='border border-primary rounded'
+                variant={similarityType === "Most" ? "default" : "outline"}
+                onClick={() => onGetVotingSimilarity('DESCENDING')}
+              >
+                Most Similar Voting Mps
+              </Button>
+
+              <Button
+                className='border border-primary rounded'
+                variant={similarityType === "Least" ? "default" : "outline"}
+                onClick={() => onGetVotingSimilarity('ASCENDING')}
+              >
+                Least Similar Voting Mps
+              </Button>
+            </div>
+          </div>
+
+          <SimilarityChart
+            mpData={similarityResult}
+            comparedMpName={mpDetails?.value?.nameDisplayAs}
+            type={similarityType}
+            onQueryMpByName={onQueryMpByName}
+          />
+        </fieldset>
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
           <legend>
@@ -386,7 +464,7 @@ function PageContent() {
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2 items-baseline">
+            <div className="flex sm:flex-row gap-2 items-baseline">
 
               <Label className='min-w-[60px]' htmlFor="divisionCategory">Category</Label>
 
@@ -399,7 +477,7 @@ function PageContent() {
 
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2 items-baseline">
+            <div className="flex sm:flex-row gap-2 items-baseline">
               <Label className='min-w-[60px]' htmlFor="titleFilter">Title</Label>
               <Input
                 id="titleFilter"
@@ -412,12 +490,12 @@ function PageContent() {
 
           </div>
 
-          <Button            
+          <Button
             variant={isFilterChanged ? "default" : "outline"}
             disabled={!isFilterChanged}
             className='w-full mt-2'
             onClick={onApplyFilter}
-            
+
           >
             Apply
           </Button>
@@ -437,10 +515,6 @@ function PageContent() {
 
             {votingSummary && (
               <div className='votingSummary'>
-                <h4>
-                  {mpDetails?.value.nameDisplayAs}
-                </h4>
-
                 <div className='mt-2 grid grid-cols-3 gap-2 justify-items-center items-center'>
                   <Button
                     className='text-primary border border-primary rounded w-full'
@@ -494,93 +568,6 @@ function PageContent() {
             )}
           </div>
         </fieldset>
-
-        <div className="w-full overflow-x-auto">
-          <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full min-w-[500px] max-w-full">
-            <legend>
-              <span className='flex'>
-                <CustomSvg
-                  className='mr-2'
-                  path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
-                />
-                Voting analysis
-              </span>
-            </legend>
-            <div>
-
-              <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
-
-                <div className='flex items-center gap-2 gridCell'>
-                  <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
-                  <Label htmlFor="vaexclude">Exclude</Label>
-                </div>
-
-                <CustomSelect
-                  id="vaexclude"
-                  value={excludeParties}
-                  disabled={!isExcludingParties}
-                  onValueChange={setExcludeParties}
-                  options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
-                />
-
-                <div className='flex items-center gap-2 gridCell'>
-                  <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
-                  <Label htmlFor="vaInclude">Include</Label>
-                </div>
-
-                <CustomSelect
-                  id="vaInclude"
-                  value={includeParties}
-                  disabled={!isIncludingParties}
-                  onValueChange={setIncludeParties}
-                  options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
-                />
-
-                <Label className="text-right" htmlFor="valimit">Limit</Label>
-                <input
-                  id="valimit"
-                  value={limit}
-                  onChange={(e) => setLimit(Number(e.target.value))}
-                  type="number"
-                  className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out gridCell"
-                />
-              </div>
-
-
-              <div className='flex gap-2 p-4 justify-center'>
-
-                <Button
-                  className='border border-primary rounded'
-                  variant={similarityType === "Most" ? "default" : "outline"}
-                  onClick={() => onGetVotingSimilarity('DESCENDING')}
-                >
-                  Most Similar Voting Mps
-                </Button>
-
-                <Button
-                  className='border border-primary rounded'
-                  variant={similarityType === "Least" ? "default" : "outline"}
-                  onClick={() => onGetVotingSimilarity('ASCENDING')}
-                >
-                  Least Similar Voting Mps
-                </Button>
-              </div>
-            </div>
-
-            <SimilarityChart
-              mpData={similarityResult}
-              comparedMpName={mpDetails?.value?.nameDisplayAs}
-              type={similarityType}
-              onQueryMpByName={onQueryMpByName}
-            />
-          </fieldset>
-        </div>
 
         {queryType === "history" && (
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
