@@ -10,10 +10,7 @@ import SimilarityChart from "./simiarityChart";
 
 import MpCard from '@/components/ui/MpCard';
 
-// import {
-//   ToggleGroup,
-//   ToggleGroupItem,
-// } from "@/components/ui/toggle-group"
+import { Button } from "@/components/ui/button"
 
 import {
   Party,
@@ -432,12 +429,13 @@ function PageContent() {
               />
             </div>
 
-            <button
+            <Button
+              variant="secondary"
               className='text-primary border border-primary rounded'
               onClick={onApplyFilter}
             >
               Apply
-            </button>
+            </Button>
           </div>
         </fieldset>
 
@@ -459,31 +457,34 @@ function PageContent() {
                   {mpDetails?.value.nameDisplayAs}
                 </h4>
 
-                <div className='mt-2 grid grid-cols-3 gap-px justify-items-center items-center'>
-                  <button
+                <div className='mt-2 grid grid-cols-3 gap-2 justify-items-center items-center'>
+                  <Button
                     className='text-primary border border-primary rounded w-full'
+                    variant="secondary"
                     onClick={() =>
                       onGetVotingHistory("all")
                     }
                   >
                     Total
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="secondary"
                     className='text-primary border border-primary rounded w-full'
                     onClick={() =>
                       onGetVotingHistory("votedAye")
                     }
                   >
                     Aye
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     className='text-primary border border-primary rounded w-full'
+                    variant="secondary"
                     onClick={() =>
                       onGetVotingHistory("votedNo")
                     }
                   >
                     No
-                  </button>
+                  </Button>
 
                   {!filterInProgress && (
                     <>
@@ -597,21 +598,23 @@ function PageContent() {
             </div>
 
 
-            <div className='flex flex-col gap-2 p-4'>
+            <div className='flex gap-2 p-4 justify-center'>
 
-              <button
-                className='text-primary border border-primary rounded'
+              <Button
+                className='border border-primary rounded'                
+                variant={similarityType === "Most" ? "default" : "outline"}
                 onClick={() => onGetVotingSimilarity('DESCENDING')}
               >
                 Most Similar Voting Mps
-              </button>
+              </Button>
 
-              <button
-                className='text-primary border border-primary rounded'
+              <Button                
+                className='border border-primary rounded'
+                variant={similarityType === "Least" ? "default" : "outline"}
                 onClick={() => onGetVotingSimilarity('ASCENDING')}
               >
                 Least Similar Voting Mps
-              </button>
+              </Button>
             </div>
           </div>
 
