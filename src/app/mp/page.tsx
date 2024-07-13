@@ -9,8 +9,6 @@ import SimilarityChart from "./simiarityChart";
 
 import MpCard from '@/components/ui/MpCard';
 
-import { format } from "date-fns";
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch"
@@ -72,8 +70,7 @@ function PageContent() {
   }
 
   const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST);
-
-  const [progress, setProgress] = useState("");
+  
   const [votingHistory, setVotingHistory] = useState();
   const [barChartData, setBarChartData] = useState();
   const searchParams = useSearchParams();
@@ -161,8 +158,7 @@ function PageContent() {
   const onGetVotingHistory = async (type: string) => {
 
     setQueryType("history");
-    setTableData(undefined);
-    setProgress("Analysing voting history...");
+    setTableData(undefined);    
 
     //clear similarity to make space for voting history
     setVotingSimilarity(undefined);
@@ -194,10 +190,10 @@ function PageContent() {
       setTableData(response.records);
       setTableTitle(`${mpDetails?.value?.nameDisplayAs} voted ${type === "votedAye" ? "Aye" : type === "votedNo" ? "No" : ""}`);
       // @ts-ignore
-      setProgress(undefined);
+      
     } catch (error) {
       // @ts-ignore
-      setProgress(undefined);
+      
       console.error(error);
       setVotingHistory(undefined);
 
@@ -212,10 +208,10 @@ function PageContent() {
     } else {
       setSimilarityType(SimilarityType.MOST);
     }
+
     setQueryType("similarity");
     setTableData(undefined);
 
-    setProgress("Getting voting similarity...");
     //clear voting history to make space for similarity
     setVotingSimilarity(undefined);
     setVotingHistory(undefined);
@@ -272,7 +268,7 @@ function PageContent() {
     // @ts-ignore
     setBarChartData(chartData);
     // @ts-ignore
-    setProgress(undefined);
+    
   };
 
   const onRowClick = (row: any) => {
@@ -280,7 +276,7 @@ function PageContent() {
 
     const id = row._fields[0].low
 
-    router.push(`division?id=${id}`, { scroll: false });
+    router.push(`division?id=${id}`, { scroll: true });
   }
 
   const onQueryMpByName = async (data: any) => {
@@ -292,7 +288,7 @@ function PageContent() {
     const result = await ky(`https://members-api.parliament.uk/api/Members/Search?Name=${data.name}`).json();
 
     //@ts-ignore
-    router.push(`mp?id=${result.items[0]?.value?.id}`, { scroll: false });
+    router.push(`mp?id=${result.items[0]?.value?.id}`, { scroll: true });
 
   }
 
@@ -341,11 +337,10 @@ function PageContent() {
                 className='mr-2'
                 path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
               />
-              Voting analysis
+              Voting similariy with other Mps
             </span>
           </legend>
-          <div>
-
+      
             <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
 
               <div className='flex items-center gap-2 gridCell'>
@@ -391,7 +386,7 @@ function PageContent() {
                 variant={similarityType === "Most" ? "default" : "outline"}
                 onClick={() => onGetVotingSimilarity('DESCENDING')}
               >
-                Most Similar Voting Mps
+                Most Similar
               </Button>
 
               <Button
@@ -399,10 +394,9 @@ function PageContent() {
                 variant={similarityType === "Least" ? "default" : "outline"}
                 onClick={() => onGetVotingSimilarity('ASCENDING')}
               >
-                Least Similar Voting Mps
+                Least Similar
               </Button>
-            </div>
-          </div>
+            </div>          
 
           <SimilarityChart
             mpData={similarityResult}

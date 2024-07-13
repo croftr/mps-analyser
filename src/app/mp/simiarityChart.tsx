@@ -1,24 +1,16 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, XAxis, YAxis, Cell, Label, LabelList } from "recharts"
 import { useState, useEffect } from "react";
-import ky from "ky";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+
+
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
@@ -27,31 +19,6 @@ const chartData = [
   { browser: "other", visitors: 90, fill: "var(--color-other)" },
 ]
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
 
 interface MPData {
   name: string;
@@ -82,25 +49,14 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
     {} as ChartConfig
   ) || {};
 
-  const handleClick = (data: any, index: number) => {
-    // Handle click event here
-    console.log(`Clicked on bar: ${data.browser}, Visitors: ${data.visitors}`);
-  };
 
   return (
-    // <Card>
-    //   <CardHeader>
-    //     <CardTitle>
-    //       {type} similar voting to {comparedMpName}
-    //     </CardTitle>
-    //     {/* <CardDescription>January - June 2024</CardDescription> */}
-    //   </CardHeader>
       <div>
 
         {mpData && (
           <ChartContainer config={chartConfig}>
             <BarChart
-              data={mpData}
+              data={mpData}              
               layout="vertical"
               margin={{ left: 0 }}
             >
