@@ -1,25 +1,26 @@
 "use client"
 
 import { Suspense, useEffect, useState } from 'react'
-import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation'
 import ky from 'ky';
 import { config } from "../app.config";
-import BarChart from "./BarChart.jsx";
+import CustomSelect from "@/components/custom/customSelect";
 import SimilarityChart from "./simiarityChart";
 
 import MpCard from '@/components/ui/MpCard';
 
+import { format } from "date-fns";
+
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 import {
   Party,
   EARLIEST_FROM_DATE,
   VOTING_CATEGORIES
 } from "../config/constants";
-
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
 
 import { NeoTable } from '@/components/ui/neoTable'
 
@@ -44,7 +45,7 @@ function PageContent() {
   const [mpDetails, setMpDetails] = useState<Record<string, any> | undefined>({});
   const [synopsis, setSynopsis] = useState("");
 
-  const [votefilterFrom, setVotefilterFrom] = useState(new Date(new Date(EARLIEST_FROM_DATE)).toISOString().substr(0, 10));
+  const [votefilterFrom, setVotefilterFrom] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
   const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substr(0, 10));
 
   const [votefilterType, setVotefilterType] = useState("Any");
@@ -61,6 +62,8 @@ function PageContent() {
   const [excludeParties, setExcludeParties] = useState("");
   const [includeParties, setIncludeParties] = useState("");
   const [limit, setLimit] = useState(10);
+
+  const [isFilterChanged, setIsFilterChanged] = useState(false);
 
 
   enum SimilarityType {
@@ -81,7 +84,10 @@ function PageContent() {
   const [tableTitle, setTableTitle] = useState("");
 
   const onApplyFilter = async () => {
+
+    setIsFilterChanged(false);
     setFilterInProgress(true);
+
     const result = await ky(`${config.mpsApiUrl}votecounts?id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${votefilterTitle}`).json();
     setFilterInProgress(false);
     setVotingSummary(result);
@@ -125,12 +131,12 @@ function PageContent() {
   const onChangeSummaryDatePicker = (type: string, value: string) => {
     console.log("check ", value);
 
+    setIsFilterChanged(true);
+
     if (type === "from") {
       setVotefilterFrom(value);
-      // setFromDate(value);
     } else {
       setVotefilterTo(value);
-      // setToDate(value);
     }
   }
 
@@ -176,6 +182,7 @@ function PageContent() {
 
     try {
       const nameParam = votefilterTitle || "Any";
+
       const response = await ky(
         `${config.mpsApiUrl}votingDetailsNeo?id=${mpDetails?.value?.id}&type=${type}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${nameParam}`
       ).json();
@@ -197,23 +204,6 @@ function PageContent() {
     }
   };
 
-  function darkenColor(hexColor: string, factor: number): string {
-    // Ensure factor is between 0 and 1
-    factor = Math.max(0, Math.min(1, factor));
-
-    // Parse the hex color
-    let r = parseInt(hexColor.slice(1, 3), 16);
-    let g = parseInt(hexColor.slice(3, 5), 16);
-    let b = parseInt(hexColor.slice(5, 7), 16);
-
-    // Darken each RGB component proportionally
-    r = Math.round(r * (1 - factor));  // Corrected this line
-    g = Math.round(g * (1 - factor));  // Corrected this line
-    b = Math.round(b * (1 - factor));  // Corrected this line
-
-    // Convert back to hex string
-    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-  }
 
   const onGetVotingSimilarity = async (orderby: string, mpData = mpDetails) => {
 
@@ -306,6 +296,16 @@ function PageContent() {
 
   }
 
+  const onChangeVoteTitle = (value:string) => {
+    setIsFilterChanged(true);
+    setVotefilterTitle(value);
+  }
+
+  const onChangeVoteCategory = (value:string) => {
+    setIsFilterChanged(true);
+    setVotefilterType(value)    
+  }
+
   return (
 
     <section id="mpDetailsPage" className="flex flex-col w-full justify-around p-4 gap-4 flex-wrap">
@@ -332,7 +332,7 @@ function PageContent() {
         </div>
       </div>
 
-      <div className="fieldsetsWrapper flex flex-col w-full"> {/* Flex container for fieldsets */}
+      <div className="fieldsetsWrapper flex flex-col w-full">
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
           <legend>
@@ -347,11 +347,8 @@ function PageContent() {
           </legend>
 
           <div className="flex flex-col gap-2">
-
             <div className="flex flex-col sm:flex-row gap-2 items-baseline">
-
-              <label className="w-24 text-left sm:text-right" htmlFor="start">Between</label>
-
+              <Label className='min-w-[60px]' htmlFor="betweenStart">Between</Label>
               <input
                 type="date"
                 id="start"
@@ -361,12 +358,13 @@ function PageContent() {
                 onChange={(e) => onChangeSummaryDatePicker("from", e.target.value)}
                 value={votefilterFrom}
                 className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out"
+                  px-4 py-2 rounded-md
+                  bg-background 
+                  border-input  // Use the custom border color class
+                  focus:outline-none 
+                  focus:ring-2 
+                  focus:ring-custom-outline 
+                  transition-all duration-200 ease-in-out"
               />
 
               <input
@@ -378,65 +376,51 @@ function PageContent() {
                 onChange={(e) => onChangeSummaryDatePicker("to", e.target.value)}
                 value={votefilterTo}
                 className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out"
+                  px-4 py-2 rounded-md
+                  bg-background 
+                  border-input  // Use the custom border color class
+                  focus:outline-none 
+                  focus:ring-2 
+                  focus:ring-custom-outline 
+                  transition-all duration-200 ease-in-out"
               />
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 items-baseline">
-              <label className="w-24 text-left sm:text-right" htmlFor="divisionCategory fixedLabel">Division Type</label>
-              <select
+
+              <Label className='min-w-[60px]' htmlFor="divisionCategory">Category</Label>
+
+              <CustomSelect
+                id="divisionCategory"
                 value={votefilterType}
-                onChange={(e) => setVotefilterType(e.target.value)}
-                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out"
-                name="divisionCategory"
-              >
-                {VOTING_CATEGORIES.map(i => (
-                  <option
-                    value={i}
-                    key={i}
-                  >
-                    {i}
-                  </option>
-                ))}
-              </select>
+                onValueChange={onChangeVoteCategory}
+                options={VOTING_CATEGORIES.map(i => { return { value: i, label: i } })}
+              />
+
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2">
-              <label className="w-24 text-left sm:text-right" htmlFor="title">Division  Title</label>
-              <input
+            <div className="flex flex-col sm:flex-row gap-2 items-baseline">
+              <Label className='min-w-[60px]' htmlFor="titleFilter">Title</Label>
+              <Input
+                id="titleFilter"
                 type="search"
                 placeholder="includes text"
-                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out"
                 value={votefilterTitle}
-                onChange={(e) => setVotefilterTitle(e.target.value)}
+                onChange={(e) => onChangeVoteTitle(e.target.value)}
               />
             </div>
 
-            <Button
-              variant="secondary"
-              className='text-primary border border-primary rounded'
-              onClick={onApplyFilter}
-            >
-              Apply
-            </Button>
           </div>
+
+          <Button            
+            variant={isFilterChanged ? "default" : "outline"}
+            disabled={!isFilterChanged}
+            className='w-full mt-2'
+            onClick={onApplyFilter}
+            
+          >
+            Apply
+          </Button>
         </fieldset>
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
@@ -511,134 +495,97 @@ function PageContent() {
           </div>
         </fieldset>
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
-          <legend>
-            <span className='flex'>
-              <CustomSvg
-                className='mr-2'
-                path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
-              />
-              Voting analysis
-            </span>
-          </legend>
-          <div>
+        <div className="w-full overflow-x-auto">
+          <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full min-w-[500px] max-w-full">
+            <legend>
+              <span className='flex'>
+                <CustomSvg
+                  className='mr-2'
+                  path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
+                />
+                Voting analysis
+              </span>
+            </legend>
+            <div>
 
-            <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
+              <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
 
-              <div className='flex items-center gap-2 gridCell'>
-                <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
-                <Label htmlFor="vaexclude">Exclude</Label>
+                <div className='flex items-center gap-2 gridCell'>
+                  <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
+                  <Label htmlFor="vaexclude">Exclude</Label>
+                </div>
+
+                <CustomSelect
+                  id="vaexclude"
+                  value={excludeParties}
+                  disabled={!isExcludingParties}
+                  onValueChange={setExcludeParties}
+                  options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
+                />
+
+                <div className='flex items-center gap-2 gridCell'>
+                  <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
+                  <Label htmlFor="vaInclude">Include</Label>
+                </div>
+
+                <CustomSelect
+                  id="vaInclude"
+                  value={includeParties}
+                  disabled={!isIncludingParties}
+                  onValueChange={setIncludeParties}
+                  options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
+                />
+
+                <Label className="text-right" htmlFor="valimit">Limit</Label>
+                <input
+                  id="valimit"
+                  value={limit}
+                  onChange={(e) => setLimit(Number(e.target.value))}
+                  type="number"
+                  className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+                px-4 py-2 rounded-md
+                bg-gray-100 dark:bg-gray-700 
+                text-gray-800 dark:text-gray-200
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                transition-all duration-200 ease-in-out gridCell"
+                />
               </div>
 
-              <select
-                name="partiesToExclude"
-                onChange={(e) => setExcludeParties(e.target.value)}
-                value={excludeParties}
-                disabled={!isExcludingParties}
-                className="w-full md:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out gridCell"
-              >
-                {Object.keys(Party).map(i => (
-                  <option
-                    value={Party[i]}
-                    key={Party[i]}
-                  >
-                    {Party[i]}
-                  </option>
-                ))}
-              </select>
 
-              <div className='flex items-center gap-2 gridCell'>
-                <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
-                <Label htmlFor="vaInclude">Include</Label>
+              <div className='flex gap-2 p-4 justify-center'>
+
+                <Button
+                  className='border border-primary rounded'
+                  variant={similarityType === "Most" ? "default" : "outline"}
+                  onClick={() => onGetVotingSimilarity('DESCENDING')}
+                >
+                  Most Similar Voting Mps
+                </Button>
+
+                <Button
+                  className='border border-primary rounded'
+                  variant={similarityType === "Least" ? "default" : "outline"}
+                  onClick={() => onGetVotingSimilarity('ASCENDING')}
+                >
+                  Least Similar Voting Mps
+                </Button>
               </div>
-
-              <select
-                name="partiesToExclude"
-                onChange={(e) => setIncludeParties(e.target.value)}
-                value={includeParties}
-                disabled={!isIncludingParties}
-                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out gridCell"
-              >
-                {Object.keys(Party).map(i => (
-                  <option
-                    value={Party[i]}
-                    key={Party[i]}
-                  >
-                    {Party[i]}
-                  </option>
-                ))}
-              </select>
-
-              <Label className="text-right" htmlFor="valimit">Limit</Label>
-              <input
-                id="valimit"
-                value={limit}
-                onChange={(e) => setLimit(Number(e.target.value))}
-                type="number"
-                className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-                px-4 py-2 rounded-md
-                bg-gray-100 dark:bg-gray-700 
-                text-gray-800 dark:text-gray-200
-                placeholder-gray-500 dark:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500
-                transition-all duration-200 ease-in-out gridCell"
-              />
             </div>
 
-
-            <div className='flex gap-2 p-4 justify-center'>
-
-              <Button
-                className='border border-primary rounded'                
-                variant={similarityType === "Most" ? "default" : "outline"}
-                onClick={() => onGetVotingSimilarity('DESCENDING')}
-              >
-                Most Similar Voting Mps
-              </Button>
-
-              <Button                
-                className='border border-primary rounded'
-                variant={similarityType === "Least" ? "default" : "outline"}
-                onClick={() => onGetVotingSimilarity('ASCENDING')}
-              >
-                Least Similar Voting Mps
-              </Button>
-            </div>
-          </div>
-
-          <SimilarityChart
-            mpData={similarityResult}
-            comparedMpName={mpDetails?.value?.nameDisplayAs}
-            type={similarityType}
-            onQueryMpByName={onQueryMpByName}
-          />
-        </fieldset>
-
-
-
+            <SimilarityChart
+              mpData={similarityResult}
+              comparedMpName={mpDetails?.value?.nameDisplayAs}
+              type={similarityType}
+              onQueryMpByName={onQueryMpByName}
+            />
+          </fieldset>
+        </div>
 
         {queryType === "history" && (
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
         )}
 
-        {/* {queryType === "similarity" && barChartData && (
-          <BarChart
-            barChartData={barChartData}
-            onQueryMpByName={onQueryMpByName}
-          />
-        )} */}
       </div>
     </section>
   );

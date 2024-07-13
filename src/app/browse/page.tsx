@@ -769,10 +769,8 @@ function PageContent() {
               <Input
                 type="search"
                 title="name"
-                placeholder={type.startsWith("MP") ? 'filter by MP name' : 'filter by division title'}
-                className='input'
-                value={name}
-                // onChange={(e) => setName(e.target.value)}                
+                placeholder={type.startsWith("MP") ? 'filter by MP name' : 'filter by division title'}                
+                value={name}                
                 onChange={(e) => onChangeName(e.target.value)}                
               />
 

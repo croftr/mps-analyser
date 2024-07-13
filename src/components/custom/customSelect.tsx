@@ -11,18 +11,25 @@ interface CustomSelectProps extends SelectProps {
   onValueChange?: (value: string) => void;
   options: SelectOption[];
   placeholder?: string;
+  disabled?: boolean;
+  id?: string;
 }
 
-const CustomSelect = ({ value, onValueChange, options }: CustomSelectProps) => {
+const CustomSelect = ({ value, onValueChange, options, disabled=false, id }: CustomSelectProps) => {
   return (
-    <Select onValueChange={(value) => onValueChange?.(value)} value={value}>
+    <Select
+      onValueChange={(value) => onValueChange?.(value)}
+      {...(id && { id })} // Conditionally spread the id prop if not undefined
+      value={value}
+      disabled={disabled}
+    >
       <SelectTrigger className="">
         <SelectValue placeholder={options[0].label}>{value}</SelectValue>
       </SelectTrigger>
-      <SelectContent      
-        ref={(ref:any) => {
+      <SelectContent
+        ref={(ref: any) => {
           if (!ref) return;
-          ref.ontouchstart = (e:any) => {
+          ref.ontouchstart = (e: any) => {
             e.preventDefault();
           };
         }}
