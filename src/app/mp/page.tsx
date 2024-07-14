@@ -233,11 +233,11 @@ function PageContent() {
         console.log("gooooo");
         //TODO empty the chart
         //@ts-ignore
-        setVotingSimilarity([]);
+        setSimilarityResult([]);
         return [];
-        
+
       }
-      
+
     } else if (includeOrExclude === "Include" && includeOrExcludeParties !== "All") {
       queryParams = `&partyIncludes=${includeOrExcludeParties}`;
     }
@@ -429,6 +429,7 @@ function PageContent() {
             type={similarityType}
             onQueryMpByName={onQueryMpByName}
           />
+
         </fieldset>
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
