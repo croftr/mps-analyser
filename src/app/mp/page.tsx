@@ -57,11 +57,14 @@ function PageContent() {
   //similarity params
   const [isExcludingParties, setIsExcludingParties] = useState(true);
   const [isIncludingParties, setIsIncludingParties] = useState(false);
-  const [excludeParties, setExcludeParties] = useState("");
+  const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All");
   const [includeParties, setIncludeParties] = useState("");
   const [limit, setLimit] = useState(10);
 
   const [isFilterChanged, setIsFilterChanged] = useState(false);
+
+  type FilterOption = "Include" | "Exclude";
+  const [includeOrExclude, setIncludeOrExclude] = useState<FilterOption>("Include");
 
 
   enum SimilarityType {
@@ -70,7 +73,7 @@ function PageContent() {
   }
 
   const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST);
-  
+
   const [votingHistory, setVotingHistory] = useState();
   const [barChartData, setBarChartData] = useState();
   const searchParams = useSearchParams();
@@ -158,7 +161,7 @@ function PageContent() {
   const onGetVotingHistory = async (type: string) => {
 
     setQueryType("history");
-    setTableData(undefined);    
+    setTableData(undefined);
 
     //clear similarity to make space for voting history
     setVotingSimilarity(undefined);
@@ -190,10 +193,10 @@ function PageContent() {
       setTableData(response.records);
       setTableTitle(`${mpDetails?.value?.nameDisplayAs} voted ${type === "votedAye" ? "Aye" : type === "votedNo" ? "No" : ""}`);
       // @ts-ignore
-      
+
     } catch (error) {
       // @ts-ignore
-      
+
       console.error(error);
       setVotingHistory(undefined);
 
@@ -218,10 +221,25 @@ function PageContent() {
 
     let queryParams = '';
 
-    if (isExcludingParties && excludeParties) {
-      queryParams = `&partyExcludes=${excludeParties}`;
-    } else if (isIncludingParties && includeParties) {
-      queryParams = `&partyIncludes=${includeParties}`;
+    // Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } }
+
+    console.log("check ", includeOrExclude, includeOrExcludeParties);
+
+
+    if (includeOrExclude === "Exclude" && includeOrExcludeParties) {
+      if (includeOrExcludeParties !== "All") {
+        queryParams = `&partyExcludes=${includeOrExcludeParties}`;
+      } else {
+        console.log("gooooo");
+        //TODO empty the chart
+        //@ts-ignore
+        setVotingSimilarity([]);
+        return [];
+        
+      }
+      
+    } else if (includeOrExclude === "Include" && includeOrExcludeParties !== "All") {
+      queryParams = `&partyIncludes=${includeOrExcludeParties}`;
     }
 
     const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpData?.value?.nameDisplayAs}&id=${mpData?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
@@ -268,7 +286,7 @@ function PageContent() {
     // @ts-ignore
     setBarChartData(chartData);
     // @ts-ignore
-    
+
   };
 
   const onRowClick = (row: any) => {
@@ -302,6 +320,11 @@ function PageContent() {
     setVotefilterType(value)
   }
 
+  const onIncludeOrExclude = (value: string) => {
+    //@ts-ignore
+    setIncludeOrExclude(value);
+  }
+
   return (
 
     <section id="mpDetailsPage" className="flex flex-col w-full justify-around p-4 gap-4 flex-wrap">
@@ -330,7 +353,7 @@ function PageContent() {
 
       <div className="fieldsetsWrapper flex flex-col w-full">
 
-      <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
+        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
           <legend>
             <span className='flex'>
               <CustomSvg
@@ -340,23 +363,25 @@ function PageContent() {
               Voting similariy with other Mps
             </span>
           </legend>
-      
-            <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
 
-              <div className='flex items-center gap-2 gridCell'>
-                <Switch id="vaexclude" checked={isExcludingParties} onCheckedChange={() => onToggleExcludeInclude("exclude")} />
-                <Label htmlFor="vaexclude">Exclude</Label>
-              </div>
+          <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
 
-              <CustomSelect
-                id="vaexclude"
-                value={excludeParties}
-                disabled={!isExcludingParties}
-                onValueChange={setExcludeParties}
-                options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
-              />
+            <CustomSelect
+              id="includeExclude"
+              value={includeOrExclude}
+              onValueChange={onIncludeOrExclude}
+              options={["Include", "Exclude"].map(i => { return { label: i, value: i } })}
+            />
 
-              <div className='flex items-center gap-2 gridCell'>
+            <CustomSelect
+              id="vaexclude"
+              value={includeOrExcludeParties}
+              disabled={!isExcludingParties}
+              onValueChange={setIncludeOrExcludeParties}
+              options={[{ value: "All", label: "All Parties" }].concat(Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } }))}
+            />
+
+            {/* <div className='flex items-center gap-2 gridCell'>
                 <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
                 <Label htmlFor="vaInclude">Include</Label>
               </div>
@@ -367,36 +392,36 @@ function PageContent() {
                 disabled={!isIncludingParties}
                 onValueChange={setIncludeParties}
                 options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
-              />
+              /> */}
 
-              <Label className="text-right" htmlFor="valimit">Limit</Label>
-              <Input
-                id="valimit"
-                value={limit}
-                onChange={(e) => setLimit(Number(e.target.value))}
-                type="number"
-              />
-            </div>
+            <Label className="text-right" htmlFor="valimit">Limit</Label>
+            <Input
+              id="valimit"
+              value={limit}
+              onChange={(e) => setLimit(Number(e.target.value))}
+              type="number"
+            />
+          </div>
 
 
-            <div className='flex gap-2 p-4 justify-center'>
+          <div className='flex gap-2 p-4 justify-center'>
 
-              <Button
-                className='border border-primary rounded'
-                variant={similarityType === "Most" ? "default" : "outline"}
-                onClick={() => onGetVotingSimilarity('DESCENDING')}
-              >
-                Most Similar
-              </Button>
+            <Button
+              className='border border-primary rounded'
+              variant={similarityType === "Most" ? "default" : "outline"}
+              onClick={() => onGetVotingSimilarity('DESCENDING')}
+            >
+              Most Similar
+            </Button>
 
-              <Button
-                className='border border-primary rounded'
-                variant={similarityType === "Least" ? "default" : "outline"}
-                onClick={() => onGetVotingSimilarity('ASCENDING')}
-              >
-                Least Similar
-              </Button>
-            </div>          
+            <Button
+              className='border border-primary rounded'
+              variant={similarityType === "Least" ? "default" : "outline"}
+              onClick={() => onGetVotingSimilarity('ASCENDING')}
+            >
+              Least Similar
+            </Button>
+          </div>
 
           <SimilarityChart
             mpData={similarityResult}
@@ -411,9 +436,9 @@ function PageContent() {
             <span className='flex'>
               <CustomSvg
                 className='mr-2'
-                path="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z"
+                path="M2 0v24h20v-24h-20zm18 22h-16v-15h16v15zm-3-4h-10v-1h10v1zm0-3h-10v-1h10v1zm0-3h-10v-1h10v1z"
               />
-              Filters
+              Voting History
             </span>
 
           </legend>
@@ -493,18 +518,8 @@ function PageContent() {
           >
             Apply
           </Button>
-        </fieldset>
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
-          <legend>
-            <span className='flex'>
-              <CustomSvg
-                className='mr-2'
-                path="M2 0v24h20v-24h-20zm18 22h-16v-15h16v15zm-3-4h-10v-1h10v1zm0-3h-10v-1h10v1zm0-3h-10v-1h10v1z"
-              />
-              Voting details
-            </span>
-          </legend>
+
           <div className='mpDetails__actions'>
 
             {votingSummary && (
@@ -561,7 +576,11 @@ function PageContent() {
               </div>
             )}
           </div>
+
+
         </fieldset>
+
+
 
         {queryType === "history" && (
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
