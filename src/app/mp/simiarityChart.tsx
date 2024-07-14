@@ -3,21 +3,16 @@
 import { Bar, BarChart, XAxis, YAxis, Cell, Label, LabelList } from "recharts"
 import { useState, useEffect } from "react";
 
+import { PARTY_COLOUR } from ".././../app/config/constants";
+// import { PARTY_COLOUR } from "@config/constants";
+
+
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-]
 
 
 interface MPData {
@@ -42,7 +37,7 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
       config[entry.name] = {
         label: entry.name,
         // Set the fill color to your primary color CSS variable
-        color: "var(--clr-primary)",
+        color: PARTY_COLOUR[entry.party]?.backgroundColour || "var(--clr-primary)", 
       };
       return config;
     },
@@ -76,19 +71,9 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
                 {mpData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={
-                      activeIndex === index
-                        ? (chartConfig[entry.name]?.color || chartConfig[entry.name]?.color) // If active, use primary color
-                        : "var(--clr-primary)"
-                    }
-                  >
-                    {/* Label inside the bar */}
-                    <Label
-                      value={entry.name}
-                      position="top"
-                      style={{ fill: 'white', fontSize: '0.8rem' }} // Customize as needed
-                    />
-                  </Cell>
+                    fill={PARTY_COLOUR[entry.party]?.backgroundColour || "var(--clr-primary)"}                     
+                 / >
+                 
                 ))}
               </Bar>
             </BarChart>
