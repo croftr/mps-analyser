@@ -199,7 +199,7 @@ function PageContent() {
     if (includeOrExclude === "Exclude" && includeOrExcludeParties) {
       if (includeOrExcludeParties !== "All Parties") {
         queryParams = `&partyExcludes=${includeOrExcludeParties}`;
-      } else {      
+      } else {
         //@ts-ignore
         setSimilarityResult([]);
         return [];
@@ -337,12 +337,12 @@ function PageContent() {
                 id="valimit"
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
-                type="number"                
+                type="number"
               />
               <span>Mps</span>
             </div>
 
-            <div className="w-4/5 max-w-[400px] flex flex-col justify-start">
+            <div className="w-4/5 max-w-[400px] flex flex-col justify-start gap-2">
               <CustomSelect
                 id="includeExclude"
                 value={includeOrExclude}
@@ -400,7 +400,7 @@ function PageContent() {
 
           </legend>
 
-          <div className="flex flex-col gap-2">
+          <div className="w-4/5 max-w-[400px] flex flex-col justify-start gap-2">
             <div className="flex flex-col sm:flex-row gap-2 items-baseline">
               <Label className='min-w-[60px]' htmlFor="betweenStart">Between</Label>
               <input
@@ -510,34 +510,21 @@ function PageContent() {
                     No
                   </Button>
 
-                  {!filterInProgress && (
-                    <>
-                      <span className='votingSummary__buttons__count'>
-                        {filterInProgress ? 'a' : votingSummary?.total}
-                      </span>
-                      <span className='votingSummary__buttons__count'>
-                        {votingSummary?.votedAye || 0}
-                      </span>
-                      <span className='votingSummary__buttons__count'>
-                        {votingSummary?.votedNo || 0}
-                      </span>
-                    </>
-                  )}
+                  <span className='votingSummary__buttons__count'>
+                    {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.total || 0}
+                  </span>
+                  <span className='votingSummary__buttons__count'>
+                    {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.votedAye || 0}
+                  </span>
+                  <span className='votingSummary__buttons__count'>
+                    {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.votedNo || 0}
+                  </span>
                 </div>
 
-                {filterInProgress && (
-                  <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
-                    <progress value={0} />
-                  </div>
-                )}
               </div>
             )}
           </div>
-
-
         </fieldset>
-
-
 
         {queryType === "history" && (
           <NeoTable data={tableData} title={tableTitle} onRowClick={onRowClick} />
