@@ -57,9 +57,9 @@ function PageContent() {
   //similarity params
   const [isExcludingParties, setIsExcludingParties] = useState(true);
   const [isIncludingParties, setIsIncludingParties] = useState(false);
-  const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All");
+  const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All Parties");
   const [includeParties, setIncludeParties] = useState("");
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(6);
 
   const [isFilterChanged, setIsFilterChanged] = useState(false);
 
@@ -93,20 +93,6 @@ function PageContent() {
     setVotingSummary(result);
   }
 
-  const onToggleExcludeInclude = (type: string) => {
-    console.log(type);
-    if (type === "include") {
-      setIsIncludingParties(!isIncludingParties);
-      if (isExcludingParties) {
-        setIsExcludingParties(false);
-      }
-    } else {
-      setIsExcludingParties(!isExcludingParties);
-      if (isIncludingParties) {
-        setIsIncludingParties(false);
-      }
-    }
-  }
 
   const onQueryMp = async (id: string) => {
 
@@ -170,15 +156,6 @@ function PageContent() {
     setSimilarityResult(undefined);
     setVotingHistory(undefined);
 
-    //TODO scroll to bottom probably should be for mobile only
-    // setTimeout(
-    //   () =>
-    //     document
-    //       .getElementsByClassName("container")[0]
-    //       .scrollTo(0, document.body.scrollHeight),
-    //   1
-    // );
-
     try {
       const nameParam = votefilterTitle || "Any";
 
@@ -196,7 +173,6 @@ function PageContent() {
 
     } catch (error) {
       // @ts-ignore
-
       console.error(error);
       setVotingHistory(undefined);
 
@@ -221,24 +197,16 @@ function PageContent() {
 
     let queryParams = '';
 
-    // Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } }
-
-    console.log("check ", includeOrExclude, includeOrExcludeParties);
-
-
     if (includeOrExclude === "Exclude" && includeOrExcludeParties) {
-      if (includeOrExcludeParties !== "All") {
+      if (includeOrExcludeParties !== "All Parties") {
         queryParams = `&partyExcludes=${includeOrExcludeParties}`;
-      } else {
-        console.log("gooooo");
-        //TODO empty the chart
+      } else {      
         //@ts-ignore
         setSimilarityResult([]);
         return [];
-
       }
 
-    } else if (includeOrExclude === "Include" && includeOrExcludeParties !== "All") {
+    } else if (includeOrExclude === "Include" && includeOrExcludeParties !== "All Parties") {
       queryParams = `&partyIncludes=${includeOrExcludeParties}`;
     }
 
@@ -298,10 +266,6 @@ function PageContent() {
   }
 
   const onQueryMpByName = async (data: any) => {
-    console.log("check ", data);
-
-
-    // setMpDetails(undefined);
 
     const result = await ky(`https://members-api.parliament.uk/api/Members/Search?Name=${data.name}`).json();
 
@@ -353,56 +317,49 @@ function PageContent() {
 
       <div className="fieldsetsWrapper flex flex-col w-full">
 
-        <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
+        <fieldset className="border border-gray-200 mb-4 relative p-2 w-full">
           <legend>
             <span className='flex'>
               <CustomSvg
                 className='mr-2'
-                path="M8 1c0-.552.448-1 1-1h6c.552 0 1 .448 1 1s-.448 1-1 1h-6c-.552 0-1-.448-1-1zm12.759 19.498l-3.743-7.856c-1.041-2.186-2.016-4.581-2.016-7.007v-1.635h-2v2c.09 2.711 1.164 5.305 2.21 7.502l3.743 7.854c.143.302-.068.644-.376.644h-1.497l-4.377-9h-3.682c.882-1.908 1.886-4.377 1.973-7l.006-2h-2v1.635c0 2.426-.975 4.82-2.016 7.006l-3.743 7.856c-.165.348-.241.708-.241 1.058 0 1.283 1.023 2.445 2.423 2.445h13.154c1.4 0 2.423-1.162 2.423-2.446 0-.35-.076-.709-.241-1.056z"
+                path="M5.829 6c-.412 1.165-1.524 2-2.829 2-1.656 0-3-1.344-3-3s1.344-3 3-3c1.305 0 2.417.835 2.829 2h13.671c2.484 0 4.5 2.016 4.5 4.5s-2.016 4.5-4.5 4.5h-4.671c-.412 1.165-1.524 2-2.829 2-1.305 0-2.417-.835-2.829-2h-4.671c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5h13.671c.412-1.165 1.524-2 2.829-2 1.656 0 3 1.344 3 3s-1.344 3-3 3c-1.305 0-2.417-.835-2.829-2h-13.671c-2.484 0-4.5-2.016-4.5-4.5s2.016-4.5 4.5-4.5h4.671c.412-1.165 1.524-2 2.829-2 1.305 0 2.417.835 2.829 2h4.671c1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5h-13.671zm6.171 5c.552 0 1 .448 1 1s-.448 1-1 1-1-.448-1-1 .448-1 1-1z"
               />
               Voting similariy with other Mps
             </span>
           </legend>
 
-          <div className="grid grid-cols-[100px_1fr] gap-4 items-baseline">
+          <div className="flex flex-col items-baseline">
 
-            <CustomSelect
-              id="includeExclude"
-              value={includeOrExclude}
-              onValueChange={onIncludeOrExclude}
-              options={["Include", "Exclude"].map(i => { return { label: i, value: i } })}
-            />
+            <div className='flex items-baseline p-2 gap-2'>
 
-            <CustomSelect
-              id="vaexclude"
-              value={includeOrExcludeParties}
-              disabled={!isExcludingParties}
-              onValueChange={setIncludeOrExcludeParties}
-              options={[{ value: "All", label: "All Parties" }].concat(Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } }))}
-            />
+              <span>Comparing</span>
+              <Input
+                className='w-12'
+                id="valimit"
+                value={limit}
+                onChange={(e) => setLimit(Number(e.target.value))}
+                type="number"
+              />
+              <span>Mps</span>
+            </div>
 
-            {/* <div className='flex items-center gap-2 gridCell'>
-                <Switch id="vaInclude" checked={isIncludingParties} onCheckedChange={() => onToggleExcludeInclude("include")} />
-                <Label htmlFor="vaInclude">Include</Label>
-              </div>
+            <div className="w-4/5 max-w-[400px] flex flex-col justify-start">
+              <CustomSelect
+                id="includeExclude"
+                value={includeOrExclude}
+                onValueChange={onIncludeOrExclude}
+                options={["Include", "Exclude"].map(i => { return { label: i, value: i } })}
+              />
 
               <CustomSelect
-                id="vaInclude"
-                value={includeParties}
-                disabled={!isIncludingParties}
-                onValueChange={setIncludeParties}
-                options={Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } })}
-              /> */}
-
-            <Label className="text-right" htmlFor="valimit">Limit</Label>
-            <Input
-              id="valimit"
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              type="number"
-            />
+                id="vaexclude"
+                value={includeOrExcludeParties}
+                disabled={!isExcludingParties}
+                onValueChange={setIncludeOrExcludeParties}
+                options={[{ value: "All Parties", label: "All Parties" }].concat(Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } }))}
+              />
+            </div>
           </div>
-
 
           <div className='flex gap-2 p-4 justify-center'>
 

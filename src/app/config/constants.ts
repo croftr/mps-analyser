@@ -12,8 +12,7 @@ export const PARTY_NAMES = [
     "Plaid Cymru",
     "Green Party",
     "Sinn Féin",
-    "Liberal Democrat",
-    "Social Democratic & Labour Party",
+    "Liberal Democrat",    
     "Democratic Unionist Party",
     "Alba Party",
     "Speaker",
@@ -29,8 +28,7 @@ export type PartyType =
     "Plaid Cymru" | 
     "Democratic Unionist Party" | 
     "Sinn Féin" | 
-    "Ulster Unionist Party" | 
-    "Social Democratic and Labour Party" | 
+    "Ulster Unionist Party" |     
     "Brexit Party" | 
     "The Reclaim Party" | 
     "Unknown" | 
@@ -45,8 +43,7 @@ export const Party: Record<string, PartyType> = {
     PLAID_CYMRU: "Plaid Cymru",
     DUP: "Democratic Unionist Party",
     SINN_FEIN: "Sinn Féin",
-    UUP: "Ulster Unionist Party",
-    SDLP: "Social Democratic and Labour Party",
+    UUP: "Ulster Unionist Party",    
     BREXIT_PARTY: "Brexit Party",
     RECLAIM: "The Reclaim Party",
     UNKNOWN: "Unknown",
@@ -60,6 +57,7 @@ interface PartyColor {
 
 export const PARTY_COLOUR: Record<string, PartyColor> = {
     "Alliance": { backgroundColour: "#cdaf2d", foregroundColour: "#FFFFFF" },
+    "Alba Party": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
     "Conservative": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
     "Democratic Unionist Party": { backgroundColour: "#cc3300", foregroundColour: "#FFFFFF" },
     "Green Party": { backgroundColour: "#78b82a", foregroundColour: "#FFFFFF" },
