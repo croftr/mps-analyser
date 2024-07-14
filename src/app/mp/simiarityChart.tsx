@@ -48,7 +48,7 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
           content={<ChartTooltipContent hideLabel />}
         />
         <Bar dataKey="score" layout="vertical" radius={5} onClick={onQueryMpByName} cursor="pointer">
-          {mpData.map((entry, index) => (
+          {mpData && mpData.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
               fill={PARTY_COLOUR[entry.party]?.backgroundColour || "var(--clr-primary)"}
