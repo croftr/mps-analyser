@@ -28,16 +28,23 @@ interface SimilarityChartProps {
 export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityChartProps) {
 
   function CustomTick({ x, y, payload }: any) {
-    const { value } = payload;
+
+    const { value } = payload; 
+
+    const party = mpData.find((entry) => entry.name === value)?.party; // Find the party from the mp name
+      
+    //@ts-ignore
+    const foregroundColor = PARTY_COLOUR[party]?.foregroundColour || "black";
+   
     return (
       <g transform={`translate(${x},${y})`}>
         <text
           x={20} 
           y={0}
           dy={5}
-          textAnchor="start"
-          className="fill-foreground"
-          style={{ overflow: "visible" }}
+          fill={foregroundColor}
+          textAnchor="start"          
+          style={{ overflow: "visible"}}
         >
           {value.split(" ").join("\n")}
         </text>
@@ -64,8 +71,7 @@ export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityC
             <Cell
               key={`cell-${index}`}
               fill={PARTY_COLOUR[entry.party]?.backgroundColour || "var(--clr-primary)"}
-            />
-
+            />              
           ))}
         </Bar>
         <YAxis
@@ -74,7 +80,7 @@ export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityC
           tickLine={false}
           tickMargin={10}
           axisLine={false}
-          tick={<CustomTick/>}
+          tick={ <CustomTick/> }        
         />
       </BarChart>
     </ChartContainer>
