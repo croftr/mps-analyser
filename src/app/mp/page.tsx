@@ -337,8 +337,7 @@ function PageContent() {
                 id="valimit"
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
-                type="number"
-                max={6}
+                type="number"                
               />
               <span>Mps</span>
             </div>
