@@ -11,7 +11,6 @@ import MpCard from '@/components/ui/MpCard';
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
 import {
@@ -339,6 +338,7 @@ function PageContent() {
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
                 type="number"
+                max={6}
               />
               <span>Mps</span>
             </div>

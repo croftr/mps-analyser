@@ -25,24 +25,36 @@ interface SimilarityChartProps {
   onQueryMpByName: (name: string) => void
 }
 
-export default function SimilarityChart({ mpData, comparedMpName, type, onQueryMpByName }: SimilarityChartProps) {
+export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityChartProps) {
+
+  function CustomTick({ x, y, payload }: any) {
+    const { value } = payload;
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={20} 
+          y={0}
+          dy={5}
+          textAnchor="start"
+          className="fill-foreground"
+          style={{ overflow: "visible" }}
+        >
+          {value.split(" ").join("\n")}
+        </text>
+      </g>
+    );
+  }
 
   return (
 
-    <ChartContainer config={{}}>
+    <ChartContainer config={{}} style={{ marginLeft: -50}}>
       <BarChart
         data={mpData}
         layout="vertical"
         margin={{ left: 0 }}
       >
-        <YAxis
-          dataKey="name"
-          type="category"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-        />
-        <XAxis dataKey="score" type="number" hide />
+
+        <XAxis dataKey="score" type="number" />
         <ChartTooltip
           cursor={false}
           content={<ChartTooltipContent hideLabel />}
@@ -56,6 +68,14 @@ export default function SimilarityChart({ mpData, comparedMpName, type, onQueryM
 
           ))}
         </Bar>
+        <YAxis
+          dataKey="name"
+          type="category"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tick={<CustomTick/>}
+        />
       </BarChart>
     </ChartContainer>
 
