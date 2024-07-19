@@ -35,7 +35,7 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
   return (
 
     <div
-      className={`${className} relative p-4 pt-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer`}
+      className={`${className} relative p-4 pb-2 pt-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer`}
       onClick={() => onQueryMp(item.id)}
     >
 
@@ -63,20 +63,21 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
         />
       </div>
 
-      <span
-  className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium" // Added Tailwind classes
-  style={{
-    backgroundColor: PARTY_COLOUR[item.party]?.backgroundColour,
-    color: PARTY_COLOUR[item.party]?.foregroundColour,
-  }}
->
-  {item.party}
-</span>
+      <div className='flex items-baseline gap-4'>
+        <span
+          className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium mt-2 mb-1" // Added Tailwind classes
+          style={{
+            backgroundColor: PARTY_COLOUR[item.party]?.backgroundColour,
+            color: PARTY_COLOUR[item.party]?.foregroundColour,
+          }}
+        >
+          {item.party}
+        </span>
 
+        {isFormatedDates && <p className="font-medium">{new Date(item.startDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>}
+        {!isFormatedDates && <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>}
 
-
-      {isFormatedDates && <p className="font-medium">{new Date(item.startDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>}
-      {!isFormatedDates && <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>}
+      </div>
 
       {isDisplayingTable && (<div className="mt-2 grid grid-cols-3 text-center text-sm border rounded-md border-gray-400 dark:border-gray-600">
         <span className="py-1 border-b border-r border-gray-400 dark:border-gray-600">Votes</span>

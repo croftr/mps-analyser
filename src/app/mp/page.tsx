@@ -24,7 +24,6 @@ import { NeoTable } from '@/components/ui/neoTable'
 import CustomSvg from '@/components/custom/customSvg';
 
 export default function Mp() {
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <PageContent />
@@ -36,9 +35,6 @@ function PageContent() {
 
   const router = useRouter();
 
-  const male = <CustomSvg path="M16 2v2h3.586l-3.972 3.972c-1.54-1.231-3.489-1.972-5.614-1.972-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.125-.741-4.074-1.972-5.614l3.972-3.972v3.586h2v-7h-7zm-6 20c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" />
-  const female = <CustomSvg path="M21 9c0-4.97-4.03-9-9-9s-9 4.03-9 9c0 4.632 3.501 8.443 8 8.941v2.059h-3v2h3v2h2v-2h3v-2h-3v-2.059c4.499-.498 8-4.309 8-8.941zm-16 0c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7-7-3.14-7-7z" />
-
   const [mpDetails, setMpDetails] = useState<Record<string, any> | undefined>({});
   const [synopsis, setSynopsis] = useState("");
 
@@ -48,16 +44,14 @@ function PageContent() {
   const [votefilterType, setVotefilterType] = useState("Any");
   const [filterInProgress, setFilterInProgress] = useState(false);
   const [votingSummary, setVotingSummary] = useState<any>(undefined);
-  const [votingSimilarity, setVotingSimilarity] = useState();
   const [queryType, setQueryType] = useState("none");
 
   const [votefilterTitle, setVotefilterTitle] = useState("");
 
   //similarity params
-  const [isExcludingParties, setIsExcludingParties] = useState(true);
-  const [isIncludingParties, setIsIncludingParties] = useState(false);
   const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All Parties");
-  const [includeParties, setIncludeParties] = useState("");
+  const [similarityResult, setSimilarityResult] = useState([]);
+
   const [limit, setLimit] = useState(6);
 
   const [isFilterChanged, setIsFilterChanged] = useState(false);
@@ -65,20 +59,13 @@ function PageContent() {
   type FilterOption = "Include" | "Exclude";
   const [includeOrExclude, setIncludeOrExclude] = useState<FilterOption>("Include");
 
-
   enum SimilarityType {
     MOST = 'Most',
     LEAST = 'Least',
   }
 
   const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST);
-
-  const [votingHistory, setVotingHistory] = useState();
-  const [barChartData, setBarChartData] = useState();
   const searchParams = useSearchParams();
-  const [similarityResult, setSimilarityResult] = useState([]);
-
-
   const [tableData, setTableData] = useState();
   const [tableTitle, setTableTitle] = useState("");
 
@@ -97,9 +84,7 @@ function PageContent() {
 
     setMpDetails(undefined);
 
-    const result: any = await ky(`https://members-api.parliament.uk/api/Members/${id}`).json();
-
-    console.log("result ", result);
+    const result: any = await ky(`https://members-api.parliament.uk/api/Members/${id}`).json();    
 
     setMpDetails(result);
 
@@ -147,14 +132,7 @@ function PageContent() {
 
     setQueryType("history");
     setTableData(undefined);
-
-    //clear similarity to make space for voting history
-    setVotingSimilarity(undefined);
-    setBarChartData(undefined);
-    //@ts-ignore
-    setSimilarityResult(undefined);
-    setVotingHistory(undefined);
-
+    
     try {
       const nameParam = votefilterTitle || "Any";
 
@@ -173,8 +151,9 @@ function PageContent() {
     } catch (error) {
       // @ts-ignore
       console.error(error);
-      setVotingHistory(undefined);
-
+      
+      // @ts-ignore
+      setSimilarityResult(undefined);
     }
   };
 
@@ -188,11 +167,7 @@ function PageContent() {
     }
 
     setQueryType("similarity");
-    setTableData(undefined);
-
-    //clear voting history to make space for similarity
-    setVotingSimilarity(undefined);
-    setVotingHistory(undefined);
+    setTableData(undefined);    
 
     let queryParams = '';
 
@@ -214,9 +189,6 @@ function PageContent() {
     const result: Array<any> = await ky(url).json();
 
     const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    // @ts-ignore
-    setVotingSimilarity(result);
 
     //TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
     const chartData = {
@@ -249,10 +221,7 @@ function PageContent() {
       // @ts-ignore
       chartData.datasets[0].data.push(element.score);
     });
-
-    // @ts-ignore
-    setBarChartData(chartData);
-    // @ts-ignore
+  
 
   };
 
@@ -352,8 +321,7 @@ function PageContent() {
 
               <CustomSelect
                 id="vaexclude"
-                value={includeOrExcludeParties}
-                disabled={!isExcludingParties}
+                value={includeOrExcludeParties}                
                 onValueChange={setIncludeOrExcludeParties}
                 options={[{ value: "All Parties", label: "All Parties" }].concat(Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } }))}
               />
