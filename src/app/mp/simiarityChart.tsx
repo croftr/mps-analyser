@@ -20,7 +20,7 @@ interface MPData {
 
 interface SimilarityChartProps {
   mpData: MPData[];
-  comparedMpName: string;
+  comparedMpName?: string;
   type: 'Most' | 'Least';
   onQueryMpByName: (name: string) => void
 }

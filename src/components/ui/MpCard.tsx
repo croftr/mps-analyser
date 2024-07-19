@@ -20,8 +20,8 @@ interface MpCardProps {
   item: {
     id: number;
     name: string;
-    party: string;
-    isActive: boolean;
+    party?: string;
+    isActive?: boolean;
     startDate: any; // Keep as 'any' for flexibility
     endDate: any;   // Keep as 'any' for flexibility
   };

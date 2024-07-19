@@ -1,27 +1,56 @@
-"use client"
+"use client";
 
-import { Suspense, useEffect, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import ky from 'ky';
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import ky from "ky";
 import { config } from "../app.config";
 import CustomSelect from "@/components/custom/customSelect";
 import SimilarityChart from "./simiarityChart";
 
-import MpCard from '@/components/ui/MpCard';
-
-import { Button } from "@/components/ui/button"
+import MpCard from "@/components/ui/MpCard";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"
+import { Label } from "@/components/ui/label";
 
 import {
   Party,
   EARLIEST_FROM_DATE,
-  VOTING_CATEGORIES
+  VOTING_CATEGORIES,
 } from "../config/constants";
 
-import { NeoTable } from '@/components/ui/neoTable'
+import { NeoTable } from "@/components/ui/neoTable";
 
-import CustomSvg from '@/components/custom/customSvg';
+import CustomSvg from "@/components/custom/customSvg";
+
+// Interface for MP data
+interface MpDetails {
+  value?: {
+    id: number;
+    nameDisplayAs: string;
+    latestParty?: {
+      name: string;
+    };
+    latestHouseMembership: {
+      membershipStatus?: {
+        statusIsActive: boolean;
+      };
+      membershipStartDate: string;
+      membershipEndDate: string;
+    };
+  };
+}
+
+// Interface for voting summary data
+interface VotingSummary {
+  total?: number;
+  votedAye?: number;
+  votedNo?: number;
+}
+
+// Interface for table data
+interface TableData {
+  _fields: any[]; // Adjust this type according to your actual data structure
+}
 
 export default function Mp() {
   return (
@@ -35,22 +64,24 @@ function PageContent() {
 
   const router = useRouter();
 
-  const [mpDetails, setMpDetails] = useState<Record<string, any> | undefined>({});
+  const [mpDetails, setMpDetails] = useState<MpDetails | undefined>();
+  const [votingSummary, setVotingSummary] = useState<VotingSummary | undefined>(undefined);
+  const [tableData, setTableData] = useState<TableData[] | undefined>();
+  const [similarityResult, setSimilarityResult] = useState([]);
+
   const [synopsis, setSynopsis] = useState("");
 
   const [votefilterFrom, setVotefilterFrom] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
   const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substr(0, 10));
 
   const [votefilterType, setVotefilterType] = useState("Any");
-  const [filterInProgress, setFilterInProgress] = useState(false);
-  const [votingSummary, setVotingSummary] = useState<any>(undefined);
+  const [filterInProgress, setFilterInProgress] = useState(false);  
   const [queryType, setQueryType] = useState("none");
 
   const [votefilterTitle, setVotefilterTitle] = useState("");
 
   //similarity params
-  const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All Parties");
-  const [similarityResult, setSimilarityResult] = useState([]);
+  const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All Parties");  
 
   const [limit, setLimit] = useState(6);
 
@@ -65,8 +96,7 @@ function PageContent() {
   }
 
   const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST);
-  const searchParams = useSearchParams();
-  const [tableData, setTableData] = useState();
+  const searchParams = useSearchParams();  
   const [tableTitle, setTableTitle] = useState("");
 
   const onApplyFilter = async () => {
@@ -76,6 +106,7 @@ function PageContent() {
 
     const result = await ky(`${config.mpsApiUrl}votecounts?id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${votefilterTitle}`).json();
     setFilterInProgress(false);
+    //@ts-ignore
     setVotingSummary(result);
   }
 
@@ -118,6 +149,8 @@ function PageContent() {
     console.log('votecounts ', result);
 
     setFilterInProgress(false);
+    
+    //@ts-ignore
     setVotingSummary(result);
   }
 
@@ -158,7 +191,7 @@ function PageContent() {
   };
 
 
-  const onGetVotingSimilarity = async (orderby: string, mpData = mpDetails) => {
+  const onGetVotingSimilarity = async (orderby: string, mpData: any = mpDetails) => {
 
     if (orderby === "ASCENDING") {
       setSimilarityType(SimilarityType.LEAST);
