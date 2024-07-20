@@ -81,7 +81,7 @@ function PageContent() {
   const [votefilterTitle, setVotefilterTitle] = useState("");
 
   const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All Parties");
-  const [limit, setLimit] = useState(6);
+  const [limit, setLimit] = useState(10);
   const [isFilterChanged, setIsFilterChanged] = useState(false);
 
   type FilterOption = "Include" | "Exclude";
@@ -277,7 +277,7 @@ function PageContent() {
 
               <span>Comparing</span>
               <Input
-                className='w-12'
+                className='w-20'
                 id="valimit"
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
@@ -412,7 +412,6 @@ function PageContent() {
             disabled={!isFilterChanged}
             className='w-full mt-2'
             onClick={onApplyFilter}
-
           >
             Apply
           </Button>

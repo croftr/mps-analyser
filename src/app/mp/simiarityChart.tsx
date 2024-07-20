@@ -30,12 +30,13 @@ export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityC
   function CustomTick({ x, y, payload }: any) {
 
     const { value } = payload; 
-
-    const party = mpData.find((entry) => entry.name === value)?.party; // Find the party from the mp name
-      
-    //@ts-ignore
-    const foregroundColor = PARTY_COLOUR[party]?.foregroundColour || "black";
-   
+    const party = mpData.find((entry) => entry.name === value)?.party;
+    
+    let foregroundColor = "black";
+    if (party) {
+      foregroundColor = PARTY_COLOUR[party].foregroundColour;
+    }
+    
     return (
       <g transform={`translate(${x},${y})`}>
         <text
@@ -80,6 +81,7 @@ export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityC
           tickLine={false}
           tickMargin={10}
           axisLine={false}
+          interval={0}
           tick={ <CustomTick/> }        
         />
       </BarChart>
