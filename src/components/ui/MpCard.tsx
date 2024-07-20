@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client"
 import * as React from 'react'
 import Image from "next/image";
@@ -24,6 +23,9 @@ interface MpCardProps {
     isActive?: boolean;
     startDate: any; // Keep as 'any' for flexibility
     endDate: any;   // Keep as 'any' for flexibility
+    totalVotes: number;
+    ayeVotes: number;
+    noVotes: number;
   };
   isFormatedDates?: boolean;       // Optional flag for date formatting (defaults to false)
   isDisplayingTable?: boolean;     // Optional flag for table display (defaults to true)
@@ -32,11 +34,23 @@ interface MpCardProps {
 
 const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = true, className }: MpCardProps) => {
 
+  const getPartyAbbreviation = (item: MpCardProps["item"]): string => {
+    const partyAbbreviations: Record<string, string> = {
+      "Scottish National Party": "SNP",
+      "Liberal Democrat": "Lib Dem",
+      "Democratic Unionist Party": "DUP",
+      "Reform UK": "Reform",
+      "Ulster Unionist Party": "UNP",
+      "Traditional Unionist Voice": "TUV",      
+    };
+  
+    return item.party?.startsWith("Speaker") ? "Speaker" : partyAbbreviations[item.party || ""] || item.party || ""; // Handle undefined party
+  };
   return (
 
     <div
       className={`${className} relative p-4 pb-2 pt-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer`}
-      onClick={() => onQueryMp(item.id)}
+      onClick={() => onQueryMp && onQueryMp(item.id)}
     >
 
       <TooltipProvider>
@@ -67,11 +81,13 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
         <span
           className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium mt-2 mb-1" // Added Tailwind classes
           style={{
-            backgroundColor: PARTY_COLOUR[item.party]?.backgroundColour,
-            color: PARTY_COLOUR[item.party]?.foregroundColour,
+            backgroundColor: PARTY_COLOUR[item.party|| ""]?.backgroundColour,
+            color: PARTY_COLOUR[item.party|| ""]?.foregroundColour,
           }}
         >
-          {item.party}
+         
+         {getPartyAbbreviation(item)}
+          {/* {item.party === "Scottish National Party" ? "SNP" : item.party === "Liberal Democrat" ? "Lib Dem" : item.party === "Democratic Unionist Party" ? "DUP" : item.party === "Reform UK" ? "Reform" : item.party} */}
         </span>
 
         {isFormatedDates && <p className="font-medium">{new Date(item.startDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>}
@@ -87,7 +103,6 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
         <span className="py-1 border-r border-l border-gray-400 dark:border-gray-600"> {item.ayeVotes} </span>
         <span className="py-1"> {item.noVotes} </span>
       </div>)}
-
 
     </div>
 

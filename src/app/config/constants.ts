@@ -55,7 +55,7 @@ interface PartyColor {
     foregroundColour: string;
   }
 
-export const PARTY_COLOUR: Record<string|undefined, PartyColor> = {
+export const PARTY_COLOUR: Record<string, PartyColor> = {
     "Alliance": { backgroundColour: "#cdaf2d", foregroundColour: "#FFFFFF" },
     "Alba Party": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
     "Conservative": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },

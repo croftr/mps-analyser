@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 "use client"
 import MpCard from '@/components/ui/MpCard';
 import DivisionCard from '@/components/ui/DivisionCard';
@@ -28,8 +28,7 @@ import DivisionCardSkeleton from "./DivisionCardSkeleton";
 
 import {
   Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+  CollapsibleContent  
 } from "@/components/ui/collapsible"
 
 import { VOTING_CATEGORIES, PARTY_NAMES } from "../config/constants";
@@ -47,7 +46,6 @@ const status = [
   "All"
 ]
 
-
 const mpSortBy = [
   "Total Votes",
   "Voted Aye Count",
@@ -63,6 +61,7 @@ const mpFilterTypeKeys = [
   "Year",
   "Votes"
 ]
+
 const divisionFilterTypeKeys = [
   "Category",
   "Year"
@@ -130,7 +129,6 @@ function PageContent() {
   const [divisions, setDivisions] = useState();
   const [filteredDivisions, setFilteredDivisions] = useState();
 
-
   const onSearchMps = async ({ searchKey, searchValue, searchName }) => {
 
     let paramKey = searchKey || filterTypeKey;
@@ -154,17 +152,13 @@ function PageContent() {
 
     const result = await ky(url).json();
 
-    console.log("onSearchMps ", result.length);
-
     setMps(result);
     setFilteredMps(result);
   };
 
 
   const onSearchDivisions = async ({ category = filterTypeValue, year, searchName }) => {
-
-    console.log("onSearchDivisions ", category);
-
+    
     setMps(undefined);
     setFilteredMps(undefined);
 
@@ -194,9 +188,6 @@ function PageContent() {
   }
 
   const removeAllQueryParams = (exclusions: Array<string> = []) => {
-
-    console.log("removeAllQueryParams except ", exclusions);
-
 
     const params = new URLSearchParams(searchParams);
 
@@ -228,24 +219,24 @@ function PageContent() {
     if (value !== type) {
       if (value.startsWith('MP')) {
 
+        setSortBy("Name");
         setFilterTypeKeys(mpFilterTypeKeys);
         setFilterTypeKey(mpFilterTypeKeys[0])
         setFilterTypeOptions(mpFilterTypeValues[mpFilterTypeKeys[0]])
 
         if (changeUrl) {
-          onSearchMps({ party: "Any", searchKey: mpFilterTypeKeys[0], searchValue: "Any" });
-          setSortBy("Name");
+          onSearchMps({ party: "Any", searchKey: mpFilterTypeKeys[0], searchValue: "Any" });          
         }
 
       } else {
 
+        setSortBy("Title");
         setFilterTypeKeys(divisionFilterTypeKeys);
         setFilterTypeKey(divisionFilterTypeKeys[0])
         setFilterTypeOptions(divisionFilterTypeValues[divisionFilterTypeKeys[0]])
 
         if (changeUrl) {
-          onSearchDivisions({ category: "Any" });
-          setSortBy("Title");
+          onSearchDivisions({ category: "Any" });          
         }
 
       }
@@ -270,105 +261,63 @@ function PageContent() {
     }
   }
 
+  const sortDivisions = (
+    value: string,
+    direction: "ASC" | "DESC"
+  ) => {
+
+    const compareFunctions: Record<string, (a: Division, b: Division) => number> = {
+      Title: (a, b) => a.title.localeCompare(b.title),
+      "Voted Aye Count": (a, b) => a.ayeCount - b.ayeCount,
+      "Voted No Count": (a, b) => a.noCount - b.noCount,
+      "Total Votes": (a, b) => (a.noCount + a.ayeCount) - (b.noCount + b.ayeCount),
+      Date: (a, b) => compareNeoDates(a.date, b.date),
+    };
+
+    const compareFn = compareFunctions[value];
+
+    if (!compareFn) {
+      throw new Error(`Invalid sort value: ${value}`);
+    }
+
+    const sortedDivisions = [...divisions].sort(compareFn);
+    return direction === "DESC" ? sortedDivisions.reverse() : sortedDivisions;
+  }
+
+  const sortMps = (value: string, direction: "ASC" | "DESC") => {
+
+    const compareFunctions: Record<string, (a: MP, b: MP) => number> = {
+      Name: (a, b) => a.name.localeCompare(b.name),
+      Party: (a, b) => a.party.localeCompare(b.party),
+      "Time Served": (a, b) => compareNeoDates(a.startDate, b.startDate),
+      "Total Votes": (a, b) => a.totalVotes - b.totalVotes,
+      "Voted Aye Count": (a, b) => a.ayeVotes - b.ayeVotes,
+      "Voted No Count": (a, b) => a.noVotes - b.noVotes,
+    };
+
+    const compareFn = compareFunctions[value];
+
+    // Handle the case where the value doesn't match any of the keys
+    if (!compareFn) {
+      throw new Error(`Invalid sort value: ${value}`);
+    }
+
+    const sortedMps = [...mps].sort(compareFn);
+    return direction === "DESC" ? sortedMps.reverse() : sortedMps;
+  }
+
   const onChangeSortBy = (value, direction = sortDirection) => {
 
-    setSortBy(value);
-
-    let result;
+    setSortBy(value);    
 
     if (type.startsWith("MP")) {
-
-      if (value === "Name") {
-
-        if (direction === "ASC") {
-          result = [...mps].sort((a, b) => a.name > b.name);
-        } else {
-          result = [...mps].reverse((a, b) => a.name > b.name);
-        }
-        setFilteredMps(result);
-
-      } else if (value === "Party") {
-
-        if (direction === "ASC") {
-          result = [...mps].sort((a, b) => a.party > b.party);
-        } else {
-          result = [...mps].reverse((a, b) => a.party > b.party);
-        }
-        setFilteredMps(result);
-
-      } else if (value === "Time Served") {
-        if (direction === "ASC") {
-          result = [...mps].sort((a, b) => compareDates(a.startDate, b.startDate));
-        } else {
-          result = [...mps].sort((a, b) => compareDates(b.startDate, a.startDate));
-        }
-        setFilteredMps(result);
-      } else if (value === "Total Votes") {
-        if (direction === "ASC") {
-          result = [...mps].sort((a, b) => a.totalVotes - b.totalVotes);
-        } else {
-          result = [...mps].sort((a, b) => b.totalVotes - a.totalVotes);
-        }
-        setFilteredMps(result);
-      } else if (value === "Voted Aye Count") {
-        if (direction === "ASC") {
-          result = [...mps].sort((a, b) => a.ayeVotes - b.ayeVotes);
-        } else {
-          result = [...mps].sort((a, b) => b.ayeVotes - a.ayeVotes);
-        }
-        setFilteredMps(result);
-      } else if (value === "Voted No Count") {
-        if (direction === "ASC") {
-          result = [...mps].sort((a, b) => a.noVotes - b.noVotes);
-        } else {
-          result = [...mps].sort((a, b) => b.noVotes - a.noVotes);
-        }
-        setFilteredMps(result);
-      }
-
-
+      const sortedMps = sortMps(value, direction);
+      setFilteredMps(sortedMps);
     } else {
-
-      if (value === "Title") {
-        if (direction === "ASC") {
-          result = [...divisions].sort((a, b) => a.title > b.title);
-        } else {
-          result = [...divisions].reverse((a, b) => a.title > b.title);
-        }
-        setFilteredDivisions(result);
-      } else if (value === "Voted Aye Count") {
-
-        if (direction === "ASC") {
-          result = [...divisions].sort((a, b) => a.ayeCount - b.ayeCount);
-        } else {
-          result = [...divisions].sort((a, b) => b.ayeCount - a.ayeCount);
-        }
-
-        setFilteredDivisions(result);
-
-      } else if (value === "Voted No Count") {
-        if (direction === "ASC") {
-          result = [...divisions].sort((a, b) => a.noCount - b.noCount);
-        } else {
-          result = [...divisions].sort((a, b) => b.noCount - a.noCount);
-        }
-        setFilteredDivisions(result);
-      } else if (value === "Total Votes") {
-        if (direction === "ASC") {
-          result = [...divisions].sort((a, b) => (a.noCount + a.ayeCount) - (b.noCount + b.ayeCount));
-        } else {
-          result = [...divisions].sort((a, b) => (b.noCount + b.ayeCount) - (a.noCount + a.ayeCount));
-        }
-        setFilteredDivisions(result);
-      } else if (value === "Date") {
-        if (direction === "ASC") {
-          result = [...divisions].sort((a, b) => compareDates(a.date, b.date));
-        } else {
-          result = [...divisions].sort((a, b) => compareDates(b.date, a.date));
-        }
-        setFilteredDivisions(result);
-      }
+      const sortedDivisions = sortDivisions(value, direction);
+      setFilteredDivisions(sortedDivisions);
     }
+
   }
 
   const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName, status = "All" }) => {
@@ -380,7 +329,6 @@ function PageContent() {
     }
 
     const result = await fetch(url);
-
 
     const mpsResult = await result.json();
     setMps(mpsResult);
@@ -421,7 +369,6 @@ function PageContent() {
             setStatusValue(status);
           }
 
-
         } else if (type.startsWith("Division")) {
 
           divisionCategory = searchParams.get('category') || searchParams.get('Category');;
@@ -447,18 +394,15 @@ function PageContent() {
         setName(searchName);
       }
 
-
       if (type?.startsWith("MP")) {
         getMps({ party, year, sex, searchName, status });
       } else if (type.startsWith("Division")) {
         onSearchDivisions({ category: divisionCategory || "Any", year, searchName });
       }
-
     }
-
   }, []);
 
-  const compareDates = (date1, date2) => {
+  const compareNeoDates = (date1, date2) => {
 
     // Compare years
     if (date1.year.low !== date2.year.low) {
@@ -474,57 +418,30 @@ function PageContent() {
     return date1.day.low - date2.day.low;
   }
 
-
-  const onAddQueryParamToUrl = ({ key, value }) => {
-    console.log("change url", key, value);
+  const onAddQueryParamToUrl = ({ key, value }: { key: string; value: string }) => {
     const params = new URLSearchParams(searchParams);
-
-    //if querying by one of the exclusive query types then make sure other options are removed from url 
-    if (key.toLowerCase() === "year") {
-      params.delete("category");
-      params.delete("Category");
-      params.delete("sex");
-      params.delete("votes");
-      params.delete("party");
-    } else if (key.toLowerCase() === "votes") {
-      params.delete("category");
-      params.delete("Category");
-      params.delete("sex");
-      params.delete("Year");
-      params.delete("year");
-      params.delete("party");
-    } else if (key.toLowerCase() === "sex") {
-      params.delete("category");
-      params.delete("Category");
-      params.delete("votes");
-      params.delete("Year");
-      params.delete("year");
-      params.delete("party");
-    } else if (key.toLowerCase() === "category") {
-      params.delete("sex");
-      params.delete("votes");
-      params.delete("Year");
-      params.delete("year");
-      params.delete("party");
-    } else if (key.toLowerCase() === "party") {
-      params.delete("category");
-      params.delete("Category");
-      params.delete("votes");
-      params.delete("Year");
-      params.delete("year");
-      params.delete("sex");
+  
+    // Exclusive query types
+    const exclusiveKeys = ["year", "votes", "sex", "category", "party"];
+  
+    // Delete other exclusive params if a new one is added
+    if (exclusiveKeys.includes(key.toLowerCase())) {
+      exclusiveKeys.forEach(
+        (exclKey) => exclKey !== key.toLowerCase() && params.delete(exclKey)
+      );
     }
-
+  
+    // Special handling for "name"
     if (key.toLowerCase() === "name" && !value) {
       params.delete("name");
     } else {
       params.set(key.toLowerCase(), value);
     }
-
+  
     const newSearchParams = params.toString();
     router.push(`${pathname}?${newSearchParams}`, { scroll: false });
-  }
-
+  };
+  
   const onChangeDivisionCategory = async (value) => {
 
     setDivisions(undefined);
@@ -769,13 +686,13 @@ function PageContent() {
               <Input
                 type="search"
                 title="name"
-                placeholder={type.startsWith("MP") ? 'filter by MP name' : 'filter by division title'}                
-                value={name}                
-                onChange={(e) => onChangeName(e.target.value)}                
+                placeholder={type.startsWith("MP") ? 'filter by MP name' : 'filter by division title'}
+                value={name}
+                onChange={(e) => onChangeName(e.target.value)}
               />
 
               <Button
-                variant={buttonHighlight ? "default" : "outline" }                 
+                variant={buttonHighlight ? "default" : "outline"}
                 className='button iconbutton'
                 onClick={() => applyName(type)}
               >
