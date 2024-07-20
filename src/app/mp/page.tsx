@@ -75,16 +75,13 @@ function PageContent() {
   const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substr(0, 10));
 
   const [votefilterType, setVotefilterType] = useState("Any");
-  const [filterInProgress, setFilterInProgress] = useState(false);  
+  const [filterInProgress, setFilterInProgress] = useState(false);
   const [queryType, setQueryType] = useState("none");
 
   const [votefilterTitle, setVotefilterTitle] = useState("");
 
-  //similarity params
-  const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All Parties");  
-
+  const [includeOrExcludeParties, setIncludeOrExcludeParties] = useState("All Parties");
   const [limit, setLimit] = useState(6);
-
   const [isFilterChanged, setIsFilterChanged] = useState(false);
 
   type FilterOption = "Include" | "Exclude";
@@ -96,11 +93,10 @@ function PageContent() {
   }
 
   const [similarityType, setSimilarityType] = useState<SimilarityType>(SimilarityType.MOST);
-  const searchParams = useSearchParams();  
+  const searchParams = useSearchParams();
   const [tableTitle, setTableTitle] = useState("");
 
   const onApplyFilter = async () => {
-
     setIsFilterChanged(false);
     setFilterInProgress(true);
 
@@ -110,12 +106,11 @@ function PageContent() {
     setVotingSummary(result);
   }
 
-
   const onQueryMp = async (id: string) => {
 
     setMpDetails(undefined);
 
-    const result: any = await ky(`https://members-api.parliament.uk/api/Members/${id}`).json();    
+    const result: any = await ky(`https://members-api.parliament.uk/api/Members/${id}`).json();
 
     setMpDetails(result);
 
@@ -144,12 +139,9 @@ function PageContent() {
   const onGetVotingSummary = async (id: number, fromDate = EARLIEST_FROM_DATE, toDate = new Date().toISOString().substr(0, 10), divisionCategory = "Any", name = "Any") => {
 
     setFilterInProgress(true);
-
     const result = await ky(`${config.mpsApiUrl}votecounts?id=${id}&fromDate=${fromDate}&toDate=${toDate}&category=${divisionCategory}&name=${name}`).json();
-    console.log('votecounts ', result);
-
     setFilterInProgress(false);
-    
+
     //@ts-ignore
     setVotingSummary(result);
   }
@@ -165,7 +157,7 @@ function PageContent() {
 
     setQueryType("history");
     setTableData(undefined);
-    
+
     try {
       const nameParam = votefilterTitle || "Any";
 
@@ -174,17 +166,11 @@ function PageContent() {
       ).json();
 
       // @ts-ignore      
-      console.log(response.records[0]);
-
-      // @ts-ignore      
       setTableData(response.records);
       setTableTitle(`${mpDetails?.value?.nameDisplayAs} voted ${type === "votedAye" ? "Aye" : type === "votedNo" ? "No" : ""}`);
-      // @ts-ignore
 
     } catch (error) {
-      // @ts-ignore
       console.error(error);
-      
       // @ts-ignore
       setSimilarityResult(undefined);
     }
@@ -200,7 +186,7 @@ function PageContent() {
     }
 
     setQueryType("similarity");
-    setTableData(undefined);    
+    setTableData(undefined);
 
     let queryParams = '';
 
@@ -216,63 +202,20 @@ function PageContent() {
     } else if (includeOrExclude === "Include" && includeOrExcludeParties !== "All Parties") {
       queryParams = `&partyIncludes=${includeOrExcludeParties}`;
     }
-
     const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpData?.value?.nameDisplayAs}&id=${mpData?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
-
-    const result: Array<any> = await ky(url).json();
-
-    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    //TODO something not working getting the css variable for bar colour so using localstorage direct. fix this
-    const chartData = {
-      labels: [mpData?.value?.nameDisplayAs],
-      datasets: [
-        {
-          label: "Voting Similarity",
-          backgroundColor: result.map((_, index) => {
-
-            const baseColor = isDarkMode ? "#980c4c" : "#a972cb";
-
-            // Darken the first bar by 20%
-            return index === 0 ? isDarkMode ? "#600b32" : "#6e0da9" : baseColor;
-          }),
-          // borderColor: result.map((_, index) => index === 0 ? '#FFF' : "#262a32"),
-          borderColor: "#262a32",
-          borderWidth: 2,
-          indexAxis: "y",
-          width: "40px",
-          data: [1], // Start with the queried MP's score (1 for self-similarity)        
-        },
-      ],
-    };
-    //@ts-ignore
+    const result: [] = await ky(url).json();
     setSimilarityResult(result);
-    // @ts-ignore
-    result.forEach((element) => {
-      // @ts-ignore
-      chartData.labels.push(element.name);
-      // @ts-ignore
-      chartData.datasets[0].data.push(element.score);
-    });
-  
-
   };
 
   const onRowClick = (row: any) => {
-    console.log("click ", row);
-
     const id = row._fields[0].low
-
     router.push(`division?id=${id}`, { scroll: true });
   }
 
   const onQueryMpByName = async (data: any) => {
-
     const result = await ky(`https://members-api.parliament.uk/api/Members/Search?Name=${data.name}`).json();
-
     //@ts-ignore
     router.push(`mp?id=${result.items[0]?.value?.id}`, { scroll: true });
-
   }
 
   const onChangeVoteTitle = (value: string) => {
@@ -291,7 +234,6 @@ function PageContent() {
   }
 
   return (
-
     <section id="mpDetailsPage" className="flex flex-col w-full justify-around p-4 gap-4 flex-wrap">
 
       <div className="flex w-full gap-4">
@@ -354,7 +296,7 @@ function PageContent() {
 
               <CustomSelect
                 id="vaexclude"
-                value={includeOrExcludeParties}                
+                value={includeOrExcludeParties}
                 onValueChange={setIncludeOrExcludeParties}
                 options={[{ value: "All Parties", label: "All Parties" }].concat(Object.keys(Party).map(i => { return { value: Party[i], label: Party[i] } }))}
               />
@@ -386,7 +328,6 @@ function PageContent() {
             type={similarityType}
             onQueryMpByName={onQueryMpByName}
           />
-
         </fieldset>
 
         <fieldset className="border border-gray-200 pt-4 mb-4 relative p-2 w-full">
@@ -398,7 +339,6 @@ function PageContent() {
               />
               Voting History
             </span>
-
           </legend>
 
           <div className="w-4/5 max-w-[400px] flex flex-col justify-start gap-2">
