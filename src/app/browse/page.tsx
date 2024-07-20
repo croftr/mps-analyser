@@ -619,7 +619,7 @@ function PageContent() {
       <div className="w-full flex justify-between p-3 flex-wrap gap-2">
         <div className="flex items-center w-full justify-between md:w-2/3 lg:w-1/2 xl:w-1/3">
 
-          <span className="w-[100px] flex items-baseline gap-3">
+          <span className="w-[100px] flex gap-3">
 
             <span className='ml-2'>
               {type.includes("MP") && (
