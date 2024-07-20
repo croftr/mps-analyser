@@ -341,7 +341,7 @@ function PageContent() {
             </span>
           </legend>
 
-          <div className="w-4/5 max-w-[400px] flex flex-col justify-start gap-2">
+          <div className="w-4/5 flex flex-col justify-start gap-2">
             <div className="flex flex-col sm:flex-row gap-2 items-baseline">
               <Label className='min-w-[60px]' htmlFor="betweenStart">Between</Label>
               <input
