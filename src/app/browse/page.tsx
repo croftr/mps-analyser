@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
@@ -615,8 +616,8 @@ function PageContent() {
 
   return (
     <>
-      <div className="w-full flex justify-between items-baseline p-3 flex-wrap gap-2">
-        <div className="flex items-baseline w-full justify-between md:w-2/3 lg:w-1/2 xl:w-1/3">
+      <div className="w-full flex justify-between p-3 flex-wrap gap-2">
+        <div className="flex items-center w-full justify-between md:w-2/3 lg:w-1/2 xl:w-1/3">
 
           <span className="w-[100px] flex items-baseline gap-3">
 
@@ -629,13 +630,11 @@ function PageContent() {
               )}
             </span>
 
-            <Label
-              htmlFor="selectType"
-            >
-              {type.startsWith("MP") && filteredMps && filteredMps.length}
-              {type.startsWith("Division") && filteredDivisions && filteredDivisions.length}
+            <Badge variant={(filteredMps && filteredMps.length) || (filteredDivisions && filteredDivisions.length) ? "default": "secondary"}>             
+              {type.startsWith("MP") && filteredMps && filteredMps.length}              
+              {type.startsWith("Division") && filteredDivisions && filteredDivisions.length}              
               {!filteredMps && !filteredDivisions && <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div>}
-            </Label>
+            </Badge>
           </span>
 
           <div style={{ width: 150 }}>

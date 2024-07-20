@@ -23,9 +23,9 @@ interface MpCardProps {
     isActive?: boolean;
     startDate: any; // Keep as 'any' for flexibility
     endDate: any;   // Keep as 'any' for flexibility
-    totalVotes: number;
-    ayeVotes: number;
-    noVotes: number;
+    totalVotes?: number;
+    ayeVotes?: number;
+    noVotes?: number;
   };
   isFormatedDates?: boolean;       // Optional flag for date formatting (defaults to false)
   isDisplayingTable?: boolean;     // Optional flag for table display (defaults to true)
