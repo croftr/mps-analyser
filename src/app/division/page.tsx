@@ -105,15 +105,15 @@ function PageContent() {
       <div className="flex p-2 gap-4">
         <div className='flex items-center gap-2 gridCell'>
           <Switch id="vaexclude" checked={showVotedAye} onCheckedChange={() => setShowVotedAye(!showVotedAye)} />
-          <Label htmlFor="vaexclude">Aye</Label>
+          <Label htmlFor="vaexclude">Aye ({votedAye?.length || 0})</Label>
         </div>
         <div className='flex items-center gap-2 gridCell'>
           <Switch id="vaexclude" checked={showVotedNo} onCheckedChange={() => setShowVotedNo(!showVotedNo)} />
-          <Label htmlFor="vaexclude">No</Label>
+          <Label htmlFor="vaexclude">No ({votedNo?.length || 0})</Label>
         </div>
         <div className='flex items-center gap-2 gridCell'>
           <Switch id="vaexclude" checked={showAbsent} onCheckedChange={() => setShowAbsent(!showAbsent)} />
-          <Label htmlFor="vaexclude">Absent</Label>
+          <Label htmlFor="vaexclude">Absent ({absent?.length || 0})</Label>
         </div>
       </div>
 

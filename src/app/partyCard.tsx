@@ -17,7 +17,7 @@ export function PartyCard({ party }: { party: Party }) {
       onClick={getPartyMps}
       className="cursor-pointer">
       <CardContent className="flex items-baseline gap-4 p-3">
-        <div className="flex-1 min-w-[100px]">
+        <div className="flex-1 min-w-[70px]">
           <PartyLabel partyName={party.name} />
         </div>
         <span>{party.total} MP&apos;s</span>

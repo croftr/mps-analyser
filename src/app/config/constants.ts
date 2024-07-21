@@ -73,6 +73,8 @@ export const PARTY_COLOUR: Record<string, PartyColor> = {
     "Social Democratic & Labour Party": { backgroundColour: "#4ea268", foregroundColour: "#000000" },
     "Traditional Unionist Voice": { backgroundColour: "#0c3a6a", foregroundColour: "#ffffff" },
     "Ulster Unionist Party": { backgroundColour: "#a1cdf0", foregroundColour: "#FFFFFF" },
+    "Workers Party of Britain": { backgroundColour: "#DB241E", foregroundColour: "#FFFFFF" },
+    
 };
 
 

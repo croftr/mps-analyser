@@ -18,7 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
+import PartyLabel from "@/components/ui/partyLabel";
 import DivisioSkeletonTable from "./divisionSkeletonTable";
 
 
@@ -111,12 +111,10 @@ export default function DivisionTable({ data, title, onQueryMp }: DivisionTableP
                                     onClick={() => onQueryMp(row.original.id)}
                                     className="hover:bg-gray-100 dark:hover:bg-gray-800"
                                 >
-                                    {row.getVisibleCells().map((cell) => (
+                                    {row.getVisibleCells().map((cell, index) => (
                                         <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
+                                            {index === 0 ? <PartyLabel key={cell.id} partyName={cell.getValue()} />  : cell.getValue()}
+                                            
                                         </TableCell>
                                     ))}
                                 </TableRow>

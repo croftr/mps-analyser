@@ -167,7 +167,8 @@ function PageContent() {
 
       // @ts-ignore      
       setTableData(response.records);
-      setTableTitle(`${mpDetails?.value?.nameDisplayAs} voted ${type === "votedAye" ? "Aye" : type === "votedNo" ? "No" : ""}`);
+
+      setTableTitle(`${type === "votedAye" ? "Voted Aye" : type === "votedNo" ? "Voted No" : "All Votes"}`);
 
     } catch (error) {
       console.error(error);
