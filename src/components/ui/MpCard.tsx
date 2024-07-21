@@ -42,6 +42,8 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
       "Reform UK": "Reform",
       "Ulster Unionist Party": "UNP",
       "Traditional Unionist Voice": "TUV",      
+      "Social Democratic and Labour Party": "SDLP",      
+      "Social Democratic & Labour Party": "SDLP",      
     };
   
     return item.party?.startsWith("Speaker") ? "Speaker" : partyAbbreviations[item.party || ""] || item.party || ""; // Handle undefined party
@@ -70,7 +72,7 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
       <div className="relative mb-1 aspect-square"> {/* Added aspect-square */}
         <Image
           className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
-          fill
+        fill
           src={`https://members-api.parliament.uk/api/Members/${item.id}/Thumbnail`}
           alt="MpImage"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -86,8 +88,7 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
           }}
         >
          
-         {getPartyAbbreviation(item)}
-          {/* {item.party === "Scottish National Party" ? "SNP" : item.party === "Liberal Democrat" ? "Lib Dem" : item.party === "Democratic Unionist Party" ? "DUP" : item.party === "Reform UK" ? "Reform" : item.party} */}
+         {getPartyAbbreviation(item)}          
         </span>
 
         {isFormatedDates && <p className="font-medium">{new Date(item.startDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>}
