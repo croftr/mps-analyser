@@ -92,7 +92,7 @@ function PageContent() {
       <div className="header flex flex-col items-start justify-center p-4 rounded-md dark:bg-gray-800 bg-gray-100 dark:text-white gap-2">
 
         <div className="flex gap-2">
-          <DivisionSvg />
+          <DivisionSvg className="min-w-[30px]" />
           <p className="text-lg">{divisionDetails?.Title}</p>
         </div>
 
