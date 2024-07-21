@@ -9,7 +9,6 @@ export const PARTY_NAMES = [
     "Green Party",
     "Independent",
     "Labour",
-    "Labour (Co-op)",
     "Liberal Democrat",
     "Plaid Cymru",
     "Reform UK",
