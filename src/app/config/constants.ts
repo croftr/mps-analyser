@@ -16,6 +16,8 @@ export const PARTY_NAMES = [
     "Sinn Féin",
     "Social Democratic and Labour Party",
     "Speaker",    
+    "Traditional Unionist Voice",
+    "Ulster Unionist Party"
 ]
 
 export type PartyType =
