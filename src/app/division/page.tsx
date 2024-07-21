@@ -66,7 +66,7 @@ function PageContent() {
   const onQueryMp = (id: number) => {
     console.log("go ", id);
 
-    router.push(`mp?id=${id}`, { scroll: false });
+    router.push(`mp?id=${id}`, { scroll: true });
 
   }
 

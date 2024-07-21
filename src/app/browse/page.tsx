@@ -209,7 +209,7 @@ function PageContent() {
     //if this is called from deep link url then dont change the url 
     if (changeUrl) {
       removeAllQueryParams();
-      router.push(`browse/?type=${value}`, { scroll: false });
+      router.push(`browse/?type=${value}`, { scroll: true });
     }
 
     setType(value);
@@ -440,7 +440,7 @@ function PageContent() {
     }
   
     const newSearchParams = params.toString();
-    router.push(`${pathname}?${newSearchParams}`, { scroll: false });
+    router.push(`${pathname}?${newSearchParams}`, { scroll: true });
   };
   
   const onChangeDivisionCategory = async (value) => {
@@ -553,13 +553,13 @@ function PageContent() {
   }
 
   const onQueryMp = async (id: number) => {
-    router.push(`/mp?id=${id}`, { scroll: false });
+    router.push(`/mp?id=${id}`, { scroll: true });
     // const mp = await ky.get(`${config.apiUrl}/mp/${id}`).json();
     console.log(id);
   }
 
   const onQueryDivision = async (id) => {
-    router.push(`/division?id=${id}`, { scroll: false });
+    router.push(`/division?id=${id}`, { scroll: true });
   }
 
   const applyName = type => {

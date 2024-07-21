@@ -2,7 +2,7 @@
 import * as React from 'react'
 import Image from "next/image";
 import CustomSvg from '../custom/customSvg';
-
+import PartyLabel from './partyLabel';
 import { PARTY_COLOUR } from ".././../app/config/constants";
 
 import {
@@ -33,8 +33,8 @@ interface MpCardProps {
 }
 
 const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = true, className }: MpCardProps) => {
-
-  const getPartyAbbreviation = (item: MpCardProps["item"]): string => {
+  
+  const getPartyAbbreviation = (name:string): string => {
     const partyAbbreviations: Record<string, string> = {
       "Scottish National Party": "SNP",
       "Liberal Democrat": "Lib Dem",
@@ -46,7 +46,7 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
       "Social Democratic & Labour Party": "SDLP",      
     };
   
-    return item.party?.startsWith("Speaker") ? "Speaker" : partyAbbreviations[item.party || ""] || item.party || ""; // Handle undefined party
+    return name?.startsWith("Speaker") ? "Speaker" : partyAbbreviations[name || ""] || name || ""; // Handle undefined party
   };
   return (
 
@@ -80,16 +80,9 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
       </div>
 
       <div className='flex items-baseline gap-4'>
-        <span
-          className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium mt-2 mb-1" // Added Tailwind classes
-          style={{
-            backgroundColor: PARTY_COLOUR[item.party|| ""]?.backgroundColour,
-            color: PARTY_COLOUR[item.party|| ""]?.foregroundColour,
-          }}
-        >
-         
-         {getPartyAbbreviation(item)}          
-        </span>
+        
+        <PartyLabel partyName={item.party} />
+        
 
         {isFormatedDates && <p className="font-medium">{new Date(item.startDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>}
         {!isFormatedDates && <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>}

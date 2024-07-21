@@ -105,7 +105,7 @@ function PageContent() {
 
     if (updateUrl) {
       console.log("update url party");
-      router.push(`?party=${row.original.partyName}`, { scroll: false });
+      router.push(`?party=${row.original.partyName}`, { scroll: true });
     }
 
     const donationsResponse = await ky(`${config.mpsApiUrl}donations?partyname=${row.original.partyName}`).json();
@@ -124,7 +124,7 @@ function PageContent() {
     if (updateUrl) {
       console.log("update url donars");
       
-      router.push(`?party=${tableText.split(" ")[2]}&donar=${row.original.donar}`, { scroll: false });
+      router.push(`?party=${tableText.split(" ")[2]}&donar=${row.original.donar}`, { scroll: true });
     }
 
     const donationsResponse = await ky(`${config.mpsApiUrl}donations?donar=${row.original.donar}`).json();

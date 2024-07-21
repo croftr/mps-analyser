@@ -79,10 +79,10 @@ function PageContent() {
 
     if (type === "MP") {
       const id = row._fields[3].low;
-      router.push(`mp?id=${id}`, { scroll: false });
+      router.push(`mp?id=${id}`, { scroll: true });
     } else {
       const id = row._fields[2].low;
-      router.push(`division?id=${id}`, { scroll: false });
+      router.push(`division?id=${id}`, { scroll: true });
     }
   }
 

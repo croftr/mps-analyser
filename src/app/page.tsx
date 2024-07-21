@@ -5,8 +5,8 @@ import { Calendar } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
 import ky from 'ky';
 import { useRouter } from 'next/navigation'
+import { Vote, Party } from "../types";
 import DivisionSvg from "@/components/custom/divisionSvg";
-
 import {
   Card,
   CardContent,
@@ -23,6 +23,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useEffect } from "react"
+import { PartyCard } from "./partyCard";
 
 //not sure what the point of this is
 const chartConfig = {
@@ -32,15 +33,10 @@ export default function Home() {
 
   const router = useRouter();
 
-  interface Vote {
-    DivisionId: number,
-    Title: string,
-    Date: string
-  }
-
   const [chartData, setChartData] = React.useState([]);
   const [total, setTotal] = React.useState(0);
   const [recentVotes, setRecentVotes] = React.useState<Vote[] | undefined>();
+  const [parties, setParties] = React.useState<Party[] | undefined>();
 
   const getPartyCounts = async () => {
 
@@ -89,14 +85,40 @@ export default function Home() {
 
   }
 
+  const getParties = async () => {
+
+    const result = await ky(`https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/Sun%2C21%20Jul%202024%2011%3A08%3A47%20GMT%20`).json();
+
+    console.log("check 1 ", result);
+
+
+    const partiesArray: Array<Party> = []
+
+    //@ts-ignore
+    result.items.forEach(item => {
+      console.log("item ", item);
+
+      const party: Party = {
+        name: item.value.party.name,
+        foregroundColour: item.value.party.foregroundColour,
+        backgroundColour: item.value.party.backgroundColour,
+        total: item.value.total,
+      }
+      partiesArray.push(party);
+    });
+    
+    setParties(partiesArray);
+  }
+
   useEffect(() => {
     getPartyCounts();
+    getParties();
     getRecentVotes();
   }, []);
 
   const onQueryDivision = async (id: number) => {
     console.log("query ", id);
-    router.push(`division?id=${id}`, { scroll: false });
+    router.push(`division?id=${id}`, { scroll: true });
   }
 
 
@@ -170,6 +192,10 @@ export default function Home() {
         </Card>
       </div>
 
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 mt-4">
+        {parties && parties.filter(i => i.name !== "Speaker").map(i => <PartyCard key={i.name} party={i} />)}
+      </div>
+
 
       {!recentVotes && <h1>getting data....</h1>}
       {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
@@ -198,8 +224,6 @@ export default function Home() {
 
             </div>))}
         </div>
-
-
       )}
     </div>
 
