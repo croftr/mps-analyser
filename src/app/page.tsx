@@ -87,7 +87,10 @@ export default function Home() {
 
   const getParties = async () => {
 
-    const result = await ky(`https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/Sun%2C21%20Jul%202024%2011%3A08%3A47%20GMT%20`).json();
+    const now = new Date();
+    const formattedDate = now.toUTCString();
+
+    const result = await ky(`https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/${formattedDate}`).json();
 
     console.log("check 1 ", result);
 
