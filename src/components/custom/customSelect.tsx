@@ -13,17 +13,19 @@ interface CustomSelectProps extends SelectProps {
   placeholder?: string;
   disabled?: boolean;
   id?: string;
+  className?: string
 }
 
-const CustomSelect = ({ value, onValueChange, options, disabled=false, id }: CustomSelectProps) => {
+const CustomSelect = ({ value, onValueChange, options, disabled=false, id, className }: CustomSelectProps) => {
   return (
-    <Select      
+
+    <Select            
       onValueChange={(value) => onValueChange?.(value)}
       {...(id && { id })} // Conditionally spread the id prop if not undefined
       value={value}
       disabled={disabled}
     >
-      <SelectTrigger className="">
+      <SelectTrigger className={className}>
         <SelectValue placeholder={options[0].label}>{value}</SelectValue>
       </SelectTrigger>
       <SelectContent

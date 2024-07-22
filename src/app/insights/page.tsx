@@ -3,12 +3,22 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
 import ky from 'ky';
+
+import CustomSelect from "@/components/custom/customSelect";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
 const types = [
   "MP",
-  "Division"
+  "Division",
+  // "Contract",
+  // "Organisation",
+  // "Individual"
 ]
 
 const queries = [
@@ -43,7 +53,7 @@ function PageContent() {
 
   const [type, setType] = useState(types[0]);
   const [query, setQuery] = useState(queries[0]);
-  const [party, setParty] = useState("Any");
+  const [party, setParty] = useState("Any Party");
   const [voteType, setVoteType] = useState(voteTyps[0]);
   const [voteCategory, setVoteCategory] = useState(VOTING_CATEGORIES[0]);
   const [limit, setLimit] = useState(10);
@@ -58,8 +68,10 @@ function PageContent() {
 
     const nameParam = name || "Any";
 
+    const partyParam = party.includes("Any") ? "Any" : party;
+
     // @ts-ignore
-    let url = `${config.mpsApiUrl}insights/${type === 'MP' ? 'mpvotes' : 'divisionvotes'}?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${nameParam}`;
+    let url = `${config.mpsApiUrl}insights/${type === 'MP' ? 'mpvotes' : 'divisionvotes'}?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${partyParam}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${nameParam}`;
 
     // @ts-ignore
     if (type === 'Division' && voteType !== 'on') {
@@ -76,7 +88,6 @@ function PageContent() {
 
   const getDetails = (row: any) => {
 
-
     if (type === "MP") {
       const id = row._fields[3].low;
       router.push(`mp?id=${id}`, { scroll: true });
@@ -86,212 +97,246 @@ function PageContent() {
     }
   }
 
+  const onChangeType = (value: string) => {
+    setType(value);
+  }
+
+  const onChangeCategory = (value: string) => {
+    setVoteCategory(value);
+  }
+
+  const onChangeParty = (value: string) => {
+    setParty(value);
+  }
+
+  const onChangeVoteType = (value: string) => {
+    setVoteType(value);
+  }
+
+  const onChangeQuery = (value: string) => {
+    setQuery(value);
+  }
+
+  const onChangeVoteCategory = (value: string) => {
+    setVoteCategory(value);
+  }
+
+
+
   return (
 
     <div className="insights">
 
       <div>
-        <div className="flex flex-col md:flex-row gap-2 md:gap-3 mb-4 items-baseline p-4 flex-wrap">
-          <div className='flex'>
-            <label htmlFor="type" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
-              Which
-            </label>
-            <select
-              id="type"
-              className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              name="type"
-              onChange={(e) => setType(e.target.value)}
-              value={type}
-            >
-              {types.map((type) => (
-                <option value={type} key={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
+        <div className="flex flex-col gap-2 mb-4 items-baseline p-4 flex-wrap">
 
+          <div className='flex items-baseline gap-2'>
+
+            <Label
+              className="min-w-[80px]"
+              htmlFor="selectType"
+            >
+              Which
+            </Label>
+
+            <CustomSelect
+              id="selectType"
+              className="min-w-[185px]"
+              value={type}
+              onValueChange={onChangeType}
+              options={types.map(str => ({ value: str, label: `${str}'s`, }))}
+            />
           </div>
 
-          <div className='flex'>
-            <label htmlFor="name" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
-              {type === "MP" ? "Name" : "Title"}
-            </label>
-            <input
-              id="name"  // Added for accessibility
-              className="input fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          <div className='flex items-baseline gap-2'>
+            <Label
+              htmlFor="name"
+              className="min-w-[80px]"
+            >
+              {type === "MP" ? "name" : "title"}
+            </Label>
+            <Input
+              id="name"
               type="search"
               placeholder="includes text"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+
           </div>
 
           {type === 'Division' && (
-            <div className='flex'>
-              <label htmlFor="voteCategory" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
-                type
-              </label>
-              <select
-                id="voteCategory"  // Added id for accessibility
-                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                name="voteCategory"
-                onChange={(e) => setVoteCategory(e.target.value)}
-                value={voteCategory}
+            <div className='flex items-baseline gap-2'>
+              <Label
+                htmlFor="voteCategory"
+                className="min-w-[80px]"
               >
-                {VOTING_CATEGORIES.map((value) => (
-                  <option value={value} key={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
+                category
+              </Label>
+
+              <CustomSelect
+                id="voteCategory"
+                className="min-w-[185px]"
+                value={voteCategory}
+                onValueChange={onChangeCategory}
+                options={VOTING_CATEGORIES.map(str => ({ value: str, label: `${str}'s`, }))}
+              />
+
             </div>
           )}
 
           {type === 'MP' && (
 
-            <div className='flex'>
-              <label htmlFor="partySelect" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">
-                from
-              </label>
-
-              <select
-                id="partySelect"
-                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                name="party"
-                onChange={(e) => setParty(e.target.value)}
-                value={party}
-              >
-                {Object.values(Party)
-                  .filter((i) => i !== "Unknown")
-                  .map((i) => (
-                    <option value={i} key={i}>
-                      {i}
-                    </option>
-                  ))}
-              </select>
-            </div>
-          )}
-
-          {type === 'Division' && (
-            <div className='flex'>
-
-              <label htmlFor="voteType" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">was voted</label>
-
-
-              <select
-                id="voteType"
-                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                name="voteType"
-                onChange={(e) => setVoteType(e.target.value)}
-                value={voteType}
-              >
-                {voteTyps.map(i => (
-                  <option value={i} key={i}>
-                    {i}
-                  </option>
-                ))}
-              </select>
-
-            </div>
-          )}
-          <div className="flex">
-
-            {type === 'Division' && <label htmlFor="leastMostSelct" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">the</label>}
-            {type === 'MP' && <label htmlFor="leastMostSelct" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">voted the</label>}
-
-            <select
-              id="leastMostSelct"
-              className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              name="query"
-              onChange={(e) => setQuery(e.target.value)}
-              value={query}
+            <div
+              className='flex items-baseline gap-2'
             >
-              {queries.map(query => (
-                <option
-                  value={query}
-                  key={query}
-                >
-                  {query}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {type === 'MP' && (
-            <div className='flex'>
-
-              <label htmlFor="categorySelect" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">on</label>
-
-              <select
-                id="categorySelect"
-                className="select fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                name="voteCategory"
-                onChange={(e) => setVoteCategory(e.target.value)}
-                value={voteCategory}
+              <Label
+                htmlFor="partySelect"
+                className="min-w-[80px]"
               >
-                {VOTING_CATEGORIES.map(value => (
-                  <option
-                    value={value}
-                    key={value}
-                  >
-                    {value}
-                  </option>
-                ))}
-              </select>
+                from
+              </Label>
+
+              <CustomSelect
+                id="partySelect"
+                className="min-w-[185px]"
+                value={party}
+                onValueChange={onChangeParty}
+                options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
+              />
+              
             </div>
           )}
 
-          <div className="fixedInput flex items-center">
+          {type === 'Division' && (
+            <div className='flex items-baseline gap-2'>
 
-            <label htmlFor="startSelect" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">Between</label>
+              <Label
+                htmlFor="voteType"
+                className="whitespace-nowrap min-w-[80px]"
+              >was voted
+              </Label>
+
+              <CustomSelect
+                id="voteType"
+                className="min-w-[185px]"
+                value={voteType}
+                onValueChange={onChangeVoteType}
+                options={voteTyps.map(str => ({ value: str, label: str }))}
+              />
+
+            </div>
+          )}
+
+          <div className="flex items-baseline gap-2">
+
+            {type === 'Division' && <Label htmlFor="leastMostSelct" className="min-w-[80px]">the</Label>}
+            {type === 'MP' && <Label htmlFor="leastMostSelct" className='whitespace-nowrap min-w-[80px]'>voted the</Label>}
+
+            <CustomSelect
+              id="voteType"
+              className="min-w-[185px]"
+              value={query}
+              onValueChange={onChangeQuery}
+              options={queries.map(str => ({ value: str, label: str }))}
+            />
+
+          </div>
+
+          {type === 'MP' && (
+            <div className='flex items-baseline gap-2'>
+              <Label
+                htmlFor="categorySelect"
+                className="min-w-[80px]"
+              >
+                on
+              </Label>
+              <CustomSelect
+                id="voteType"
+                className="min-w-[185px]"
+                value={query}
+                onValueChange={onChangeVoteCategory}
+                options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
+              />
+            </div>
+          )}
+
+          <div className="flex gap-2 items-baseline">
+
+            <Label
+              htmlFor="startSelect"
+              className="min-w-[80px]">
+              between
+            </Label>
 
             <input
               type="date"
               id="startSelect"
               name="from-date"
-              className="min-w-[100px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               min={EARLIEST_FROM_DATE}
               max={new Date().toISOString().substr(0, 10)}
               onChange={(e) => setFromDate(e.target.value)}
               value={fromDate}
+              className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+              px-4 py-2 rounded-md
+              bg-background 
+              border-input  // Use the custom border color class
+              focus:outline-none 
+              focus:ring-2 
+              focus:ring-custom-outline 
+              transition-all duration-200 ease-in-out min-w-[185px]"
             />
+          </div>
+
+          <div className="flex gap-2 items-baseline">
+            <Label
+              htmlFor="startSelect"
+              className="min-w-[80px]">
+              and
+            </Label>
 
             <input
               type="date"
               id="toDate"
               name="to-date"
-              className="ml-2 min-w-[100px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               min={EARLIEST_FROM_DATE}
               max={new Date().toISOString().substr(0, 10)}
               onChange={(e) => setToDate(e.target.value)}
               value={toDate}
+              className="
+              px-4 py-2 rounded-md
+              bg-background 
+              border-input  // Use the custom border color class
+              focus:outline-none 
+              focus:ring-2 
+              focus:ring-custom-outline 
+              transition-all duration-200 ease-in-out min-w-[185px]"
             />
 
           </div>
 
-          <div className='flex'>
+          <div className='flex items-baseline gap-2'>
 
-            <label htmlFor="insightsLimit" className="min-w-[80px] md:min-w-0 pr-2 text-gray-700 dark:text-gray-300">limit</label>
+            <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
 
-            <input
+            <Input
               id="insightsLimit"
-              className="input fixedInput min-w-[150px] w-auto max-w-[250px] bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
               onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
               type="number">
-            </input>
+            </Input>
 
           </div>
 
-          <div className='w-full justify-center items-center' >
-          <button
-              className="w-full md:w-[700px] bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded"
+          <div className='w-full justify-center items-center mt-4' >
+            <Button
+              className="w-full md:w-[700px]"
               onClick={onSearch}
             >
               Go
-            </button>
-            </div>
+            </Button>
+          </div>
         </div>
 
       </div>
