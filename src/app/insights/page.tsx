@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
 import ky from 'ky';
 
+import ContractInsights from './contractInsights';
 import CustomSelect from "@/components/custom/customSelect";
 
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ import { NeoTable } from '@/components/ui/neoTable'
 const types = [
   "MP",
   "Division",
-  // "Contract",
+  "Contract",
   // "Organisation",
   // "Individual"
 ]
@@ -148,188 +149,198 @@ function PageContent() {
             />
           </div>
 
-          <div className='flex items-baseline gap-2'>
-            <Label
-              htmlFor="name"
-              className="min-w-[80px]"
-            >
-              {type === "MP" ? "name" : "title"}
-            </Label>
-            <Input
-              id="name"
-              className='min-w-[190px]'
-              type="search"
-              placeholder="includes text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+          {(type === "MP" || type === "Division") && (
 
-          </div>
+            <div className="mpsanddivisions">
+              <div className='flex items-baseline gap-2'>
+                <Label
+                  htmlFor="name"
+                  className="min-w-[80px]"
+                >
+                  {type === "MP" ? "name" : "title"}
+                </Label>
+                <Input
+                  id="name"
+                  className='min-w-[190px]'
+                  type="search"
+                  placeholder="includes text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
 
-          {type === 'Division' && (
-            <div className='flex items-baseline gap-2'>
-              <Label
-                htmlFor="voteCategory"
-                className="min-w-[80px]"
-              >
-                category
-              </Label>
+              </div>
 
-              <CustomSelect
-                id="voteCategory"
-                className="min-w-[190px]"
-                value={voteCategory}
-                onValueChange={onChangeCategory}
-                options={VOTING_CATEGORIES.map(str => ({ value: str, label: `${str}'s`, }))}
-              />
+              {type === 'Division' && (
+                <div className='flex items-baseline gap-2'>
+                  <Label
+                    htmlFor="voteCategory"
+                    className="min-w-[80px]"
+                  >
+                    category
+                  </Label>
 
+                  <CustomSelect
+                    id="voteCategory"
+                    className="min-w-[190px]"
+                    value={voteCategory}
+                    onValueChange={onChangeCategory}
+                    options={VOTING_CATEGORIES.map(str => ({ value: str, label: `${str}'s`, }))}
+                  />
+
+                </div>
+              )}
+
+              {type === 'MP' && (
+
+                <div
+                  className='flex items-baseline gap-2'
+                >
+                  <Label
+                    htmlFor="partySelect"
+                    className="min-w-[80px]"
+                  >
+                    from
+                  </Label>
+
+                  <CustomSelect
+                    id="partySelect"
+                    className="min-w-[190px]"
+                    value={party}
+                    onValueChange={onChangeParty}
+                    options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
+                  />
+
+                </div>
+              )}
+
+              {type === 'Division' && (
+                <div className='flex items-baseline gap-2'>
+
+                  <Label
+                    htmlFor="voteType"
+                    className="whitespace-nowrap min-w-[80px]"
+                  >was voted
+                  </Label>
+
+                  <CustomSelect
+                    id="voteType"
+                    className="min-w-[190px]"
+                    value={voteType}
+                    onValueChange={onChangeVoteType}
+                    options={voteTyps.map(str => ({ value: str, label: str }))}
+                  />
+
+                </div>
+              )}
+
+              <div className="flex items-baseline gap-2">
+
+                {type === 'Division' && <Label htmlFor="leastMostSelct" className="min-w-[80px]">the</Label>}
+                {type === 'MP' && <Label htmlFor="leastMostSelct" className='whitespace-nowrap min-w-[80px]'>voted the</Label>}
+
+                <CustomSelect
+                  id="voteType"
+                  className="min-w-[190px]"
+                  value={query}
+                  onValueChange={onChangeQuery}
+                  options={queries.map(str => ({ value: str, label: str }))}
+                />
+
+              </div>
+
+              {type === 'MP' && (
+                <div className='flex items-baseline gap-2'>
+                  <Label
+                    htmlFor="categorySelect"
+                    className="min-w-[80px]"
+                  >
+                    on
+                  </Label>
+                  <CustomSelect
+                    id="voteType"
+                    className="min-w-[190px]"
+                    value={query}
+                    onValueChange={onChangeVoteCategory}
+                    options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
+                  />
+                </div>
+              )}
+
+              <div className="flex gap-2 items-baseline">
+
+                <Label
+                  htmlFor="startSelect"
+                  className="min-w-[80px]">
+                  between
+                </Label>
+
+                <input
+                  type="date"
+                  id="startSelect"
+                  name="from-date"
+                  min={EARLIEST_FROM_DATE}
+                  max={new Date().toISOString().substr(0, 10)}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  value={fromDate}
+                  className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+  px-4 py-2 rounded-md
+  bg-background 
+  border-input  // Use the custom border color class
+  focus:outline-none 
+  focus:ring-2 
+  focus:ring-custom-outline 
+  transition-all duration-200 ease-in-out min-w-[190px]"
+                />
+              </div>
+
+              <div className="flex gap-2 items-baseline">
+                <Label
+                  htmlFor="startSelect"
+                  className="min-w-[80px]">
+                  and
+                </Label>
+
+                <input
+                  type="date"
+                  id="toDate"
+                  name="to-date"
+                  min={EARLIEST_FROM_DATE}
+                  max={new Date().toISOString().substr(0, 10)}
+                  onChange={(e) => setToDate(e.target.value)}
+                  value={toDate}
+                  className="
+  px-4 py-2 rounded-md
+  bg-background 
+  border-input  // Use the custom border color class
+  focus:outline-none 
+  focus:ring-2 
+  focus:ring-custom-outline 
+  transition-all duration-200 ease-in-out min-w-[190px]"
+                />
+
+              </div>
+
+              <div className='flex items-baseline gap-2'>
+
+                <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
+
+                <Input
+                  id="insightsLimit"
+                  className='min-w-[190px]'
+                  value={limit}
+                  onChange={(e) => setLimit(Number(e.target.value))}
+                  onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                  type="number">
+                </Input>
+              </div>
             </div>
           )}
 
-          {type === 'MP' && (
-
-            <div
-              className='flex items-baseline gap-2'
-            >
-              <Label
-                htmlFor="partySelect"
-                className="min-w-[80px]"
-              >
-                from
-              </Label>
-
-              <CustomSelect
-                id="partySelect"
-                className="min-w-[190px]"
-                value={party}
-                onValueChange={onChangeParty}
-                options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
-              />
-              
+          {type === "Contract" && (
+            <div id="contracts">
+              <ContractInsights />
             </div>
           )}
-
-          {type === 'Division' && (
-            <div className='flex items-baseline gap-2'>
-
-              <Label
-                htmlFor="voteType"
-                className="whitespace-nowrap min-w-[80px]"
-              >was voted
-              </Label>
-
-              <CustomSelect
-                id="voteType"
-                className="min-w-[190px]"
-                value={voteType}
-                onValueChange={onChangeVoteType}
-                options={voteTyps.map(str => ({ value: str, label: str }))}
-              />
-
-            </div>
-          )}
-
-          <div className="flex items-baseline gap-2">
-
-            {type === 'Division' && <Label htmlFor="leastMostSelct" className="min-w-[80px]">the</Label>}
-            {type === 'MP' && <Label htmlFor="leastMostSelct" className='whitespace-nowrap min-w-[80px]'>voted the</Label>}
-
-            <CustomSelect
-              id="voteType"
-              className="min-w-[190px]"
-              value={query}
-              onValueChange={onChangeQuery}
-              options={queries.map(str => ({ value: str, label: str }))}
-            />
-
-          </div>
-
-          {type === 'MP' && (
-            <div className='flex items-baseline gap-2'>
-              <Label
-                htmlFor="categorySelect"
-                className="min-w-[80px]"
-              >
-                on
-              </Label>
-              <CustomSelect
-                id="voteType"
-                className="min-w-[190px]"
-                value={query}
-                onValueChange={onChangeVoteCategory}
-                options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
-              />
-            </div>
-          )}
-
-          <div className="flex gap-2 items-baseline">
-
-            <Label
-              htmlFor="startSelect"
-              className="min-w-[80px]">
-              between
-            </Label>
-
-            <input
-              type="date"
-              id="startSelect"
-              name="from-date"
-              min={EARLIEST_FROM_DATE}
-              max={new Date().toISOString().substr(0, 10)}
-              onChange={(e) => setFromDate(e.target.value)}
-              value={fromDate}
-              className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
-              px-4 py-2 rounded-md
-              bg-background 
-              border-input  // Use the custom border color class
-              focus:outline-none 
-              focus:ring-2 
-              focus:ring-custom-outline 
-              transition-all duration-200 ease-in-out min-w-[190px]"
-            />
-          </div>
-
-          <div className="flex gap-2 items-baseline">
-            <Label
-              htmlFor="startSelect"
-              className="min-w-[80px]">
-              and
-            </Label>
-
-            <input
-              type="date"
-              id="toDate"
-              name="to-date"
-              min={EARLIEST_FROM_DATE}
-              max={new Date().toISOString().substr(0, 10)}
-              onChange={(e) => setToDate(e.target.value)}
-              value={toDate}
-              className="
-              px-4 py-2 rounded-md
-              bg-background 
-              border-input  // Use the custom border color class
-              focus:outline-none 
-              focus:ring-2 
-              focus:ring-custom-outline 
-              transition-all duration-200 ease-in-out min-w-[190px]"
-            />
-
-          </div>
-
-          <div className='flex items-baseline gap-2'>
-
-            <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
-
-            <Input
-              id="insightsLimit"
-              className='min-w-[190px]'
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-              type="number">
-            </Input>
-
-          </div>
 
           <div className='w-full justify-center items-center mt-4' >
             <Button
