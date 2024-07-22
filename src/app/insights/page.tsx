@@ -141,7 +141,7 @@ function PageContent() {
 
             <CustomSelect
               id="selectType"
-              className="min-w-[185px]"
+              className="min-w-[190px]"
               value={type}
               onValueChange={onChangeType}
               options={types.map(str => ({ value: str, label: `${str}'s`, }))}
@@ -157,6 +157,7 @@ function PageContent() {
             </Label>
             <Input
               id="name"
+              className='min-w-[190px]'
               type="search"
               placeholder="includes text"
               value={name}
@@ -176,7 +177,7 @@ function PageContent() {
 
               <CustomSelect
                 id="voteCategory"
-                className="min-w-[185px]"
+                className="min-w-[190px]"
                 value={voteCategory}
                 onValueChange={onChangeCategory}
                 options={VOTING_CATEGORIES.map(str => ({ value: str, label: `${str}'s`, }))}
@@ -199,7 +200,7 @@ function PageContent() {
 
               <CustomSelect
                 id="partySelect"
-                className="min-w-[185px]"
+                className="min-w-[190px]"
                 value={party}
                 onValueChange={onChangeParty}
                 options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
@@ -219,7 +220,7 @@ function PageContent() {
 
               <CustomSelect
                 id="voteType"
-                className="min-w-[185px]"
+                className="min-w-[190px]"
                 value={voteType}
                 onValueChange={onChangeVoteType}
                 options={voteTyps.map(str => ({ value: str, label: str }))}
@@ -235,7 +236,7 @@ function PageContent() {
 
             <CustomSelect
               id="voteType"
-              className="min-w-[185px]"
+              className="min-w-[190px]"
               value={query}
               onValueChange={onChangeQuery}
               options={queries.map(str => ({ value: str, label: str }))}
@@ -253,7 +254,7 @@ function PageContent() {
               </Label>
               <CustomSelect
                 id="voteType"
-                className="min-w-[185px]"
+                className="min-w-[190px]"
                 value={query}
                 onValueChange={onChangeVoteCategory}
                 options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
@@ -284,7 +285,7 @@ function PageContent() {
               focus:outline-none 
               focus:ring-2 
               focus:ring-custom-outline 
-              transition-all duration-200 ease-in-out min-w-[185px]"
+              transition-all duration-200 ease-in-out min-w-[190px]"
             />
           </div>
 
@@ -310,7 +311,7 @@ function PageContent() {
               focus:outline-none 
               focus:ring-2 
               focus:ring-custom-outline 
-              transition-all duration-200 ease-in-out min-w-[185px]"
+              transition-all duration-200 ease-in-out min-w-[190px]"
             />
 
           </div>
@@ -321,6 +322,7 @@ function PageContent() {
 
             <Input
               id="insightsLimit"
+              className='min-w-[190px]'
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
               onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
