@@ -190,7 +190,7 @@ export default function MpsAndDivisionInsights({
           max={new Date().toISOString().substr(0, 10)}
           onChange={(e) => setFromDate(e.target.value)}
           value={fromDate}
-          className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4
+          className="md:w-1/2 lg:w-1/3 xl:w-1/4
           px-4 py-2 rounded-md
           bg-background 
           border-input  // Use the custom border color class
