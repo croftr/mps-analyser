@@ -190,8 +190,7 @@ export default function MpsAndDivisionInsights({
           max={new Date().toISOString().substr(0, 10)}
           onChange={(e) => setFromDate(e.target.value)}
           value={fromDate}
-          className="md:w-1/2 lg:w-1/3 xl:w-1/4
-          px-4 py-2 rounded-md
+          className="px-4 py-2 rounded-md
           bg-background 
           border-input  // Use the custom border color class
           focus:outline-none 
@@ -219,7 +218,7 @@ export default function MpsAndDivisionInsights({
           className="
           px-4 py-2 rounded-md
           bg-background 
-          border-input  // Use the custom border color class
+          border-input
           focus:outline-none 
           focus:ring-2 
           focus:ring-custom-outline 
