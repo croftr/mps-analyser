@@ -59,7 +59,7 @@ export default function MpsAndDivisionInsights({
 
   return (
 
-    <div className="flex flex-col gap-2 mb-4 items-baseline flex-wrap ring">
+    <div className="flex flex-col gap-2 mb-4 items-baseline flex-wrap">
       <div className='flex items-baseline gap-2'>
         <Label
           htmlFor="name"
@@ -69,7 +69,7 @@ export default function MpsAndDivisionInsights({
         </Label>
         <Input
           id="name"
-          className='min-w-[190px]'
+          className='w-[190px]'
           type="search"
           placeholder="includes text"
           value={name}
@@ -89,7 +89,7 @@ export default function MpsAndDivisionInsights({
 
           <CustomSelect
             id="voteCategory"
-            className="min-w-[190px]"
+            className="w-[190px]"
             value={voteCategory}
             onValueChange={onChangeCategory}
             options={VOTING_CATEGORIES.map(str => ({ value: str, label: `${str}s`, }))}
@@ -112,7 +112,7 @@ export default function MpsAndDivisionInsights({
 
           <CustomSelect
             id="partySelect"
-            className="min-w-[190px]"
+            className="w-[190px]"
             value={party}
             onValueChange={onChangeParty}
             options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
@@ -132,7 +132,7 @@ export default function MpsAndDivisionInsights({
 
           <CustomSelect
             id="voteType"
-            className="min-w-[190px]"
+            className="w-[190px]"
             value={voteType}
             onValueChange={onChangeVoteType}
             options={voteTyps.map(str => ({ value: str, label: str }))}
@@ -148,7 +148,7 @@ export default function MpsAndDivisionInsights({
 
         <CustomSelect
           id="voteType"
-          className="min-w-[190px]"
+          className="w-[190px]"
           value={query}
           onValueChange={onChangeQuery}
           options={queries.map(str => ({ value: str, label: str }))}
@@ -166,7 +166,7 @@ export default function MpsAndDivisionInsights({
           </Label>
           <CustomSelect
             id="voteType"
-            className="min-w-[190px]"
+            className="w-[190px]"
             value={query}
             onValueChange={onChangeVoteCategory}
             options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
@@ -197,7 +197,7 @@ export default function MpsAndDivisionInsights({
           focus:outline-none 
           focus:ring-2 
           focus:ring-custom-outline 
-          transition-all duration-200 ease-in-out min-w-[190px]"
+          transition-all duration-200 ease-in-out w-[190px]"
         />
       </div>
 
@@ -223,7 +223,7 @@ export default function MpsAndDivisionInsights({
           focus:outline-none 
           focus:ring-2 
           focus:ring-custom-outline 
-          transition-all duration-200 ease-in-out min-w-[190px]"
+          transition-all duration-200 ease-in-out w-[190px]"
         />
       </div>
 
@@ -233,7 +233,7 @@ export default function MpsAndDivisionInsights({
 
         <Input
           id="insightsLimit"
-          className='min-w-[190px]'          
+          className='w-[190px]'          
           onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
           type="number">
         </Input>
