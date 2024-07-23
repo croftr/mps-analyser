@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 
 import PartyPicker from "@/components/custom/partyPicker";
 
-interface ContractProps {    
+interface ContractProps {
     awardedCount: number;
     onChangeAwardedCount: (value: number) => void;
     awardedName: string;
@@ -13,11 +13,11 @@ interface ContractProps {
     onSearch: () => void;
 }
 
-const ContractInsights = ({ 
-    awardedCount, 
-    onChangeAwardedCount, 
-    awardedName, 
-    onChangeAwardedName, 
+const ContractInsights = ({
+    awardedCount,
+    onChangeAwardedCount,
+    awardedName,
+    onChangeAwardedName,
     party,
     onChangeParty,
     onSearch }
@@ -28,7 +28,7 @@ const ContractInsights = ({
 
             <div className='flex items-baseline gap-2'>
 
-                <Label htmlFor="awardedCount" className="min-w-[80px]">Awarded more than</Label>
+                <Label htmlFor="awardedCount" className="min-w-[80px]">Awarded count</Label>
 
                 <Input
                     id="awardedCount"
@@ -40,26 +40,28 @@ const ContractInsights = ({
                 </Input>
             </div>
 
+            <PartyPicker
+                party={party}
+                onChangeParty={onChangeParty}
+                label="Awarded by"
+            />
+
             <div className='flex items-baseline gap-2'>
 
                 <Label htmlFor="awardedName" className="min-w-[80px]">Awarded to</Label>
 
                 <Input
                     id="awardedName"
+                    placeholder="name includes"
                     className='min-w-[190px]'
                     value={awardedName}
-                    onChange={(e) => onChangeAwardedName(e.target.value)}                    
+                    onChange={(e) => onChangeAwardedName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
                 >
                 </Input>
             </div>
 
-            <PartyPicker 
-                party={party} 
-                onChangeParty={onChangeParty} 
-                label="Awarded by"
-            />
-            
+
         </div>
     )
 }
