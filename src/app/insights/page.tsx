@@ -62,6 +62,10 @@ function PageContent() {
   const [voteCategory, setVoteCategory] = useState(VOTING_CATEGORIES[0]);
   const [limit, setLimit] = useState(10);
 
+  //contracts
+  const [awardedCount, setAwardedCount] = useState(100);
+  const [awardedName, setAwardedName] = useState("");
+
   const [isQuerying, setIsQuerying] = useState(false);
 
   const onSearch = async () => {
@@ -125,6 +129,14 @@ function PageContent() {
     setVoteCategory(value);
   }
 
+  //contracts
+  const onChangeAwardedName = (value: string) => {
+    setAwardedName(value);
+  }
+  const onChangeAwardedCount = (value: number) => {
+    setAwardedCount(value);
+  }
+
   return (
 
     <div className="insights">
@@ -176,7 +188,13 @@ function PageContent() {
 
           {type === "Contract" && (
             <div id="contracts">
-              <ContractInsights />
+              <ContractInsights
+                awardedCount={awardedCount}
+                awardedName={awardedName}
+                onChangeAwardedName={onChangeAwardedName}
+                onChangeAwardedCount={onChangeAwardedCount}
+                onSearch={onSearch}
+              />
             </div>
           )}
 
