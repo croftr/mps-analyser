@@ -12,11 +12,11 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
   return (
     <>
-    {mounted && (
-      <NextThemesProvider {...props}>
-      {children}
-    </NextThemesProvider>
-    )}
-    </>        
+      {mounted && (
+        <NextThemesProvider {...props}>
+          {children}
+        </NextThemesProvider>
+      )}
+    </>
   )
 }

@@ -32,9 +32,9 @@ interface MpsAndDivisionInsightsProps {
   fromDate: string;
   setFromDate: (date: string) => void;
   toDate: string;
-  setToDate: (date: string) => void;  
-  onSearch: () => void;
+  setToDate: (date: string) => void;    
   onChangeVoteCategory: (voteType: string) => void;
+  onSearch: () => void;
 }
 
 export default function MpsAndDivisionInsights({
@@ -59,7 +59,7 @@ export default function MpsAndDivisionInsights({
 
   return (
 
-    <div className="flex flex-col gap-2 mb-4 items-baseline flex-wrap">
+    <div className="flex flex-col gap-2 mb-4 items-baseline flex-wrap ring">
       <div className='flex items-baseline gap-2'>
         <Label
           htmlFor="name"
