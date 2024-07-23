@@ -58,9 +58,11 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
     
     if (value.toLowerCase().includes("nameDisplayAs")) {
       return "count"
+    } else if (value.toLowerCase().includes("unitname")) {
+      return "name"
     } else if (value.toLowerCase().includes("count")) {
       return "count"
-    }
+    } 
 
     return value.split(".").pop() || value
   }

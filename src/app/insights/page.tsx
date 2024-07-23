@@ -5,6 +5,7 @@ import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constant
 import ky from 'ky';
 
 import ContractInsights from './contractInsights';
+import OrgInsights from './orgIInsights';
 import CustomSelect from "@/components/custom/customSelect";
 import MpsAndDivisionInsights from './mpsAndDivisionInsights';
 
@@ -21,7 +22,7 @@ const types = [
   "MP",
   "Division",
   "Contract",
-  // "Organisation",
+  "Organisation or Individual",
   // "Individual"
 ]
 
@@ -53,8 +54,8 @@ function PageContent() {
 
   //table
   const [data, setData] = useState();
-  const [isQuerying, setIsQuerying] = useState(false);  
-  const [tableHeader, setTableHeader] = useState("");  
+  const [isQuerying, setIsQuerying] = useState(false);
+  const [tableHeader, setTableHeader] = useState("");
 
   //mps and divisions  
   const [name, setName] = useState("");
@@ -71,17 +72,22 @@ function PageContent() {
   const [awardedName, setAwardedName] = useState("");
   const [awardedBy, setAwardedBy] = useState("Any Party");
 
+  //orgs
+  const [orgName, setOrgName] = useState("");
+  const [dontatedToParty, setDontatedToParty] = useState("");
+  const [awaredByParty, setAwaredByParty] = useState("");
+
   const onSearchDivisionsOrMps = async () => {
 
     setIsQuerying(true);
-    setData(undefined);    
+    setData(undefined);
 
     setTableHeader(`${type}s`);
 
     const nameParam = name || "Any";
 
     const partyParam = party.includes("Any") ? "Any" : party;
-    
+
     let url = `${config.mpsApiUrl}insights/${type === 'MP' ? 'mpvotes' : 'divisionvotes'}?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${partyParam}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${nameParam}`;
 
     if (type === 'Division' && voteType !== 'on') {
@@ -92,7 +98,7 @@ function PageContent() {
     const result: any = await ky(url).json();
 
     setData(result);
-    
+
   }
 
   const getDetails = (row: any) => {
@@ -133,7 +139,7 @@ function PageContent() {
   //contracts
   const onChangeAwardedName = (value: string) => {
     console.log("check ", value);
-    
+
     setAwardedName(value);
   }
   const onChangeAwardedCount = (value: number) => {
@@ -141,10 +147,10 @@ function PageContent() {
   }
 
   const onSearchContracts = async () => {
-   
+
     setIsQuerying(true);
-    setData(undefined);    
-    
+    setData(undefined);
+
     if (awardedCount) {
       setTableHeader("Grouping contracts by organisation");
     } else {
@@ -152,9 +158,40 @@ function PageContent() {
     }
 
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}&awardedBy=${awardedBy}`);
-  
+
     const contractsResult = await result.json();
     setData(contractsResult);
+  }
+
+  //orgs
+  const onChangeOrgName = (value: string) => {
+    setOrgName(value)
+  }
+
+  const onChangeDontatedToParty = (value: string) => {
+    setDontatedToParty(value);
+  }
+
+  const onChangeAwaredByParty = (value:string)  => {
+    setAwaredByParty(value);
+  }
+
+  const onSearchOrgs = async () => {
+    setIsQuerying(true);
+    setData(undefined);
+
+    setTableHeader("Organisations and individuale");
+
+    const result:any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}`).json();
+
+    console.log("result ", result);
+
+    // const orgResponse = await result.json();
+
+    // console.log("orgResponse ", orgResponse);
+    
+    
+    setData(result);
   }
 
   return (
@@ -215,9 +252,22 @@ function PageContent() {
                 onChangeAwardedCount={onChangeAwardedCount}
                 party={awardedBy}
                 onChangeParty={setAwardedBy}
-                onSearch={onSearchContracts}            
+                onSearch={onSearchContracts}
               />
             </div>
+          )}
+
+          {type === "Organisation or Individual" && (
+            <OrgInsights
+              onChangeOrgName={onChangeOrgName}
+              orgName={orgName}
+              onSearch={onSearchOrgs}
+              dontatedToParty={dontatedToParty}
+              onChangeDontatedToParty={onChangeDontatedToParty}
+              awaredByParty={awaredByParty}
+              onChangeAwaredByParty={onChangeAwaredByParty}
+
+            />
           )}
 
           <Separator />
@@ -239,7 +289,7 @@ function PageContent() {
           <div className='w-full justify-center items-center mt-4' >
             <Button
               className="w-full md:w-[700px]"
-              onClick={type === "Contract" ? onSearchContracts : onSearchDivisionsOrMps}
+              onClick={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs :  onSearchDivisionsOrMps}
             >
               Go
             </Button>
