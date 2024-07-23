@@ -3,6 +3,7 @@
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party, PartyType } from "../config/constants";
 
 import CustomSelect from "@/components/custom/customSelect";
+import PartyPicker from "@/components/custom/partyPicker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -100,25 +101,27 @@ export default function MpsAndDivisionInsights({
 
       {type === 'MP' && (
 
-        <div
-          className='flex items-baseline gap-2'
-        >
-          <Label
-            htmlFor="partySelect"
-            className="min-w-[80px]"
-          >
-            from
-          </Label>
+        <PartyPicker party={party} onChangeParty={onChangeParty} label="from" />
 
-          <CustomSelect
-            id="partySelect"
-            className="w-[190px]"
-            value={party}
-            onValueChange={onChangeParty}
-            options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
-          />
+        // <div
+        //   className='flex items-baseline gap-2'
+        // >
+        //   <Label
+        //     htmlFor="partySelect"
+        //     className="min-w-[80px]"
+        //   >
+        //     from
+        //   </Label>
 
-        </div>
+        //   <CustomSelect
+        //     id="partySelect"
+        //     className="w-[190px]"
+        //     value={party}
+        //     onValueChange={onChangeParty}
+        //     options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
+        //   />
+
+        // </div>
       )}
 
       {type === 'Division' && (
@@ -215,10 +218,9 @@ export default function MpsAndDivisionInsights({
           max={new Date().toISOString().substr(0, 10)}
           onChange={(e) => setToDate(e.target.value)}
           value={toDate}
-          className="
-          px-4 py-2 rounded-md
+          className="px-4 py-2 rounded-md
           bg-background 
-          border-input
+          border-input  // Use the custom border color class
           focus:outline-none 
           focus:ring-2 
           focus:ring-custom-outline 

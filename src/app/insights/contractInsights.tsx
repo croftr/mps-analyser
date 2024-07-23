@@ -1,21 +1,34 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-interface ContractProps {
-    onSearch: () => void;
+import PartyPicker from "@/components/custom/partyPicker";
+
+interface ContractProps {    
     awardedCount: number;
     onChangeAwardedCount: (value: number) => void;
     awardedName: string;
     onChangeAwardedName: (value: string) => void;
+    party: string,
+    onChangeParty: (value: string) => void;
+    onSearch: () => void;
 }
 
-const ContractInsights = ({ awardedCount, onChangeAwardedCount, awardedName, onChangeAwardedName, onSearch }: ContractProps) => {
+const ContractInsights = ({ 
+    awardedCount, 
+    onChangeAwardedCount, 
+    awardedName, 
+    onChangeAwardedName, 
+    party,
+    onChangeParty,
+    onSearch }
+    : ContractProps) => {
+
     return (
         <div className="flex flex-col gap-2 mb-4 items-baseline flex-wrap">
 
             <div className='flex items-baseline gap-2'>
 
-                <Label htmlFor="awardedCount" className="min-w-[80px]">Awarded count</Label>
+                <Label htmlFor="awardedCount" className="min-w-[80px]">Awarded more than</Label>
 
                 <Input
                     id="awardedCount"
@@ -41,6 +54,11 @@ const ContractInsights = ({ awardedCount, onChangeAwardedCount, awardedName, onC
                 </Input>
             </div>
 
+            <PartyPicker 
+                party={party} 
+                onChangeParty={onChangeParty} 
+                label="Awarded by"
+            />
             
         </div>
     )

@@ -69,6 +69,7 @@ function PageContent() {
   //contracts
   const [awardedCount, setAwardedCount] = useState(100);
   const [awardedName, setAwardedName] = useState("");
+  const [awardedBy, setAwardedBy] = useState("Any Party");
 
   const onSearchDivisionsOrMps = async () => {
 
@@ -152,7 +153,7 @@ function PageContent() {
       setTableHeader("Showing individual contracts");
     }
 
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}&awardedBy=${awardedBy}`);
   
     const contractsResult = await result.json();
     setData(contractsResult);
@@ -214,7 +215,9 @@ function PageContent() {
                 awardedName={awardedName}
                 onChangeAwardedName={onChangeAwardedName}
                 onChangeAwardedCount={onChangeAwardedCount}
-                onSearch={onSearchContracts}
+                party={awardedBy}
+                onChangeParty={setAwardedBy}
+                onSearch={onSearchContracts}            
               />
             </div>
           )}
