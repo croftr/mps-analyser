@@ -157,8 +157,7 @@ function PageContent() {
       setTableHeader("Showing individual contracts");
     }
 
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}&awardedBy=${awardedBy}`);
-
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}`);
     const contractsResult = await result.json();
     setData(contractsResult);
   }
@@ -182,7 +181,7 @@ function PageContent() {
 
     setTableHeader("Organisations and individuale");
 
-    const result:any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}`).json();
+    const result:any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
     console.log("result ", result);
 
@@ -281,7 +280,7 @@ function PageContent() {
               className='min-w-[190px]'
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
-              onKeyDown={(e) => { if (e.key === 'Enter') onSearchDivisionsOrMps() }}
+              onKeyDown={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs :  onSearchDivisionsOrMps}
               type="number">
             </Input>
           </div>
