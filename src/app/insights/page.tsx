@@ -1,6 +1,6 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
 import ky from 'ky';
 
@@ -67,7 +67,7 @@ function PageContent() {
   const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
 
   //contracts
-  const [awardedCount, setAwardedCount] = useState(100);
+  const [awardedCount, setAwardedCount] = useState(10);
   const [awardedName, setAwardedName] = useState("");
   const [awardedBy, setAwardedBy] = useState("Any Party");
 
@@ -81,11 +81,9 @@ function PageContent() {
     const nameParam = name || "Any";
 
     const partyParam = party.includes("Any") ? "Any" : party;
-
-    // @ts-ignore
+    
     let url = `${config.mpsApiUrl}insights/${type === 'MP' ? 'mpvotes' : 'divisionvotes'}?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${partyParam}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${nameParam}`;
 
-    // @ts-ignore
     if (type === 'Division' && voteType !== 'on') {
       const ayeOrNo = voteType === "for" ? "aye" : "no";
       url = `${url}&ayeorno=${ayeOrNo}`;
