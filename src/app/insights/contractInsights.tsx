@@ -35,7 +35,7 @@ const ContractInsights = ({ awardedCount, onChangeAwardedCount, awardedName, onC
                     id="awardedName"
                     className='min-w-[190px]'
                     value={awardedName}
-                    onChange={(e) => onChangeAwardedName}
+                    onChange={(e) => onChangeAwardedName(e.target.value)}                    
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
                 >
                 </Input>

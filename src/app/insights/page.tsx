@@ -49,30 +49,33 @@ function PageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [data, setData] = useState();
-  const [name, setName] = useState("");
-  const [progress, setProgress] = useState(false);
-  const [fromDate, setFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
-  const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
-
   const [type, setType] = useState(types[0]);
+
+  //table
+  const [data, setData] = useState();
+  const [isQuerying, setIsQuerying] = useState(false);  
+  const [tableHeader, setTableHeader] = useState("");  
+
+  //mps and divisions  
+  const [name, setName] = useState("");
   const [query, setQuery] = useState(queries[0]);
   const [party, setParty] = useState("Any Party");
   const [voteType, setVoteType] = useState(voteTyps[0]);
   const [voteCategory, setVoteCategory] = useState(VOTING_CATEGORIES[0]);
   const [limit, setLimit] = useState(10);
+  const [fromDate, setFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
+  const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
 
   //contracts
   const [awardedCount, setAwardedCount] = useState(100);
   const [awardedName, setAwardedName] = useState("");
 
-  const [isQuerying, setIsQuerying] = useState(false);
-
-  const onSearch = async () => {
+  const onSearchDivisionsOrMps = async () => {
 
     setIsQuerying(true);
-    setData(undefined);
-    setProgress(true);
+    setData(undefined);    
+
+    setTableHeader(`${type}s`);
 
     const nameParam = name || "Any";
 
@@ -90,8 +93,7 @@ function PageContent() {
     const result: any = await ky(url).json();
 
     setData(result);
-
-    setProgress(false);
+    
   }
 
   const getDetails = (row: any) => {
@@ -131,10 +133,29 @@ function PageContent() {
 
   //contracts
   const onChangeAwardedName = (value: string) => {
+    console.log("check ", value);
+    
     setAwardedName(value);
   }
   const onChangeAwardedCount = (value: number) => {
     setAwardedCount(value);
+  }
+
+  const onSearchContracts = async () => {
+   
+    setIsQuerying(true);
+    setData(undefined);    
+    
+    if (awardedCount) {
+      setTableHeader("Grouping contracts by organisation");
+    } else {
+      setTableHeader("Showing individual contracts");
+    }
+
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}`);
+  
+    const contractsResult = await result.json();
+    setData(contractsResult);
   }
 
   return (
@@ -158,7 +179,7 @@ function PageContent() {
               className="min-w-[190px]"
               value={type}
               onValueChange={onChangeType}
-              options={types.map(str => ({ value: str, label: `${str}'s`, }))}
+              options={types.map(str => ({ value: str, label: `${str}s`, }))}
             />
           </div>
 
@@ -181,7 +202,7 @@ function PageContent() {
               setFromDate={setFromDate}
               toDate={toDate}
               setToDate={setToDate}
-              onSearch={onSearch}
+              onSearch={onSearchDivisionsOrMps}
               onChangeVoteCategory={setVoteCategory}
             />
           )}
@@ -193,7 +214,7 @@ function PageContent() {
                 awardedName={awardedName}
                 onChangeAwardedName={onChangeAwardedName}
                 onChangeAwardedCount={onChangeAwardedCount}
-                onSearch={onSearch}
+                onSearch={onSearchContracts}
               />
             </div>
           )}
@@ -209,7 +230,7 @@ function PageContent() {
               className='min-w-[190px]'
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
-              onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+              onKeyDown={(e) => { if (e.key === 'Enter') onSearchDivisionsOrMps() }}
               type="number">
             </Input>
           </div>
@@ -217,7 +238,7 @@ function PageContent() {
           <div className='w-full justify-center items-center mt-4' >
             <Button
               className="w-full md:w-[700px]"
-              onClick={onSearch}
+              onClick={type === "Contract" ? onSearchContracts : onSearchDivisionsOrMps}
             >
               Go
             </Button>
@@ -226,7 +247,7 @@ function PageContent() {
 
       </div>
 
-      {isQuerying && <NeoTable data={data} title={"Insights"} onRowClick={getDetails} />}
+      {isQuerying && <NeoTable data={data} title={tableHeader} onRowClick={getDetails} />}
 
     </div>
   );
