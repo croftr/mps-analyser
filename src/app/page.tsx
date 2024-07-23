@@ -42,8 +42,7 @@ export default function Home() {
 
     const now = new Date(); // Get the current date and time
     const jsonDateString = now.toISOString(); // Format as ISO 8601 string
-    console.log(jsonDateString);
-
+    
     const result = await ky(`https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/${jsonDateString}`).json();
 
     const data: Array<any> = [];
@@ -73,12 +72,10 @@ export default function Home() {
     const month = (oneMonthAgo.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
     const day = oneMonthAgo.getDate().toString().padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day}`;
-    console.log(formattedDate);
+    const formattedDate = `${year}-${month}-${day}`;    
 
     const result = await ky(`https://commonsvotes-api.parliament.uk/data/divisions.json/search?queryParameters.take=10&queryParameters.startDate=${formattedDate}`).json();
-    console.log("result ", result);
-
+    
     //@ts-ignore
     setRecentVotes(result);
     const data: Array<any> = [];
@@ -92,14 +89,10 @@ export default function Home() {
 
     const result = await ky(`https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/${formattedDate}`).json();
 
-    console.log("check 1 ", result);
-
-
     const partiesArray: Array<Party> = []
 
     //@ts-ignore
-    result.items.forEach(item => {
-      console.log("item ", item);
+    result.items.forEach(item => {      
 
       const party: Party = {
         name: item.value.party.name,
@@ -119,11 +112,9 @@ export default function Home() {
     getRecentVotes();
   }, []);
 
-  const onQueryDivision = async (id: number) => {
-    console.log("query ", id);
+  const onQueryDivision = async (id: number) => {    
     router.push(`division?id=${id}`, { scroll: true });
   }
-
 
   return (
 

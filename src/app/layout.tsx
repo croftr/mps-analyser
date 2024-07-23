@@ -21,7 +21,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
+        > 
           <Nav />
           <Search />
           <main className="h-[calc(100vh-130px)] overflow-y-scroll pb-4">
