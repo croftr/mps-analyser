@@ -68,9 +68,11 @@ function PageContent() {
   const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
 
   //contracts
-  const [awardedCount, setAwardedCount] = useState(10);
+  const [awardedCount, setAwardedCount] = useState<number|undefined>();
   const [awardedName, setAwardedName] = useState("");
   const [awardedBy, setAwardedBy] = useState("Any Party");
+  const [groupByContractCount, setGroupByContractCount] = useState(false);
+
 
   //orgs
   const [orgName, setOrgName] = useState("");
@@ -142,7 +144,7 @@ function PageContent() {
 
     setAwardedName(value);
   }
-  const onChangeAwardedCount = (value: number) => {
+  const onChangeAwardedCount = (value: number|undefined) => {
     setAwardedCount(value);
   }
 
@@ -157,7 +159,7 @@ function PageContent() {
       setTableHeader("Showing individual contracts");
     }
 
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedName}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}`);
     const contractsResult = await result.json();
     setData(contractsResult);
   }
@@ -252,6 +254,8 @@ function PageContent() {
                 party={awardedBy}
                 onChangeParty={setAwardedBy}
                 onSearch={onSearchContracts}
+                groupByContractCount={groupByContractCount}
+                setGroupByContractCount={setGroupByContractCount}
               />
             </div>
           )}

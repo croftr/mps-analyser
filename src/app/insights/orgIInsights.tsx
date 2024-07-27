@@ -1,14 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import CustomSelect from "@/components/custom/customSelect";
 import PartyPicker from "@/components/custom/partyPicker";
-
-const types = [
-    "Any",
-    "Organisation",
-    "Individual"
-]
 
 interface OrgInsightsProps {
     dontatedToParty: string,
@@ -59,7 +52,6 @@ const OrgInsights = ({
                 onChangeParty={onChangeAwaredByParty}
                 label="Awarded contract by"
             />
-
         </div>
     )
 }
