@@ -100,28 +100,7 @@ export default function MpsAndDivisionInsights({
       )}
 
       {type === 'MP' && (
-
         <PartyPicker party={party} onChangeParty={onChangeParty} label="from" />
-
-        // <div
-        //   className='flex items-baseline gap-2'
-        // >
-        //   <Label
-        //     htmlFor="partySelect"
-        //     className="min-w-[80px]"
-        //   >
-        //     from
-        //   </Label>
-
-        //   <CustomSelect
-        //     id="partySelect"
-        //     className="w-[190px]"
-        //     value={party}
-        //     onValueChange={onChangeParty}
-        //     options={["Any Party"].concat(Object.values(Party)).filter((i) => i !== "Unknown" && i !== "Any").map(str => ({ value: str, label: str }))}
-        //   />
-
-        // </div>
       )}
 
       {type === 'Division' && (
@@ -140,7 +119,6 @@ export default function MpsAndDivisionInsights({
             onValueChange={onChangeVoteType}
             options={voteTyps.map(str => ({ value: str, label: str }))}
           />
-
         </div>
       )}
 
@@ -228,17 +206,6 @@ export default function MpsAndDivisionInsights({
         />
       </div>
 
-      <div className='flex items-baseline gap-2'>
-
-        <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
-
-        <Input
-          id="insightsLimit"
-          className='w-[190px]'          
-          onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-          type="number">
-        </Input>
-      </div>
     </div>
   );
 }
