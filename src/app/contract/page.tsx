@@ -41,7 +41,7 @@ function PageContent() {
 
   return (
 
-    <div className="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring">
+    <div className="flex justify-center ring p-4">
       <h1>{name}</h1>
     </div>
 

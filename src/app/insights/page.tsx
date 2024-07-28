@@ -17,8 +17,6 @@ import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
 import { Separator } from "@/components/ui/separator"
-import { log } from 'console';
-
 
 const types = [
   "MP",
