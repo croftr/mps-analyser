@@ -143,7 +143,7 @@ function PageContent() {
     setTableData(donationsResponse);
 
     setContracts(undefined)
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&limit=10000`);
     const contractsResult = await result.json();
     setContracts(contractsResult);
 
@@ -163,7 +163,12 @@ function PageContent() {
 
     <div className="flex flex-col justify-center ring p-4">
 
-      <h4 className="font-semibold text-lg mb-2">{name}</h4>
+      <span
+        className='flex gap-2'>
+        {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type}
+        <h4 className="font-semibold text-lg mb-2">{name}</h4>
+      </span>
+
 
       <div className="flex gap-4 mb-4">
         <div className='flex gap-2'>
@@ -183,7 +188,7 @@ function PageContent() {
 
       {showDonations && (<div>
         <div className="flex flex-col md:flex-row md:justify-between p-4">
-          <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type} <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2>
           <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
         </div>
 
