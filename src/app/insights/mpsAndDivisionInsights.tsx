@@ -148,7 +148,7 @@ export default function MpsAndDivisionInsights({
           <CustomSelect
             id="voteType"
             className="w-[190px]"
-            value={query}
+            value={voteCategory}
             onValueChange={onChangeVoteCategory}
             options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
           />
