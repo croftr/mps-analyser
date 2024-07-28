@@ -85,7 +85,11 @@ const donarDetailsColumns = [
   {
     accessorKey: 'amount',
     header: 'Amount',
-  }
+  },
+  {
+    accessorKey: 'partyName',
+    header: 'Party Name',
+  },
 ]
 
 
@@ -108,11 +112,11 @@ function PageContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [tableText, setTableText] = useState("");
   const [type, setType] = useState(TYPES.DONAR)
+  
 
   const [donarStatus, setDonarStatus] = useState<DonationSourceType>(DonationSourceType.Company)
 
   const getData = async () => {
-
 
     const nameParam = searchParams.get('name');
 
@@ -122,9 +126,9 @@ function PageContent() {
 
     if (headerInfo) {
       setTableText(`Donation to ${donationsResponse[0].partyName} by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
+      setDonarStatus(headerInfo.donorStatus);
     }
-
-    setDonarStatus(headerInfo.donorStatus);
+    
     setTableColumns(donarDetailsColumns);
     setTableData(donationsResponse);
 
@@ -148,7 +152,7 @@ function PageContent() {
       <div className="flex flex-col md:flex-row md:justify-between p-4">
 
         <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type} <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
-        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
+        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>        
       </div>
 
       {isLoading ? (

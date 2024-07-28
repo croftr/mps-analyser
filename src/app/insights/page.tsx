@@ -62,7 +62,7 @@ function PageContent() {
   const [party, setParty] = useState("Any Party");
   const [voteType, setVoteType] = useState(voteTyps[0]);
   const [voteCategory, setVoteCategory] = useState(VOTING_CATEGORIES[0]);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(100);
   const [fromDate, setFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
   const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
 
