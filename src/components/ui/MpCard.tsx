@@ -34,20 +34,7 @@ interface MpCardProps {
 
 const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = true, className }: MpCardProps) => {
   
-  const getPartyAbbreviation = (name:string): string => {
-    const partyAbbreviations: Record<string, string> = {
-      "Scottish National Party": "SNP",
-      "Liberal Democrat": "Lib Dem",
-      "Democratic Unionist Party": "DUP",
-      "Reform UK": "Reform",
-      "Ulster Unionist Party": "UNP",
-      "Traditional Unionist Voice": "TUV",      
-      "Social Democratic and Labour Party": "SDLP",      
-      "Social Democratic & Labour Party": "SDLP",      
-    };
-  
-    return name?.startsWith("Speaker") ? "Speaker" : partyAbbreviations[name || ""] || name || ""; // Handle undefined party
-  };
+
   return (
 
     <div
@@ -69,7 +56,7 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
         </div>
       </TooltipProvider>
 
-      <div className="relative mb-1 aspect-square"> {/* Added aspect-square */}
+      <div className="relative mb-1 aspect-square"> 
         <Image
           className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
         fill
@@ -82,7 +69,6 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
       <div className='flex items-baseline gap-4'>
         
         <PartyLabel partyName={item.party} />
-        
 
         {isFormatedDates && <p className="font-medium">{new Date(item.startDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>}
         {!isFormatedDates && <p className="text-sm text-gray-500">{item.startDate.day.low}/{item.startDate.month.low}/{item.startDate.year.low}</p>}

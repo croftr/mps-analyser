@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 
 import { DataTable } from "@/components/ui/data-table";
 import NeoTableSkeleton from '@/components/ui/neoTableSkeleton';
+import { NeoTable } from '@/components/ui/neoTable';
+import { Switch } from "@/components/ui/switch"
 
 const TYPES = {
   ALL_PARTIES: "ALL_PARTIES",
@@ -110,9 +112,16 @@ function PageContent() {
   const [tableData, setTableData] = useState<Array<any>>([]);
   const [tableColumns, setTableColumns] = useState(donationColumns);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [showContracts, setShowContracts] = useState(false);
+  const [showDonations, setShowDonations] = useState(false);
+
   const [tableText, setTableText] = useState("");
+
   const [type, setType] = useState(TYPES.DONAR)
-  
+  const [name, setName] = useState<string | null>("")
+  const [contracts, setContracts] = useState<Array<any> | undefined>()
+
 
   const [donarStatus, setDonarStatus] = useState<DonationSourceType>(DonationSourceType.Company)
 
@@ -128,11 +137,16 @@ function PageContent() {
       setTableText(`Donation to ${donationsResponse[0].partyName} by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
       setDonarStatus(headerInfo.donorStatus);
     }
-    
+
+    setName(nameParam);
     setTableColumns(donarDetailsColumns);
     setTableData(donationsResponse);
 
-    console.log("response ", donationsResponse);
+    setContracts(undefined)
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}`);
+    const contractsResult = await result.json();
+    setContracts(contractsResult);
+
 
 
     setIsLoading(false);
@@ -149,21 +163,42 @@ function PageContent() {
 
     <div className="flex flex-col justify-center ring p-4">
 
-      <div className="flex flex-col md:flex-row md:justify-between p-4">
+      <h4 className="font-semibold text-lg mb-2">{name}</h4>
 
-        <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type} <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
-        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>        
+      <div className="flex gap-4 mb-4">
+        <div className='flex gap-2'>
+          <p>{contracts ? contracts.length : 0} Contracts Received</p>
+          <Switch id="vaexclude" checked={showContracts} onCheckedChange={() => setShowContracts(!showContracts)} />
+        </div>
+
+        <div className='flex gap-2'>
+          <p>{tableData ? tableData.length : 0} Donations Made</p>
+          <Switch id="vaexclude" checked={showDonations} onCheckedChange={() => setShowDonations(!showDonations)} />
+        </div>
+
       </div>
 
-      {isLoading ? (
-        <NeoTableSkeleton columns={4} />
-      ) : (
-        <DataTable
-          data={tableData}
-          columns={tableColumns}
-          onRowClick={() => { }}
-        />
-      )}
+
+      {showContracts && <NeoTable data={contracts} title="Contracts Received" onRowClick={() => { }} />}
+
+      {showDonations && (<div>
+        <div className="flex flex-col md:flex-row md:justify-between p-4">
+          <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type} <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
+        </div>
+
+        {isLoading ? (
+          <NeoTableSkeleton columns={4} />
+        ) : (
+          <DataTable
+            data={tableData}
+            columns={tableColumns}
+            onRowClick={() => { }}
+          />
+        )}
+      </div>)}
+
+
 
     </div>
 
