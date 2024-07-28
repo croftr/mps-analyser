@@ -17,13 +17,14 @@ import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
 import { Separator } from "@/components/ui/separator"
+import { log } from 'console';
+
 
 const types = [
   "MP",
   "Division",
   "Contract",
-  "Organisation or Individual",
-  // "Individual"
+  "Organisation or Individual",  
 ]
 
 const queries = [
@@ -108,10 +109,21 @@ function PageContent() {
     if (type === "MP") {
       const id = row._fields[3].low;
       router.push(`mp?id=${id}`, { scroll: true });
-    } else {
+    } else if (type === "Division"){
       const id = row._fields[2].low;
       router.push(`division?id=${id}`, { scroll: true });
+    } else if (type === "Contract") {
+      console.log("check ", row);      
+      router.push(`contract?supplier=${row._fields[0]}&title=${row._fields[1]}&value=${row._fields[2]}`, { scroll: true });      
+    } else if (type === "Organisation or Individual") {
+      console.log("check ", row);      
+      const orgName = row._fields[0];
+      router.push(`org?name=${orgName}`, { scroll: true });      
+    } else {
+      console.log("warning unknown type of ", type);
+      
     }
+
   }
 
   const onChangeType = (value: string) => {
@@ -186,11 +198,6 @@ function PageContent() {
     const result:any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
     console.log("result ", result);
-
-    // const orgResponse = await result.json();
-
-    // console.log("orgResponse ", orgResponse);
-    
     
     setData(result);
   }
