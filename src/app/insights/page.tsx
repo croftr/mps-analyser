@@ -191,7 +191,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    setTableHeader("Organisations and individuale");
+    setTableHeader("Organisations and individuals");
 
     const result:any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
