@@ -110,13 +110,13 @@ function PageContent() {
     } else if (type === "Division"){
       const id = row._fields[2].low;
       router.push(`division?id=${id}`, { scroll: true });
+    } else if ( (type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {
+      console.log("check ", row);      
+      const orgName = row._fields[0];
+      router.push(`org?name=${orgName}`, { scroll: true });            
     } else if (type === "Contract") {
       console.log("check ", row);      
       router.push(`contract?supplier=${row._fields[0]}&title=${row._fields[1]}&value=${row._fields[2]}`, { scroll: true });      
-    } else if (type === "Organisation or Individual") {
-      console.log("check ", row);      
-      const orgName = row._fields[0];
-      router.push(`org?name=${orgName}`, { scroll: true });      
     } else {
       console.log("warning unknown type of ", type);
       
