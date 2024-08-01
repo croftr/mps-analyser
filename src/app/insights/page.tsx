@@ -1,6 +1,6 @@
 'use client';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, Suspense } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useState, Suspense, useEffect } from 'react';
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
 import ky from 'ky';
 
@@ -22,7 +22,7 @@ const types = [
   "MP",
   "Division",
   "Contract",
-  "Organisation or Individual",  
+  "Organisation or Individual",
 ]
 
 const queries = [
@@ -48,6 +48,7 @@ function PageContent() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathName = usePathname();
 
   const [type, setType] = useState(types[0]);
 
@@ -67,16 +68,76 @@ function PageContent() {
   const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
 
   //contracts
-  const [awardedCount, setAwardedCount] = useState<number|undefined>();
+  const [awardedCount, setAwardedCount] = useState<number | undefined>();
   const [awardedName, setAwardedName] = useState("");
   const [awardedBy, setAwardedBy] = useState("Any Party");
   const [groupByContractCount, setGroupByContractCount] = useState(false);
-
 
   //orgs
   const [orgName, setOrgName] = useState("");
   const [dontatedToParty, setDontatedToParty] = useState("");
   const [awaredByParty, setAwaredByParty] = useState("");
+
+  const getData = async () => {
+
+    const typeParam = searchParams.get('type');
+
+    if (!typeParam) {
+      return; // Handle the case where typeParam is missing
+    }
+
+    //query data and set fields based on url params
+    //TODO need to set fields on mps them ai hopefully can do the other ones
+    if (typeParam) {
+
+      let url="";
+      if (typeParam === 'mp') {
+        setIsQuerying(true);
+        setData(undefined);
+        setTableHeader("MPs");
+      
+        const nameParam = searchParams.get('name') || "Any";
+        
+        const param = searchParams.get('party');
+        const partyParam = param ? param[0].toUpperCase() + param.slice(1) : "Any";
+        
+        const limitParam = searchParams.get('limit') || 100;
+        const fromDateParam = searchParams.get('fromdate') || EARLIEST_FROM_DATE;
+        const toDateParam = searchParams.get('todate') || new Date().toISOString().substr(0, 10);
+        let voteParam = searchParams.get('voted') 
+        let votedParam = "DESC";
+        if (voteParam === "least") {
+          votedParam = "ASC"
+        }
+        
+
+        url = `${config.mpsApiUrl}insights/mpvotes?limit=${limitParam}&orderby=${votedParam}&partyIncludes=${partyParam}&fromDate=${fromDateParam}&toDate=${toDateParam}&category=${voteCategory}&name=${nameParam}`;
+        setType("MP");
+      } else if (typeParam === 'division') {
+        setType("Division");
+        if (voteType !== 'on') {
+          const ayeOrNo = voteType === "for" ? "aye" : "no";
+          url = `${url}&ayeorno=${ayeOrNo}`;
+        }
+        url = `${config.mpsApiUrl}insights/divisionvotes?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
+      } else if (typeParam.startsWith("org")) {
+        setType("Organisation or Individual");
+        url = `${config.mpsApiUrl}orgs?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
+      } else if (typeParam === 'contract') {
+        setType("Contract");
+        url = `${config.mpsApiUrl}contracts?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
+      }          
+
+      const result: any = await ky(url).json();          
+      console.log(result);      
+      setData(result);
+
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, [router, searchParams]);
 
   const onSearchDivisionsOrMps = async () => {
 
@@ -95,9 +156,9 @@ function PageContent() {
       const ayeOrNo = voteType === "for" ? "aye" : "no";
       url = `${url}&ayeorno=${ayeOrNo}`;
     }
-
+  
     const result: any = await ky(url).json();
-
+    
     setData(result);
 
   }
@@ -107,19 +168,19 @@ function PageContent() {
     if (type === "MP") {
       const id = row._fields[3].low;
       router.push(`mp?id=${id}`, { scroll: true });
-    } else if (type === "Division"){
+    } else if (type === "Division") {
       const id = row._fields[2].low;
       router.push(`division?id=${id}`, { scroll: true });
-    } else if ( (type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {
-      console.log("check ", row);      
+    } else if ((type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {
+      console.log("check ", row);
       const orgName = row._fields[0];
-      router.push(`org?name=${orgName}`, { scroll: true });            
+      router.push(`org?name=${orgName}`, { scroll: true });
     } else if (type === "Contract") {
-      console.log("check ", row);      
-      router.push(`contract?supplier=${row._fields[0]}&title=${row._fields[1]}&value=${row._fields[2]}`, { scroll: true });      
+      console.log("check ", row);
+      router.push(`contract?supplier=${row._fields[0]}&title=${row._fields[1]}&value=${row._fields[2]}`, { scroll: true });
     } else {
       console.log("warning unknown type of ", type);
-      
+
     }
 
   }
@@ -154,7 +215,7 @@ function PageContent() {
 
     setAwardedName(value);
   }
-  const onChangeAwardedCount = (value: number|undefined) => {
+  const onChangeAwardedCount = (value: number | undefined) => {
     setAwardedCount(value);
   }
 
@@ -183,7 +244,7 @@ function PageContent() {
     setDontatedToParty(value);
   }
 
-  const onChangeAwaredByParty = (value:string)  => {
+  const onChangeAwaredByParty = (value: string) => {
     setAwaredByParty(value);
   }
 
@@ -193,10 +254,10 @@ function PageContent() {
 
     setTableHeader("Organisations and individuals");
 
-    const result:any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
     console.log("result ", result);
-    
+
     setData(result);
   }
 
@@ -289,7 +350,7 @@ function PageContent() {
               className='min-w-[190px]'
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
-              onKeyDown={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs :  onSearchDivisionsOrMps}
+              onKeyDown={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
               type="number">
             </Input>
           </div>
@@ -297,7 +358,7 @@ function PageContent() {
           <div className='w-full justify-center items-center mt-4' >
             <Button
               className="w-full md:w-[700px]"
-              onClick={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs :  onSearchDivisionsOrMps}
+              onClick={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
             >
               Go
             </Button>

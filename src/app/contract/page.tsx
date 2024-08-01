@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import ky from 'ky';
 import { config } from '../app.config';
 
@@ -34,9 +34,7 @@ function PageContent() {
     const valueParam = searchParams.get('value');
 
     const response: Array<any> = await ky(`${config.mpsApiUrl}contracts/details?title=${titleParam}&supplier=${supplierParam}&value=${valueParam}`).json();
-    
-    console.log("rr ", response );
-    
+        
     //@ts-ignore
     setContract(response)
 
