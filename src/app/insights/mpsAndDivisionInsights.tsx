@@ -93,7 +93,7 @@ export default function MpsAndDivisionInsights({
             className="w-[190px]"
             value={voteCategory}
             onValueChange={onChangeCategory}
-            options={VOTING_CATEGORIES.map(str => ({ value: str, label: `${str}s`, }))}
+            options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
           />
 
         </div>

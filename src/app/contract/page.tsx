@@ -34,10 +34,8 @@ function PageContent() {
     const valueParam = searchParams.get('value');
 
     const response: Array<any> = await ky(`${config.mpsApiUrl}contracts/details?title=${titleParam}&supplier=${supplierParam}&value=${valueParam}`).json();
-        
-    //@ts-ignore
+            
     setContract(response)
-
     setName(`${supplierParam} ${titleParam} ${valueParam}`);
     
   }

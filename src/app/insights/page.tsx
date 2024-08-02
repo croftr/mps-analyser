@@ -1,7 +1,7 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, Suspense, useEffect } from 'react';
-import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
+import { VOTING_CATEGORIES, EARLIEST_FROM_DATE } from "../config/constants";
 import ky from 'ky';
 
 import ContractInsights from './contractInsights';
@@ -84,11 +84,11 @@ function PageContent() {
   const [dontatedToParty, setDontatedToParty] = useState("");
   const [awaredByParty, setAwaredByParty] = useState("");
 
-  const capitalizeWords = (inputString:string) => {
+  const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
       return ""; // Handle empty or whitespace-only input
     }
-  
+
     const words = inputString.split(" ");
     const capitalizedWords = words.map(word => {
       const lowercaseWord = word.toLowerCase();
@@ -98,7 +98,7 @@ function PageContent() {
         return lowercaseWord.charAt(0).toUpperCase() + lowercaseWord.slice(1);
       }
     });
-  
+
     return capitalizedWords.join(" ");
   }
 
@@ -108,35 +108,34 @@ function PageContent() {
    *
    */
   const getData = async () => {
-    
+    //TODO change url when fields are changed
+
     const typeParam = searchParams.get('type');
 
     if (!typeParam) {
       return; // Handle the case where typeParam is missing
     }
-  
+
     //if type query param is set then perform query
     if (typeParam && urlTypes.includes(typeParam)) {
 
-      let url:string|undefined = undefined;
+      let url: string | undefined = undefined;
 
       setIsQuerying(true);
       setData(undefined);
-      
+
       if (typeParam === 'mp') {
-                
-        setTableHeader("MPs");
-        
+
         //get query data from url params
         const nameParam = searchParams.get('name') || "Any";
-        
+
         const rawPartyParam = searchParams.get('party');
         const partyParam = rawPartyParam ? rawPartyParam[0].toUpperCase() + rawPartyParam.slice(1) : "Any";
-        
+
         const rawLimitParam = searchParams.get('limit') || '';
-        const limitParam = !isNaN(parseInt(rawLimitParam)) 
-            ? parseInt(rawLimitParam) 
-            : 100; 
+        const limitParam = !isNaN(parseInt(rawLimitParam))
+          ? parseInt(rawLimitParam)
+          : 100;
 
         const categoryParam = searchParams.get('category') || 'Any';
 
@@ -151,32 +150,68 @@ function PageContent() {
         setLimit(limitParam);
         setName(nameParam === "Any" ? "" : nameParam);
         setFromDate(fromDateParam);
-        setToDate(toDateParam);        
+        setToDate(toDateParam);
         setQuery(rawVoteParam);
         setVoteCategory(capitalizeWords(categoryParam));
 
+
         url = `${config.mpsApiUrl}insights/mpvotes?limit=${limitParam}&orderby=${votedParam}&partyIncludes=${partyParam}&fromDate=${fromDateParam}&toDate=${toDateParam}&category=${categoryParam}&name=${nameParam}`;
+
+        setTableHeader("MPs");
+
+      } else if (typeParam === 'division') {        
         
-      } else if (typeParam === 'division') {
-        setType("Division");      
-        url = `${config.mpsApiUrl}insights/divisionvotes?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
-        if (voteType !== 'on') {
-          const ayeOrNo = voteType === "for" ? "aye" : "no";
+        //get query data from url params
+        const nameParam = searchParams.get('name') || "Any";
+        const rawPartyParam = searchParams.get('party');
+        const partyParam = rawPartyParam ? rawPartyParam[0].toUpperCase() + rawPartyParam.slice(1) : "Any";
+
+        const rawVoteParam = searchParams.get('voted') || 'most';
+        const votedParam = rawVoteParam === "least" ? "ASC" : "DESC";
+
+        const voteTypeParam = searchParams.get('votetype');
+
+        const categoryParam = searchParams.get('category') || "Any";
+
+        const fromDateParam = searchParams.get('fromdate') || EARLIEST_FROM_DATE;
+        const toDateParam = searchParams.get('todate') || new Date().toISOString().substr(0, 10);
+
+        const rawLimitParam = searchParams.get('limit') || '';
+        const limitParam = !isNaN(parseInt(rawLimitParam))
+          ? parseInt(rawLimitParam)
+          : 100;
+        
+        //set fields based on url params                
+        setType("Division");
+        setName(nameParam === "Any" ? "" : nameParam);
+        setVoteCategory(capitalizeWords(categoryParam));        
+        setParty(partyParam === "Any" ? "Any Party" : partyParam);        
+        setVoteType(voteTypeParam === "for" ? "on" : voteTypeParam === "against" ? "against" : "on");
+        setQuery(rawVoteParam);
+        setFromDate(fromDateParam);
+        setToDate(toDateParam);
+        setLimit(limitParam);
+        
+        url = `${config.mpsApiUrl}insights/divisionvotes?limit=${limitParam}&orderby=${votedParam}&fromDate=${fromDateParam}&toDate=${toDateParam}&category=${categoryParam}&name=${nameParam}`;
+        
+        if (voteTypeParam &&  (voteTypeParam === "for" || voteTypeParam === "against")) {
+          const ayeOrNo = voteTypeParam === "for" ? "aye" : "no";
           url = `${url}&ayeorno=${ayeOrNo}`;
         }
+
       } else if (typeParam.startsWith("org")) {
         setType("Organisation or Individual");
         url = `${config.mpsApiUrl}orgs?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
       } else if (typeParam === 'contract') {
         setType("Contract");
         url = `${config.mpsApiUrl}contracts?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
-      }           
+      }
 
       if (url) {
-        const result: any = await ky(url).json();          
-        console.log(result);      
+        const result: any = await ky(url).json();
+        console.log(result);
         setData(result);
-      }    
+      }
     }
   }
 
@@ -201,9 +236,9 @@ function PageContent() {
       const ayeOrNo = voteType === "for" ? "aye" : "no";
       url = `${url}&ayeorno=${ayeOrNo}`;
     }
-  
+
     const result: any = await ky(url).json();
-    
+
     setData(result);
 
   }
@@ -232,7 +267,7 @@ function PageContent() {
   const onChangeType = (value: string) => {
     setType(value);
   }
-  
+
   const onChangeAwardedName = (value: string) => {
     console.log("check ", value);
 
