@@ -1,5 +1,5 @@
 'use client';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, Suspense, useEffect } from 'react';
 import { VOTING_CATEGORIES, EARLIEST_FROM_DATE, Party } from "../config/constants";
 import ky from 'ky';
@@ -55,7 +55,6 @@ function PageContent() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathName = usePathname();
 
   const [type, setType] = useState(types[0]);
 
@@ -103,27 +102,32 @@ function PageContent() {
     return capitalizedWords.join(" ");
   }
 
+  /**
+   * Called when the url for the insights page contains the type=xx param
+   * query the database set the search fields based on the query params in the url 
+   *
+   */
   const getData = async () => {
-
+    
     const typeParam = searchParams.get('type');
 
     if (!typeParam) {
       return; // Handle the case where typeParam is missing
     }
-
-    //query data and set fields based on url params
-    //TODO need to set fields on mps them ai hopefully can do the other ones
+  
+    //if type query param is set then perform query
     if (typeParam && urlTypes.includes(typeParam)) {
+
+      let url:string|undefined = undefined;
 
       setIsQuerying(true);
       setData(undefined);
-
-      let url="";
-      if (typeParam === 'mp') {
-        
-        
-        setTableHeader("MPs");
       
+      if (typeParam === 'mp') {
+                
+        setTableHeader("MPs");
+        
+        //get query data from url params
         const nameParam = searchParams.get('name') || "Any";
         
         const rawPartyParam = searchParams.get('party');
@@ -154,24 +158,25 @@ function PageContent() {
         url = `${config.mpsApiUrl}insights/mpvotes?limit=${limitParam}&orderby=${votedParam}&partyIncludes=${partyParam}&fromDate=${fromDateParam}&toDate=${toDateParam}&category=${categoryParam}&name=${nameParam}`;
         
       } else if (typeParam === 'division') {
-        setType("Division");
+        setType("Division");      
+        url = `${config.mpsApiUrl}insights/divisionvotes?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
         if (voteType !== 'on') {
           const ayeOrNo = voteType === "for" ? "aye" : "no";
           url = `${url}&ayeorno=${ayeOrNo}`;
         }
-        url = `${config.mpsApiUrl}insights/divisionvotes?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
       } else if (typeParam.startsWith("org")) {
         setType("Organisation or Individual");
         url = `${config.mpsApiUrl}orgs?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
       } else if (typeParam === 'contract') {
         setType("Contract");
         url = `${config.mpsApiUrl}contracts?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
-      }          
+      }           
 
-      const result: any = await ky(url).json();          
-      console.log(result);      
-      setData(result);
-
+      if (url) {
+        const result: any = await ky(url).json();          
+        console.log(result);      
+        setData(result);
+      }    
     }
   }
 
@@ -220,7 +225,6 @@ function PageContent() {
       router.push(`contract?supplier=${row._fields[0]}&title=${row._fields[1]}&value=${row._fields[2]}`, { scroll: true });
     } else {
       console.log("warning unknown type of ", type);
-
     }
 
   }
@@ -228,28 +232,7 @@ function PageContent() {
   const onChangeType = (value: string) => {
     setType(value);
   }
-
-  const onChangeCategory = (value: string) => {
-    setVoteCategory(value);
-  }
-
-  const onChangeParty = (value: string) => {
-    setParty(value);
-  }
-
-  const onChangeVoteType = (value: string) => {
-    setVoteType(value);
-  }
-
-  const onChangeQuery = (value: string) => {
-    setQuery(value);
-  }
-
-  const onChangeVoteCategory = (value: string) => {
-    setVoteCategory(value);
-  }
-
-  //contracts
+  
   const onChangeAwardedName = (value: string) => {
     console.log("check ", value);
 
