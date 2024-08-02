@@ -25,6 +25,13 @@ const types = [
   "Organisation or Individual",
 ]
 
+const urlTypes = [
+  "mp",
+  "division",
+  "contract",
+  "org",
+]
+
 const queries = [
   "most",
   "least"
@@ -78,6 +85,24 @@ function PageContent() {
   const [dontatedToParty, setDontatedToParty] = useState("");
   const [awaredByParty, setAwaredByParty] = useState("");
 
+  const capitalizeWords = (inputString:string) => {
+    if (!inputString || inputString.trim() === '') {
+      return ""; // Handle empty or whitespace-only input
+    }
+  
+    const words = inputString.split(" ");
+    const capitalizedWords = words.map(word => {
+      const lowercaseWord = word.toLowerCase();
+      if (lowercaseWord === "and" || lowercaseWord === "up") {
+        return lowercaseWord; // Keep "and" and "up" lowercase
+      } else {
+        return lowercaseWord.charAt(0).toUpperCase() + lowercaseWord.slice(1);
+      }
+    });
+  
+    return capitalizedWords.join(" ");
+  }
+
   const getData = async () => {
 
     const typeParam = searchParams.get('type');
@@ -88,31 +113,46 @@ function PageContent() {
 
     //query data and set fields based on url params
     //TODO need to set fields on mps them ai hopefully can do the other ones
-    if (typeParam) {
+    if (typeParam && urlTypes.includes(typeParam)) {
+
+      setIsQuerying(true);
+      setData(undefined);
 
       let url="";
       if (typeParam === 'mp') {
-        setIsQuerying(true);
-        setData(undefined);
+        
+        
         setTableHeader("MPs");
       
         const nameParam = searchParams.get('name') || "Any";
         
-        const param = searchParams.get('party');
-        const partyParam = param ? param[0].toUpperCase() + param.slice(1) : "Any";
+        const rawPartyParam = searchParams.get('party');
+        const partyParam = rawPartyParam ? rawPartyParam[0].toUpperCase() + rawPartyParam.slice(1) : "Any";
         
-        const limitParam = searchParams.get('limit') || 100;
+        const rawLimitParam = searchParams.get('limit') || '';
+        const limitParam = !isNaN(parseInt(rawLimitParam)) 
+            ? parseInt(rawLimitParam) 
+            : 100; 
+
+        const categoryParam = searchParams.get('category') || 'Any';
+
         const fromDateParam = searchParams.get('fromdate') || EARLIEST_FROM_DATE;
         const toDateParam = searchParams.get('todate') || new Date().toISOString().substr(0, 10);
-        let voteParam = searchParams.get('voted') 
-        let votedParam = "DESC";
-        if (voteParam === "least") {
-          votedParam = "ASC"
-        }
-        
+        const rawVoteParam = searchParams.get('voted') || 'most';
+        const votedParam = rawVoteParam === "least" ? "ASC" : "DESC";
 
-        url = `${config.mpsApiUrl}insights/mpvotes?limit=${limitParam}&orderby=${votedParam}&partyIncludes=${partyParam}&fromDate=${fromDateParam}&toDate=${toDateParam}&category=${voteCategory}&name=${nameParam}`;
+        //set fields based on url params
         setType("MP");
+        setParty(partyParam === "Any" ? "Any Party" : partyParam);
+        setLimit(limitParam);
+        setName(nameParam === "Any" ? "" : nameParam);
+        setFromDate(fromDateParam);
+        setToDate(toDateParam);        
+        setQuery(rawVoteParam);
+        setVoteCategory(capitalizeWords(categoryParam));
+
+        url = `${config.mpsApiUrl}insights/mpvotes?limit=${limitParam}&orderby=${votedParam}&partyIncludes=${partyParam}&fromDate=${fromDateParam}&toDate=${toDateParam}&category=${categoryParam}&name=${nameParam}`;
+        
       } else if (typeParam === 'division') {
         setType("Division");
         if (voteType !== 'on') {
