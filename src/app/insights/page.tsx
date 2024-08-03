@@ -350,7 +350,7 @@ function PageContent() {
     <div className="insights">
 
       <div>
-        <div className="flex flex-col gap-2 mb-4 items-baseline p-4 flex-wrap">
+        <div className="flex flex-col gap-2 items-baseline p-4 flex-wrap">
 
           <div className='flex items-baseline gap-2'>
 
@@ -363,7 +363,7 @@ function PageContent() {
 
             <CustomSelect
               id="selectType"
-              className="min-w-[190px]"
+              className="min-w-[210px]"
               value={type}
               onValueChange={onChangeType}
               options={types.map(str => ({ value: str, label: `${str}s`, }))}
@@ -421,16 +421,14 @@ function PageContent() {
 
             />
           )}
-
-          <Separator />
-
+          
           <div className='flex items-baseline gap-2'>
 
             <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
 
             <Input
               id="insightsLimit"
-              className='min-w-[190px]'
+              className='min-w-[210px]'
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
               // onKeyDown={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}

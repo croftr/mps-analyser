@@ -58,7 +58,7 @@ export default function MpsAndDivisionInsights({
 
   return (
 
-    <div className="flex flex-col gap-2 mb-4 items-baseline flex-wrap">
+    <div className="flex flex-col gap-2 items-baseline flex-wrap">
       <div className='flex items-baseline gap-2'>
         <Label
           htmlFor="name"
@@ -68,7 +68,7 @@ export default function MpsAndDivisionInsights({
         </Label>
         <Input
           id="name"
-          className='w-[190px]'
+          className='w-[210px]'
           type="search"
           placeholder="includes text"
           value={name}
@@ -88,7 +88,7 @@ export default function MpsAndDivisionInsights({
 
           <CustomSelect
             id="voteCategory"
-            className="w-[190px]"
+            className="w-[210px]"
             value={voteCategory}
             onValueChange={onChangeCategory}
             options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
@@ -112,7 +112,7 @@ export default function MpsAndDivisionInsights({
 
           <CustomSelect
             id="voteType"
-            className="w-[190px]"
+            className="w-[210px]"
             value={voteType}
             onValueChange={onChangeVoteType}
             options={voteTyps.map(str => ({ value: str, label: str }))}
@@ -127,7 +127,7 @@ export default function MpsAndDivisionInsights({
 
         <CustomSelect
           id="voteType"
-          className="w-[190px]"
+          className="w-[210px]"
           value={query}
           onValueChange={onChangeQuery}
           options={queries.map(str => ({ value: str, label: str }))}
@@ -145,7 +145,7 @@ export default function MpsAndDivisionInsights({
           </Label>
           <CustomSelect
             id="voteType"
-            className="w-[190px]"
+            className="w-[210px]"
             value={voteCategory}
             onValueChange={onChangeVoteCategory}
             options={VOTING_CATEGORIES.map(str => ({ value: str, label: str }))}
@@ -175,7 +175,7 @@ export default function MpsAndDivisionInsights({
           focus:outline-none 
           focus:ring-2 
           focus:ring-custom-outline 
-          transition-all duration-200 ease-in-out w-[190px]"
+          transition-all duration-200 ease-in-out w-[210px]"
         />
       </div>
 
@@ -200,7 +200,7 @@ export default function MpsAndDivisionInsights({
           focus:outline-none 
           focus:ring-2 
           focus:ring-custom-outline 
-          transition-all duration-200 ease-in-out w-[190px]"
+          transition-all duration-200 ease-in-out w-[210px]"
         />
       </div>
 

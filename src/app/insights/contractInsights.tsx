@@ -39,7 +39,7 @@ const ContractInsights = ({
     }
 
     return (
-        <div className="flex flex-col gap-2 mb-4 items-baseline flex-wrap">
+        <div className="flex flex-col gap-2 items-baseline flex-wrap">
 
             <PartyPicker
                 party={party}
@@ -54,7 +54,7 @@ const ContractInsights = ({
                 <Input
                     id="awardedName"
                     placeholder="name includes"
-                    className='min-w-[190px]'
+                    className='min-w-[210px]'
                     value={awardedName}
                     onChange={(e) => onChangeAwardedName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
@@ -79,7 +79,7 @@ const ContractInsights = ({
                         disabled={!groupByContractCount}
                         id="awardedCount"
                         placeholder="contract count"
-                        className='w-[138px]'                        
+                        className='w-[158px]'                        
                         value={awardedCount}
                         onChange={(e) => onChangeAwardedCount(Number(e.target.value))}
                         onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
