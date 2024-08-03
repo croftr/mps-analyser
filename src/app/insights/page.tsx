@@ -17,6 +17,7 @@ import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
 import { Separator } from "@/components/ui/separator"
+import { log } from 'console';
 
 const types = [
   "MP",
@@ -126,6 +127,8 @@ function PageContent() {
 
       if (typeParam === 'mp') {
 
+        console.log("query from url ");        
+
         //get query data from url params
         const nameParam = searchParams.get('name') || "Any";
 
@@ -159,7 +162,9 @@ function PageContent() {
 
         setTableHeader("MPs");
 
-      } else if (typeParam === 'division') {        
+      } else if (typeParam === 'division') {      
+        
+        console.log("query from url ");
         
         //get query data from url params
         const nameParam = searchParams.get('name') || "Any";
@@ -208,8 +213,7 @@ function PageContent() {
       }
 
       if (url) {
-        const result: any = await ky(url).json();
-        console.log(result);
+        const result: any = await ky(url).json();        
         setData(result);
       }
     }
@@ -217,7 +221,16 @@ function PageContent() {
 
   useEffect(() => {
     getData();
-  }, [router, searchParams]);
+  }, []);
+
+  /**
+   * Set url in browser from fields set at query time 
+   */
+  const setUrlFromQueryFields= (nameParam:string, partyParam:string) => {    
+    console.log("query from button");      
+    const queryString = `?type=${type.toLowerCase()}&name=${nameParam}&party=${partyParam}&voted=${query}&votetype=${voteType}&category=${voteCategory}&fromdate=${fromDate}&todate=${toDate}&limit=${limit}`
+    router.push(queryString, { scroll: false });    
+  }
 
   const onSearchDivisionsOrMps = async () => {
 
@@ -227,8 +240,9 @@ function PageContent() {
     setTableHeader(`${type}s`);
 
     const nameParam = name || "Any";
-
     const partyParam = party.includes("Any") ? "Any" : party;
+
+    setUrlFromQueryFields(nameParam, partyParam);
 
     let url = `${config.mpsApiUrl}insights/${type === 'MP' ? 'mpvotes' : 'divisionvotes'}?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${partyParam}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${nameParam}`;
 
@@ -238,11 +252,14 @@ function PageContent() {
     }
 
     const result: any = await ky(url).json();
-
+    
     setData(result);
 
   }
 
+  /**
+   * Called when user clicks on table row to navigate to details page
+   */
   const getDetails = (row: any) => {
 
     if (type === "MP") {
@@ -264,8 +281,8 @@ function PageContent() {
 
   }
 
-  const onChangeType = (value: string) => {
-    setType(value);
+  const onChangeType = (value: string) => {    
+    setType(value);    
   }
 
   const onChangeAwardedName = (value: string) => {
@@ -313,8 +330,6 @@ function PageContent() {
     setTableHeader("Organisations and individuals");
 
     const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
-
-    console.log("result ", result);
 
     setData(result);
   }
