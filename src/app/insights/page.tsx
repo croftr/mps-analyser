@@ -17,7 +17,6 @@ import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
 import { Separator } from "@/components/ui/separator"
-import { log } from 'console';
 
 const types = [
   "MP",
@@ -108,11 +107,11 @@ function PageContent() {
    * query the database set the search fields based on the query params in the url 
    *
    */
-  const getData = async () => {
-
-    console.log("Query data from url");
-    
+  const getData = async () => {    
+   
     const typeParam = searchParams.get('type');
+
+    console.log("Query data from url ", typeParam);
 
     if (!typeParam || !urlTypes.includes(typeParam)) {
       return;
@@ -144,18 +143,16 @@ function PageContent() {
     // Type-Specific Logic
     let url: string | undefined = undefined;
 
-    switch (typeParam) {
-      case 'mp': {        
+    switch (typeParam.toLocaleLowerCase()) {
+      case 'mp': {                
         setType("MP");
         setTableHeader("MPs");
         url = `${config.mpsApiUrl}insights/mpvotes?limit=${commonParams.limit}&orderby=${orderby}&partyIncludes=${commonParams.party}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
         break;
       }
-      case 'division': {
-        setType("Division");
-        
+      case 'division': {        
+        setType("Division");        
         url = `${config.mpsApiUrl}insights/divisionvotes?limit=${commonParams.limit}&orderby=${orderby}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
-
         const voteType = searchParams.get('votetype');
         setVoteType(voteType === 'for' ? 'on' : voteType === 'against' ? 'against' : 'on');
         if (voteType && (voteType === 'for' || voteType === 'against')) {
@@ -165,8 +162,6 @@ function PageContent() {
         break;
       }
       case 'contract': {
-
-        console.log("go contract ");
                  
         const awardedByParam = searchParams.get('awardedby') || 'Any Party';   
         const awardedToParam = searchParams.get('awardedto') || 'Any';   
@@ -187,10 +182,29 @@ function PageContent() {
 
         break;
       }
-      case 'org...': {
-        setType("Organisation or Individual");
-        url = `${config.mpsApiUrl}orgs?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${party}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${name}`;
+      case 'org': {        
+        const nameParam = searchParams.get('name');   
+        const donatedtoParam = searchParams.get('donatedto') || 'Any Party';   
+        const awardedbyParam = searchParams.get('awardedby') || 'Any Party';   
+        const limitParam = searchParams.get('limit') || 100;   
+
+        setType("Organisation or Individual");        
+        setDontatedToParty(donatedtoParam);
+        setAwaredByParty(awardedbyParam);
+        setLimit(Number(limitParam));
+
+        url = `${config.mpsApiUrl}orgs?limit=${limitParam}&donatedTo=${donatedtoParam}&awardedBy=${awardedbyParam}`;
+
+        if (nameParam) {
+          url = `${url}&name=${nameParam}`;
+          setOrgName(nameParam);
+        }
+
         break;
+      }
+      default: {
+        console.log("defualt section ");
+        
       }
     }
 
@@ -317,6 +331,13 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}`
+    if (orgName) {
+      queryString = `${queryString}&name=${orgName}`;
+    }
+
+    router.push(queryString, { scroll: false });
+    
     setTableHeader("Organisations and individuals");
 
     const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
