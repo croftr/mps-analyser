@@ -388,8 +388,7 @@ function PageContent() {
               fromDate={fromDate}
               setFromDate={setFromDate}
               toDate={toDate}
-              setToDate={setToDate}
-              onSearch={onSearchDivisionsOrMps}
+              setToDate={setToDate}              
               onChangeVoteCategory={setVoteCategory}
             />
           )}
@@ -434,7 +433,7 @@ function PageContent() {
               className='min-w-[190px]'
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
-              onKeyDown={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
+              // onKeyDown={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
               type="number">
             </Input>
           </div>

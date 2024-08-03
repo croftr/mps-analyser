@@ -34,8 +34,7 @@ interface MpsAndDivisionInsightsProps {
   setFromDate: (date: string) => void;
   toDate: string;
   setToDate: (date: string) => void;    
-  onChangeVoteCategory: (voteType: string) => void;
-  onSearch: () => void;
+  onChangeVoteCategory: (voteType: string) => void;  
 }
 
 export default function MpsAndDivisionInsights({
@@ -54,7 +53,6 @@ export default function MpsAndDivisionInsights({
   setFromDate,
   toDate,
   setToDate,
-  onSearch,
   onChangeVoteCategory
 }: MpsAndDivisionInsightsProps) {
 
