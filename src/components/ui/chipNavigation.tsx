@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { 
-    Compass, 
-    Home, 
+    Compass,     
     Eye, 
     ReceiptPoundSterling, 
     Handshake

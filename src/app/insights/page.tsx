@@ -17,13 +17,20 @@ import { Label } from "@/components/ui/label";
 import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
-import { Separator } from "@/components/ui/separator"
+import { 
+  Compass, 
+  Eye, 
+  Building2, 
+  Handshake,
+  User,
+  Vote
+} from "lucide-react";
 
 const types = [
-  { value: "MP", label: "MP" },
-  { value: "Division", label: "Division" },
-  { value: "Contract", label: "Contract" },
-  { value: "Organisation or Individual", label: "Organisation or Individual" },
+  { value: "MP", label: "MP", icon: <User/> },          // Representing a person or Member of Parliament
+  { value: "Division", label: "Division", icon: <Vote/> }, // Representing a division or split
+  { value: "Contract", label: "Contract", icon: <Handshake/> }, 
+  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2/> }, // Representing a broader scope 
   // { value: "Organisation or Individual", label: "Individual" },
 ];
 
@@ -354,7 +361,7 @@ function PageContent() {
             className="min-w-[210px]"
             value={type}
             onValueChange={onChangeType}
-            options={types.map(str => ({ value: str.value, label: str.label }))}
+            options={types.map(str => ({ value: str.value, label: str.label, icon: str.icon }))}
           />
 
 
