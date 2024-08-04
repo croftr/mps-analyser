@@ -17,18 +17,19 @@ import { Label } from "@/components/ui/label";
 import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
-import {   
-  Building2, 
+import {
+  Building2,
   Handshake,
   User,
   Vote
 } from "lucide-react";
+import { Separator } from '@radix-ui/react-separator';
 
 const types = [
-  { value: "MP", label: "MPs", icon: <User/> },          // Representing a person or Member of Parliament
-  { value: "Division", label: "Votes", icon: <Vote/> }, // Representing a division or split
-  { value: "Contract", label: "Contracts", icon: <Handshake/> }, 
-  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2/> }, // Representing a broader scope 
+  { value: "MP", label: "MPs", icon: <User /> },          // Representing a person or Member of Parliament
+  { value: "Division", label: "Votes", icon: <Vote /> }, // Representing a division or split
+  { value: "Contract", label: "Contracts", icon: <Handshake /> },
+  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 /> }, // Representing a broader scope 
   // { value: "Organisation or Individual", label: "Individual" },
 ];
 
@@ -382,7 +383,9 @@ function PageContent() {
             />
           </div>
 
-          <Separator /> */}
+           */}
+
+          <Separator />
 
           {(type === "MP" || type === "Division") && (
             <MpsAndDivisionInsights
