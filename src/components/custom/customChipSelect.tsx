@@ -34,14 +34,14 @@ const CustomChipSelect = ({ value, onValueChange, options, disabled, id, classNa
     onValueChange?.(newValue); // Only trigger onValueChange if the value actually changed
   };
 
-  return (
+return (
     <div className={`flex flex-wrap gap-2 ${className}`} {...(id && { id })}>
       {options.map((option) => (
          <button
          key={option.label}
          onClick={() => !disabled && handleChipClick(option.value)}
          className={`
-           flex items-center py-1 px-2 rounded-full font-medium gap-4 mb-2
+           flex items-center py-2 px-4 rounded-full font-medium gap-4 mb-2
            ${selectedValue === option.label ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'}
            ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary'}
          `}

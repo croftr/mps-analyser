@@ -27,7 +27,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { useEffect } from "react"
+
+import { useEffect, useRef } from "react"
 import { PartyCard } from "./partyCard";
 
 //not sure what the point of this is
@@ -35,6 +36,14 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function Home() {
+
+  const mainContentRef = useRef<HTMLDivElement>(null); // Ref for the container element
+
+  useEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.focus();
+    }
+  }, []); 
 
   const router = useRouter();
 
@@ -123,9 +132,9 @@ export default function Home() {
 
   return (
 
-    <div className="p-4">
+    <div className="p-4" >
 
-      <div id="chartcontainer">
+      <div id="chartcontainer" ref={mainContentRef} tabIndex={0}>
 
         <Card className="flex flex-col">
           <CardHeader className="items-center pb-0">

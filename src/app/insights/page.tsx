@@ -17,9 +17,7 @@ import { Label } from "@/components/ui/label";
 import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
-import { 
-  Compass, 
-  Eye, 
+import {   
   Building2, 
   Handshake,
   User,
@@ -27,9 +25,9 @@ import {
 } from "lucide-react";
 
 const types = [
-  { value: "MP", label: "MP", icon: <User/> },          // Representing a person or Member of Parliament
-  { value: "Division", label: "Division", icon: <Vote/> }, // Representing a division or split
-  { value: "Contract", label: "Contract", icon: <Handshake/> }, 
+  { value: "MP", label: "MPs", icon: <User/> },          // Representing a person or Member of Parliament
+  { value: "Division", label: "Votes", icon: <Vote/> }, // Representing a division or split
+  { value: "Contract", label: "Contracts", icon: <Handshake/> }, 
   { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2/> }, // Representing a broader scope 
   // { value: "Organisation or Individual", label: "Individual" },
 ];

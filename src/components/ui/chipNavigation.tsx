@@ -5,11 +5,14 @@ import {
     Compass,     
     Eye, 
     ReceiptPoundSterling, 
-    Handshake
+    Handshake,
+    User,
+    Vote
 } from "lucide-react";
 
 const navItems = [    
-    { label: "Browse", icon: Compass, href: "/browse?type=MP", color: "bg-green-100 hover:bg-green-200" },
+    { label: "Browse Mps", icon: User, href: "/browse?type=MP", color: "bg-green-100 hover:bg-green-200" },
+    { label: "Browse Votes", icon: Vote, href: "/browse?type=Division", color: "bg-green-100 hover:bg-green-200" },
     { label: "Insights", icon: Eye, href: "/insights", color: "bg-yellow-100 hover:bg-yellow-200" },
     { label: "Donations", icon: ReceiptPoundSterling, href: "/donations", color: "bg-red-100 hover:bg-red-200" },
     { label: "Contracts", icon: Handshake, href: "/contracts", color: "bg-purple-100 hover:bg-purple-200" },
