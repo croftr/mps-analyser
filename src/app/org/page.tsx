@@ -146,11 +146,12 @@ function PageContent() {
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&limit=10000`);
     const contractsResult = await result.json();
     setContracts(contractsResult);
-
-
-
     setIsLoading(false);
+  }
 
+  const showContract = (row:any) => {
+    console.log(row);    
+    router.push(`contract?supplier=${row._fields[1]}&title=${row._fields[0]}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
   }
 
   useEffect(() => {
@@ -184,7 +185,7 @@ function PageContent() {
       </div>
 
 
-      {showContracts && <NeoTable data={contracts} title="Contracts Received" onRowClick={() => { }} />}
+      {showContracts && <NeoTable data={contracts} title="Contracts Received" onRowClick={showContract} />}
 
       {showDonations && (<div>
         <div className="flex flex-col md:flex-row md:justify-between p-4">
