@@ -63,7 +63,7 @@ function PageContent() {
 
       <div className="flex items-center gap-4 text-lg font-semibold">
 
-        <div className="headerItem flex-1 flex items-center justify-center gap-2 relative overflow-hidden">
+        <div className="headerItem flex-1 flex items-center justify-end gap-2 relative overflow-hidden">
           <span className="truncate">{title}</span>
           <div className="h-6 border-l border-gray-300"></div>
         </div>

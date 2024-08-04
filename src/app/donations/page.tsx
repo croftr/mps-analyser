@@ -177,9 +177,7 @@ function PageContent() {
       } finally {
         setIsLoading(false);
       }
-
     }
-
   }
 
   useEffect(() => {
@@ -190,7 +188,7 @@ function PageContent() {
 
   return (
 
-    <div className="overflow-y-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring">
+    <div className="overflow-y-hidden border">
 
       
       <div className="flex flex-col md:flex-row md:justify-between p-4">        

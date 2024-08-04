@@ -7,6 +7,9 @@ import ky from 'ky';
 import { useRouter } from 'next/navigation'
 import { Vote, Party } from "../types";
 import DivisionSvg from "@/components/custom/divisionSvg";
+
+import ChipNavigation from "@/components/ui/chipNavigation";
+
 import {
   Card,
   CardContent,
@@ -15,6 +18,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+
+import Search from "@/components/ui/search";
 
 import {
   ChartConfig,
@@ -186,12 +191,15 @@ export default function Home() {
         </Card>
       </div>
 
+      <Search />
+
+      <ChipNavigation />
+
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 mt-4">
         {parties && parties.filter(i => i.name !== "Speaker").map(i => <PartyCard key={i.name} party={i} />)}
       </div>
 
-
-      {!recentVotes && <h1>getting data....</h1>}
+      
       {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
       {recentVotes && recentVotes.length > 0 && (
         <div className="flex flex-col gap-2">

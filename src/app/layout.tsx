@@ -23,8 +23,8 @@ export default function RootLayout({
           disableTransitionOnChange
         > 
           <Nav />
-          <Search />
-          <main className="h-[calc(100vh-130px)] overflow-y-scroll pb-4">
+          {/* <Search /> */}
+          <main className="h-[calc(100vh-34px)] overflow-y-scroll pb-4 pt-4 mt-0 lg:mt-12">
             {children}
           </main>
         </ThemeProvider>

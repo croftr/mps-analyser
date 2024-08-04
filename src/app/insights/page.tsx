@@ -7,6 +7,7 @@ import ky from 'ky';
 import ContractInsights from './contractInsights';
 import OrgInsights from './orgIInsights';
 import CustomSelect from "@/components/custom/customSelect";
+import CustomChipSelect from "@/components/custom/customChipSelect";
 import MpsAndDivisionInsights from './mpsAndDivisionInsights';
 
 import { Button } from "@/components/ui/button";
@@ -19,11 +20,12 @@ import { NeoTable } from '@/components/ui/neoTable'
 import { Separator } from "@/components/ui/separator"
 
 const types = [
-  "MP",
-  "Division",
-  "Contract",
-  "Organisation or Individual",
-]
+  { value: "MP", label: "MP" },
+  { value: "Division", label: "Division" },
+  { value: "Contract", label: "Contract" },
+  { value: "Organisation or Individual", label: "Organisation" },
+  { value: "Organisation or Individual", label: "Individual" },
+];
 
 const urlTypes = [
   "mp",
@@ -56,7 +58,7 @@ function PageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [type, setType] = useState(types[0]);
+  const [type, setType] = useState(types[0].value);
 
   //table
   const [data, setData] = useState();
@@ -107,10 +109,10 @@ function PageContent() {
    * query the database set the search fields based on the query params in the url 
    *
    */
-  const getData = async () => {    
-   
+  const getData = async () => {
+
     const typeParam = searchParams.get('type');
-    
+
     if (!typeParam || !urlTypes.includes(typeParam)) {
       return;
     }
@@ -120,7 +122,7 @@ function PageContent() {
 
     // Common Parameters and Settings
     const commonParams = {
-      name: searchParams.get('name') || 'Any',      
+      name: searchParams.get('name') || 'Any',
       party: (searchParams.get('party') ?? 'Any')?.[0]?.toUpperCase() + (searchParams.get('party') ?? 'Any')?.slice(1) || 'Any',
       limit: parseInt(searchParams.get('limit') || '100') || 100,
       fromDate: searchParams.get('fromdate') || EARLIEST_FROM_DATE,
@@ -142,14 +144,14 @@ function PageContent() {
     let url: string | undefined = undefined;
 
     switch (typeParam.toLocaleLowerCase()) {
-      case 'mp': {                
+      case 'mp': {
         setType("MP");
         setTableHeader("MPs");
         url = `${config.mpsApiUrl}insights/mpvotes?limit=${commonParams.limit}&orderby=${orderby}&partyIncludes=${commonParams.party}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
         break;
       }
-      case 'division': {        
-        setType("Division");        
+      case 'division': {
+        setType("Division");
         url = `${config.mpsApiUrl}insights/divisionvotes?limit=${commonParams.limit}&orderby=${orderby}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
         const voteType = searchParams.get('votetype');
         setVoteType(voteType === 'for' ? 'on' : voteType === 'against' ? 'against' : 'on');
@@ -160,17 +162,17 @@ function PageContent() {
         break;
       }
       case 'contract': {
-                 
-        const awardedByParam = searchParams.get('awardedby') || 'Any Party';   
-        const awardedToParam = searchParams.get('awardedto') || 'Any';   
-        const groupByContractParam = searchParams.get('groupbycontract') || false;                 
-        const awardedCountParam = searchParams.get('awardedcount');   
+
+        const awardedByParam = searchParams.get('awardedby') || 'Any Party';
+        const awardedToParam = searchParams.get('awardedto') || 'Any';
+        const groupByContractParam = searchParams.get('groupbycontract') || false;
+        const awardedCountParam = searchParams.get('awardedcount');
 
         setType("Contract");
-        setGroupByContractCount(groupByContractParam === "true" ? true : false);                
+        setGroupByContractCount(groupByContractParam === "true" ? true : false);
         setAwardedBy(awardedByParam);
         setAwardedTo(awardedToParam);
-      
+
         url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${awardedByParam}&orgName=${awardedToParam}&groupByContractCount=${groupByContractParam}&limit=${limit}`;
 
         if (awardedCountParam) {
@@ -180,13 +182,13 @@ function PageContent() {
 
         break;
       }
-      case 'org': {        
-        const nameParam = searchParams.get('name');   
-        const donatedtoParam = searchParams.get('donatedto') || 'Any Party';   
-        const awardedbyParam = searchParams.get('awardedby') || 'Any Party';   
-        const limitParam = searchParams.get('limit') || 100;   
+      case 'org': {
+        const nameParam = searchParams.get('name');
+        const donatedtoParam = searchParams.get('donatedto') || 'Any Party';
+        const awardedbyParam = searchParams.get('awardedby') || 'Any Party';
+        const limitParam = searchParams.get('limit') || 100;
 
-        setType("Organisation or Individual");        
+        setType("Organisation or Individual");
         setDontatedToParty(donatedtoParam);
         setAwaredByParty(awardedbyParam);
         setLimit(Number(limitParam));
@@ -200,7 +202,7 @@ function PageContent() {
         break;
       }
       default: {
-        console.log("Unknown type of ", typeParam);                
+        console.log("Unknown type of ", typeParam);
       }
     }
 
@@ -218,7 +220,7 @@ function PageContent() {
   /**
    * Set url in browser from fields set at query time 
    */
-  const setUrlFromQueryFields = (nameParam: string, partyParam: string) => {    
+  const setUrlFromQueryFields = (nameParam: string, partyParam: string) => {
     const queryString = `?type=${type.toLowerCase()}&name=${nameParam}&party=${partyParam}&voted=${query}&votetype=${voteType}&category=${voteCategory}&fromdate=${fromDate}&todate=${toDate}&limit=${limit}`
     router.push(queryString, { scroll: false });
   }
@@ -259,10 +261,10 @@ function PageContent() {
     } else if (type === "Division") {
       const id = row._fields[2].low;
       router.push(`division?id=${id}`, { scroll: true });
-    } else if ((type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {      
+    } else if ((type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {
       const orgName = row._fields[0];
       router.push(`org?name=${orgName}`, { scroll: true });
-    } else if (type === "Contract") {      
+    } else if (type === "Contract") {
       router.push(`contract?supplier=${row._fields[1]}&title=${row._fields[0]}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
     } else {
       console.log("warning unknown type of ", type);
@@ -274,7 +276,7 @@ function PageContent() {
     setType(value);
   }
 
-  const onChangeAwardedName = (value: string) => {    
+  const onChangeAwardedName = (value: string) => {
     setAwardedTo(value);
   }
   const onChangeAwardedCount = (value: number | undefined) => {
@@ -328,13 +330,13 @@ function PageContent() {
     }
 
     router.push(queryString, { scroll: false });
-    
-    if (awaredByParty && awaredByParty !== "Any Party") { 
+
+    if (awaredByParty && awaredByParty !== "Any Party") {
       setTableHeader("Number of Countracts awarded to Organisations");
     } else {
       setTableHeader("Organisations and individuals");
     }
-    
+
     const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
     setData(result);
@@ -347,8 +349,18 @@ function PageContent() {
       <div>
         <div className="flex flex-col gap-2 items-baseline p-4 flex-wrap">
 
-          <div className='flex items-baseline gap-2'>
+          <CustomChipSelect
+            id="selectType"
+            className="min-w-[210px]"
+            value={type}
+            onValueChange={onChangeType}
+            options={types.map(str => ({ value: str.value, label: str.label }))}
+          />
 
+
+          {/* <div className='flex items-baseline gap-2'>
+
+         
             <Label
               className="min-w-[80px]"
               htmlFor="selectType"
@@ -365,7 +377,7 @@ function PageContent() {
             />
           </div>
 
-          <Separator />
+          <Separator /> */}
 
           {(type === "MP" || type === "Division") && (
             <MpsAndDivisionInsights
@@ -383,7 +395,7 @@ function PageContent() {
               fromDate={fromDate}
               setFromDate={setFromDate}
               toDate={toDate}
-              setToDate={setToDate}              
+              setToDate={setToDate}
               onChangeVoteCategory={setVoteCategory}
             />
           )}
@@ -416,7 +428,7 @@ function PageContent() {
 
             />
           )}
-          
+
           <div className='flex items-baseline gap-2'>
 
             <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
@@ -425,7 +437,7 @@ function PageContent() {
               id="insightsLimit"
               className='min-w-[210px]'
               value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}              
+              onChange={(e) => setLimit(Number(e.target.value))}
               type="number">
             </Input>
           </div>
