@@ -23,8 +23,8 @@ const types = [
   { value: "MP", label: "MP" },
   { value: "Division", label: "Division" },
   { value: "Contract", label: "Contract" },
-  { value: "Organisation or Individual", label: "Organisation" },
-  { value: "Organisation or Individual", label: "Individual" },
+  { value: "Organisation or Individual", label: "Organisation or Individual" },
+  // { value: "Organisation or Individual", label: "Individual" },
 ];
 
 const urlTypes = [
