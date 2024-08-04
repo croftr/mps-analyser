@@ -42,7 +42,6 @@ const OrgInsights = ({
                 </Input>
             </div>
 
-
             <PartyPicker
                 party={dontatedToParty}
                 onChangeParty={onChangeDontatedToParty}
@@ -56,8 +55,6 @@ const OrgInsights = ({
                 // className="items-center"
                 labelClassName="w-[80px]"
             />
-
-
         </div>
     )
 }

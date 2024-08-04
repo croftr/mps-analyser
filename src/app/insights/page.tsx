@@ -110,9 +110,7 @@ function PageContent() {
   const getData = async () => {    
    
     const typeParam = searchParams.get('type');
-
-    console.log("Query data from url ", typeParam);
-
+    
     if (!typeParam || !urlTypes.includes(typeParam)) {
       return;
     }
@@ -199,12 +197,10 @@ function PageContent() {
           url = `${url}&name=${nameParam}`;
           setOrgName(nameParam);
         }
-
         break;
       }
       default: {
-        console.log("defualt section ");
-        
+        console.log("Unknown type of ", typeParam);                
       }
     }
 
@@ -222,8 +218,7 @@ function PageContent() {
   /**
    * Set url in browser from fields set at query time 
    */
-  const setUrlFromQueryFields = (nameParam: string, partyParam: string) => {
-    console.log("query from button");
+  const setUrlFromQueryFields = (nameParam: string, partyParam: string) => {    
     const queryString = `?type=${type.toLowerCase()}&name=${nameParam}&party=${partyParam}&voted=${query}&votetype=${voteType}&category=${voteCategory}&fromdate=${fromDate}&todate=${toDate}&limit=${limit}`
     router.push(queryString, { scroll: false });
   }
@@ -264,13 +259,11 @@ function PageContent() {
     } else if (type === "Division") {
       const id = row._fields[2].low;
       router.push(`division?id=${id}`, { scroll: true });
-    } else if ((type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {
-      console.log("check ", row);
+    } else if ((type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {      
       const orgName = row._fields[0];
       router.push(`org?name=${orgName}`, { scroll: true });
-    } else if (type === "Contract") {
-      console.log("check ", row);
-      router.push(`contract?supplier=${row._fields[0]}&title=${row._fields[1]}&value=${row._fields[2]}`, { scroll: true });
+    } else if (type === "Contract") {      
+      router.push(`contract?supplier=${row._fields[1]}&title=${row._fields[0]}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
     } else {
       console.log("warning unknown type of ", type);
     }
@@ -281,9 +274,7 @@ function PageContent() {
     setType(value);
   }
 
-  const onChangeAwardedName = (value: string) => {
-    console.log("check ", value);
-
+  const onChangeAwardedName = (value: string) => {    
     setAwardedTo(value);
   }
   const onChangeAwardedCount = (value: number | undefined) => {
@@ -338,8 +329,12 @@ function PageContent() {
 
     router.push(queryString, { scroll: false });
     
-    setTableHeader("Organisations and individuals");
-
+    if (awaredByParty && awaredByParty !== "Any Party") { 
+      setTableHeader("Number of Countracts awarded to Organisations");
+    } else {
+      setTableHeader("Organisations and individuals");
+    }
+    
     const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
     setData(result);
@@ -430,8 +425,7 @@ function PageContent() {
               id="insightsLimit"
               className='min-w-[210px]'
               value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              // onKeyDown={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
+              onChange={(e) => setLimit(Number(e.target.value))}              
               type="number">
             </Input>
           </div>

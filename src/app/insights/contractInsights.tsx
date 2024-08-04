@@ -84,14 +84,8 @@ const ContractInsights = ({
                         onChange={(e) => onChangeAwardedCount(Number(e.target.value))}
                         onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
                         type="number">
-                    </Input>
-                
-
-
-
+                    </Input>            
             </div>
-
-
         </div>
     )
 }
