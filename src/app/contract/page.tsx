@@ -59,21 +59,25 @@ function PageContent() {
 
   return (
 
-    <div className="flex flex-col justify-center p-4 gap-6">
+    <div className="flex flex-col justify-center p-4 gap-6 mb-10">
 
-      <div className="flex flex-col items-center">
-        <div className="flex items-center gap-4 text-lg font-semibold">
+      <div className="flex items-center gap-4 text-lg font-semibold">
 
-          <span className='flex-1 flex gap-4 items-center'>{title}<div className="h-6 border-l border-gray-300"></div> </span>
-          
-          <div className="flex-1 mt-2 rounded-full p-4 ring-1 flex flex-col items-center">
-            <Handshake className="h-6 w-6 relative arrow-container" />
-            <span className="font-medium">
-              {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value)}
-            </span>
-          </div>
-          
-          <span className='flex-1 flex gap-4 items-center'><div className="h-6 border-l border-gray-300"></div>{awardedTo}</span>
+        <div className="headerItem flex-1 flex items-center justify-center gap-2 relative overflow-hidden">
+          <span className="truncate">{title}</span>
+          <div className="h-6 border-l border-gray-300"></div>
+        </div>
+
+        <div className="headerItem flex-1 mt-2 rounded-full p-4 ring-1 flex flex-col items-center max-w-40">
+          <Handshake className="h-6 w-6 relative arrow-container" />
+          <span className="font-medium">
+            {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value)}
+          </span>
+        </div>
+
+        <div className="headerItem flex-1 flex items-center justify-start gap-2 relative overflow-hidden">
+          <div className="h-6 border-l border-gray-300"></div>
+          <span className="truncate">{awardedTo}</span>
         </div>
       </div>
 
