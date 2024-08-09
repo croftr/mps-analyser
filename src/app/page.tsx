@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation'
 import { Vote, Party } from "../types";
 import DivisionSvg from "@/components/custom/divisionSvg";
 
+import { VoteIcon } from "lucide-react";
+
 import ChipNavigation from "@/components/ui/chipNavigation";
 
 import {
@@ -43,7 +45,7 @@ export default function Home() {
     if (mainContentRef.current) {
       mainContentRef.current.focus();
     }
-  }, []); 
+  }, []);
 
   const router = useRouter();
 
@@ -56,7 +58,7 @@ export default function Home() {
 
     const now = new Date(); // Get the current date and time
     const jsonDateString = now.toISOString(); // Format as ISO 8601 string
-    
+
     const result = await ky(`https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/${jsonDateString}`).json();
 
     const data: Array<any> = [];
@@ -86,10 +88,10 @@ export default function Home() {
     const month = (oneMonthAgo.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
     const day = oneMonthAgo.getDate().toString().padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day}`;    
+    const formattedDate = `${year}-${month}-${day}`;
 
     const result = await ky(`https://commonsvotes-api.parliament.uk/data/divisions.json/search?queryParameters.take=10&queryParameters.startDate=${formattedDate}`).json();
-    
+
     //@ts-ignore
     setRecentVotes(result);
     const data: Array<any> = [];
@@ -106,7 +108,7 @@ export default function Home() {
     const partiesArray: Array<Party> = []
 
     //@ts-ignore
-    result.items.forEach(item => {      
+    result.items.forEach(item => {
 
       const party: Party = {
         name: item.value.party.name,
@@ -116,7 +118,7 @@ export default function Home() {
       }
       partiesArray.push(party);
     });
-    
+
     setParties(partiesArray);
   }
 
@@ -126,7 +128,7 @@ export default function Home() {
     getRecentVotes();
   }, []);
 
-  const onQueryDivision = async (id: number) => {    
+  const onQueryDivision = async (id: number) => {
     router.push(`division?id=${id}`, { scroll: true });
   }
 
@@ -137,11 +139,11 @@ export default function Home() {
       <div id="chartcontainer" ref={mainContentRef} tabIndex={0}>
 
         <Card className="flex flex-col">
-          <CardHeader className="items-center pb-0">
+          <CardHeader className="items-center p-2">
             <CardTitle>Current Mps</CardTitle>
             <CardDescription>House of commons</CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 pb-0">
+          <CardContent className="px-0">
             <ChartContainer
               config={chartConfig}
               className="mx-auto aspect-square max-h-[250px]"
@@ -155,7 +157,7 @@ export default function Home() {
                   data={chartData}
                   dataKey="members"
                   nameKey="party"
-                  innerRadius={60}
+                  innerRadius={56}
                   strokeWidth={5}
                 >
                   <Label
@@ -191,7 +193,7 @@ export default function Home() {
               </PieChart>
             </ChartContainer>
           </CardContent>
-          <CardFooter className="flex-col gap-2 text-sm">
+          <CardFooter className="flex-col gap-2 text-sm p-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               <Calendar className="h-4 w-4" />
               {`${new Date().toLocaleDateString()}`}
@@ -199,7 +201,13 @@ export default function Home() {
           </CardFooter>
         </Card>
       </div>
-
+{/* 
+      <div className="flex items-center space-x-2">
+       <VoteIcon/>
+        <div>          
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Commons Connect</h1>          
+        </div>
+      </div> */}
       <Search />
 
       <ChipNavigation />
@@ -208,7 +216,7 @@ export default function Home() {
         {parties && parties.filter(i => i.name !== "Speaker").map(i => <PartyCard key={i.name} party={i} />)}
       </div>
 
-      
+
       {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
       {recentVotes && recentVotes.length > 0 && (
         <div className="flex flex-col gap-2">
