@@ -63,9 +63,9 @@ export default function DivisionTable({ data, title, onQueryMp }: DivisionTableP
 
     return (
         <div className="ring flex-1">
-            <div className="flex justify-between p-4 bg-primary text-white">
-                <h1>{title}</h1>
-                <h1>{`${data ? data.length : 0} records`}</h1>
+            <div className="p-4 bg-primary text-white">
+                <h1>{`${data ? data.length : 0}`} Mps {title}</h1>
+                
             </div>
 
             <hr />

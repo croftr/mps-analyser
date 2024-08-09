@@ -122,7 +122,7 @@ function PageContent() {
       <div className="flex gap-8 flex-wrap justify-between w-full p-2">
         {showVotedAye && <DivisionTable data={votedAye} title="Voted Aye" onQueryMp={onQueryMp} />}
         {showVotedNo && <DivisionTable data={votedNo} title="Voted No" onQueryMp={onQueryMp} />}
-        {showAbsent && <DivisionTable data={absent} title="Absent" onQueryMp={onQueryMp} />}
+        {showAbsent && <DivisionTable data={absent} title="were Absent" onQueryMp={onQueryMp} />}
       </div>
     </section>
   );

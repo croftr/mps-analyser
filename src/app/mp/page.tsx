@@ -52,6 +52,14 @@ interface TableData {
   _fields: any[]; // Adjust this type according to your actual data structure
 }
 
+type VotingHistoryType = "all" | "votedAye" | "votedNo" | undefined;
+
+const votingHistoryTypes: Record<string, VotingHistoryType> = {
+  ALL: "all",
+  AYE: "votedAye",
+  NO: "votedNo",
+};
+
 export default function Mp() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -84,6 +92,8 @@ function PageContent() {
   const [limit, setLimit] = useState(10);
   const [isFilterChanged, setIsFilterChanged] = useState(false);
 
+  const [votingHistoryType, setVotingHistoryType] = useState<VotingHistoryType>(undefined);
+
   type FilterOption = "Include" | "Exclude";
   const [includeOrExclude, setIncludeOrExclude] = useState<FilterOption>("Include");
 
@@ -99,6 +109,7 @@ function PageContent() {
   const onApplyFilter = async () => {
     setIsFilterChanged(false);
     setFilterInProgress(true);
+    setVotingHistoryType(undefined);
 
     const result = await ky(`${config.mpsApiUrl}votecounts?id=${mpDetails?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${votefilterTitle}`).json();
     setFilterInProgress(false);
@@ -153,10 +164,12 @@ function PageContent() {
 
   }, [searchParams]);
 
-  const onGetVotingHistory = async (type: string) => {
+  const onGetVotingHistory = async (type: VotingHistoryType) => {
 
     setQueryType("history");
     setTableData(undefined);
+
+    setVotingHistoryType(type);
 
     try {
       const nameParam = votefilterTitle || "Any";
@@ -424,32 +437,34 @@ function PageContent() {
               <div className='votingSummary'>
                 <div className='mt-2 grid grid-cols-3 gap-2 justify-items-center items-center'>
                   <Button
-                    className='text-primary border border-primary rounded w-full'
-                    variant="secondary"
+                    className='w-full'
+                    variant={votingHistoryType ===  votingHistoryTypes.ALL ? "default" : "outline"}
                     onClick={() =>
-                      onGetVotingHistory("all")
+                      onGetVotingHistory(votingHistoryTypes.ALL)
                     }
                   >
                     Total
                   </Button>
                   <Button
-                    variant="secondary"
-                    className='text-primary border border-primary rounded w-full'
+                    variant={votingHistoryType ===  votingHistoryTypes.AYE ? "default" : "outline"}
+                    className='w-full'
                     onClick={() =>
-                      onGetVotingHistory("votedAye")
+                      onGetVotingHistory(votingHistoryTypes.AYE)
                     }
                   >
                     Aye
                   </Button>
                   <Button
-                    className='text-primary border border-primary rounded w-full'
-                    variant="secondary"
+                    className='w-full'
+                    variant={votingHistoryType ===  votingHistoryTypes.NO ? "default" : "outline"}
                     onClick={() =>
-                      onGetVotingHistory("votedNo")
+                      onGetVotingHistory(votingHistoryTypes.NO)
                     }
                   >
                     No
                   </Button>
+
+                  <h1>{votingHistoryType}</h1>
 
                   <span className='votingSummary__buttons__count'>
                     {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.total || 0}

@@ -363,28 +363,6 @@ function PageContent() {
             options={types.map(str => ({ value: str.value, label: str.label, icon: str.icon }))}
           />
 
-
-          {/* <div className='flex items-baseline gap-2'>
-
-         
-            <Label
-              className="min-w-[80px]"
-              htmlFor="selectType"
-            >
-              Which
-            </Label>
-
-            <CustomSelect
-              id="selectType"
-              className="min-w-[210px]"
-              value={type}
-              onValueChange={onChangeType}
-              options={types.map(str => ({ value: str, label: `${str}s`, }))}
-            />
-          </div>
-
-           */}
-
           <Separator />
 
           {(type === "MP" || type === "Division") && (
@@ -443,7 +421,7 @@ function PageContent() {
 
             <Input
               id="insightsLimit"
-              className='min-w-[210px]'
+              className='w-[210px]'
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
               type="number">

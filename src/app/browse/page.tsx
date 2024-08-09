@@ -29,7 +29,7 @@ import DivisionCardSkeleton from "./DivisionCardSkeleton";
 
 import {
   Collapsible,
-  CollapsibleContent  
+  CollapsibleContent
 } from "@/components/ui/collapsible"
 
 import { VOTING_CATEGORIES, PARTY_NAMES } from "../config/constants";
@@ -159,7 +159,7 @@ function PageContent() {
 
 
   const onSearchDivisions = async ({ category = filterTypeValue, year, searchName }) => {
-    
+
     setMps(undefined);
     setFilteredMps(undefined);
 
@@ -226,7 +226,7 @@ function PageContent() {
         setFilterTypeOptions(mpFilterTypeValues[mpFilterTypeKeys[0]])
 
         if (changeUrl) {
-          onSearchMps({ party: "Any", searchKey: mpFilterTypeKeys[0], searchValue: "Any" });          
+          onSearchMps({ party: "Any", searchKey: mpFilterTypeKeys[0], searchValue: "Any" });
         }
 
       } else {
@@ -237,7 +237,7 @@ function PageContent() {
         setFilterTypeOptions(divisionFilterTypeValues[divisionFilterTypeKeys[0]])
 
         if (changeUrl) {
-          onSearchDivisions({ category: "Any" });          
+          onSearchDivisions({ category: "Any" });
         }
 
       }
@@ -309,7 +309,7 @@ function PageContent() {
 
   const onChangeSortBy = (value, direction = sortDirection) => {
 
-    setSortBy(value);    
+    setSortBy(value);
 
     if (type.startsWith("MP")) {
       const sortedMps = sortMps(value, direction);
@@ -421,28 +421,28 @@ function PageContent() {
 
   const onAddQueryParamToUrl = ({ key, value }: { key: string; value: string }) => {
     const params = new URLSearchParams(searchParams);
-  
+
     // Exclusive query types
     const exclusiveKeys = ["year", "votes", "sex", "category", "party"];
-  
+
     // Delete other exclusive params if a new one is added
     if (exclusiveKeys.includes(key.toLowerCase())) {
       exclusiveKeys.forEach(
         (exclKey) => exclKey !== key.toLowerCase() && params.delete(exclKey)
       );
     }
-  
+
     // Special handling for "name"
     if (key.toLowerCase() === "name" && !value) {
       params.delete("name");
     } else {
       params.set(key.toLowerCase(), value);
     }
-  
+
     const newSearchParams = params.toString();
     router.push(`${pathname}?${newSearchParams}`, { scroll: true });
   };
-  
+
   const onChangeDivisionCategory = async (value) => {
 
     setDivisions(undefined);
@@ -630,9 +630,9 @@ function PageContent() {
               )}
             </span>
 
-            <Badge variant={(filteredMps && filteredMps.length) || (filteredDivisions && filteredDivisions.length) ? "default": "secondary"}>             
-              {type.startsWith("MP") && filteredMps && filteredMps.length}              
-              {type.startsWith("Division") && filteredDivisions && filteredDivisions.length}              
+            <Badge variant={(filteredMps && filteredMps.length) || (filteredDivisions && filteredDivisions.length) ? "default" : "secondary"}>
+              {type.startsWith("MP") && filteredMps && filteredMps.length}
+              {type.startsWith("Division") && filteredDivisions && filteredDivisions.length}
               {!filteredMps && !filteredDivisions && <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div>}
             </Badge>
           </span>
@@ -651,7 +651,7 @@ function PageContent() {
             onClick={onToggleControls}
             className='flex gap-2'
           >
-            Controls
+            Filters
             {isControlsDown ? <ArrowUp /> : <ArrowDown />}
           </Button>
         </div>
