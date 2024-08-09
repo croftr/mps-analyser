@@ -138,7 +138,7 @@ export default function Home() {
 
       <div id="chartcontainer" ref={mainContentRef} tabIndex={0}>
 
-        <Card className="flex flex-col">
+        <Card className="flex flex-col mb-4">
           <CardHeader className="items-center p-2">
             <CardTitle>Current Mps</CardTitle>
             <CardDescription>House of commons</CardDescription>
