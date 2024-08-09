@@ -464,13 +464,13 @@ function PageContent() {
                     No
                   </Button>                  
 
-                  <span className='votingSummary__buttons__count'>
+                  <span className='h-8'>
                     {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.total || 0}
                   </span>
-                  <span className='votingSummary__buttons__count'>
+                  <span className='h-8'>
                     {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.votedAye || 0}
                   </span>
-                  <span className='votingSummary__buttons__count'>
+                  <span className='h-8'>
                     {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.votedNo || 0}
                   </span>
                 </div>
