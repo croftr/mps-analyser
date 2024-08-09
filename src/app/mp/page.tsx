@@ -462,9 +462,7 @@ function PageContent() {
                     }
                   >
                     No
-                  </Button>
-
-                  <h1>{votingHistoryType}</h1>
+                  </Button>                  
 
                   <span className='votingSummary__buttons__count'>
                     {filterInProgress ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : votingSummary?.total || 0}
