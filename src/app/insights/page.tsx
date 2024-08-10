@@ -6,7 +6,6 @@ import ky from 'ky';
 
 import ContractInsights from './contractInsights';
 import OrgInsights from './orgIInsights';
-import CustomSelect from "@/components/custom/customSelect";
 import CustomChipSelect from "@/components/custom/customChipSelect";
 import MpsAndDivisionInsights from './mpsAndDivisionInsights';
 
@@ -16,6 +15,14 @@ import { Label } from "@/components/ui/label";
 
 import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
+
+import { ArrowUp } from "lucide-react"
+import { ArrowDown } from "lucide-react"
+
+import {
+  Collapsible,
+  CollapsibleContent
+} from "@/components/ui/collapsible"
 
 import {
   Building2,
@@ -51,6 +58,31 @@ const voteTyps = [
   "against",
 ];
 
+
+//vars for contracts 
+interface ContractParams {
+  awardedByParam: string;
+  awardedToParam: string;
+  groupByContractParam: boolean;
+  awardedCountParam?: string | null;
+}
+//vars for orgs
+interface OrgParams {
+  nameParam: string | null;
+  donatedtoParam: string;
+  awardedbyParam: string;
+}
+
+interface CommonParams {
+  name: string;
+  party: string;
+  limit: number;
+  fromDate: string; // Assuming date strings in ISO format (YYYY-MM-DD)
+  toDate: string;   // Assuming date strings in ISO format (YYYY-MM-DD)
+  category: string;
+  voted: string;
+}
+
 export default function insights() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -63,6 +95,8 @@ function PageContent() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const [isControlsDown, setIsControlsDown] = useState(false);
 
   const [type, setType] = useState(types[0].value);
 
@@ -110,6 +144,56 @@ function PageContent() {
     return capitalizedWords.join(" ");
   }
 
+  function generateTableHeader(params: {
+    typeParam: string;
+    commonParams: CommonParams;
+    voteType?: string | null;
+    contractParams?: ContractParams;
+    orgParams?: OrgParams;
+  }): void {
+
+    // Base Headers (Common to All Types)
+    let headers: string[] = [];
+
+    switch (params.typeParam.toLocaleLowerCase()) {
+      case "mp":
+        if (params.commonParams.voted === "most") {
+          headers.push("Mps voted the most");
+        } else {
+          headers.push("Mps voted the least");
+        }
+        break;
+      case "division":
+        headers.push("Votes");
+        break;
+      case "contract":
+        if (params.contractParams?.groupByContractParam) {
+          headers.push("Grouping contracts by organisation");
+        } else {
+          headers.push("Showing individual contracts");
+        }
+
+        break;
+      case "org":
+
+        if (params.orgParams?.awardedbyParam && params.orgParams?.awardedbyParam !== "Any Party") {
+          setTableHeader("Number of Countracts awarded to Organisations");
+        } else {
+          setTableHeader("Organisations and individuals");
+        }
+
+
+        headers.push("Orgs and Idividuals");
+        break;
+    }
+
+    // Generate the header string 
+    const headerString = headers.join(",");
+
+    setTableHeader(headerString);
+  }
+
+
   /**
    * Called when the url for the insights page contains the type=xx param
    * query the database set the search fields based on the query params in the url 
@@ -127,7 +211,7 @@ function PageContent() {
     setData(undefined);
 
     // Common Parameters and Settings
-    const commonParams = {
+    const commonParams: CommonParams = {
       name: searchParams.get('name') || 'Any',
       party: (searchParams.get('party') ?? 'Any')?.[0]?.toUpperCase() + (searchParams.get('party') ?? 'Any')?.slice(1) || 'Any',
       limit: parseInt(searchParams.get('limit') || '100') || 100,
@@ -149,17 +233,32 @@ function PageContent() {
     // Type-Specific Logic
     let url: string | undefined = undefined;
 
+    //vars fo divisions
+    let voteType: string | null = null;
+
+    const contractParams: ContractParams = {
+      awardedByParam: '',
+      awardedToParam: '',
+      groupByContractParam: false,
+      awardedCountParam: ''
+    };
+
+    const orgParams: OrgParams = {
+      nameParam: '',
+      donatedtoParam: '',
+      awardedbyParam: '',
+    };
+
     switch (typeParam.toLocaleLowerCase()) {
       case 'mp': {
         setType("MP");
-        setTableHeader("MPs");
         url = `${config.mpsApiUrl}insights/mpvotes?limit=${commonParams.limit}&orderby=${orderby}&partyIncludes=${commonParams.party}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
         break;
       }
       case 'division': {
         setType("Division");
         url = `${config.mpsApiUrl}insights/divisionvotes?limit=${commonParams.limit}&orderby=${orderby}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
-        const voteType = searchParams.get('votetype');
+        voteType = searchParams.get('votetype');
         setVoteType(voteType === 'for' ? 'on' : voteType === 'against' ? 'against' : 'on');
         if (voteType && (voteType === 'for' || voteType === 'against')) {
           const ayeOrNo = voteType === 'for' ? 'aye' : 'no';
@@ -169,41 +268,40 @@ function PageContent() {
       }
       case 'contract': {
 
-        const awardedByParam = searchParams.get('awardedby') || 'Any Party';
-        const awardedToParam = searchParams.get('awardedto') || 'Any';
-        const groupByContractParam = searchParams.get('groupbycontract') || false;
-        const awardedCountParam = searchParams.get('awardedcount');
+        contractParams.awardedByParam = searchParams.get('awardedby') || 'Any Party';
+        contractParams.awardedToParam = searchParams.get('awardedto') || 'Any';
+        contractParams.groupByContractParam = searchParams.get('groupbycontract') && searchParams.get('groupbycontract') === "true" ? true : false;
+        contractParams.awardedCountParam = searchParams.get('awardedcount');
 
         setType("Contract");
-        setGroupByContractCount(groupByContractParam === "true" ? true : false);
-        setAwardedBy(awardedByParam);
-        setAwardedTo(awardedToParam);
+        setGroupByContractCount(contractParams.groupByContractParam);
+        setAwardedBy(contractParams.awardedByParam);
+        setAwardedTo(contractParams.awardedToParam);
 
-        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${awardedByParam}&orgName=${awardedToParam}&groupByContractCount=${groupByContractParam}&limit=${limit}`;
+        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&limit=${limit}`;
 
-        if (awardedCountParam) {
-          setAwardedCount(Number(awardedCountParam));
-          url = `${url}&awardedCount=${awardedCountParam}`;
+        if (contractParams.awardedCountParam) {
+          setAwardedCount(Number(contractParams.awardedCountParam));
+          url = `${url}&awardedCount=${contractParams.awardedCountParam}`;
         }
 
         break;
       }
       case 'org': {
-        const nameParam = searchParams.get('name');
-        const donatedtoParam = searchParams.get('donatedto') || 'Any Party';
-        const awardedbyParam = searchParams.get('awardedby') || 'Any Party';
-        const limitParam = searchParams.get('limit') || 100;
+        orgParams.nameParam = searchParams.get('name');
+        orgParams.donatedtoParam = searchParams.get('donatedto') || 'Any Party';
+        orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';
 
         setType("Organisation or Individual");
-        setDontatedToParty(donatedtoParam);
-        setAwaredByParty(awardedbyParam);
-        setLimit(Number(limitParam));
+        setDontatedToParty(orgParams.donatedtoParam);
+        setAwaredByParty(orgParams.awardedbyParam);
+        setLimit(Number(commonParams.limit));
 
-        url = `${config.mpsApiUrl}orgs?limit=${limitParam}&donatedTo=${donatedtoParam}&awardedBy=${awardedbyParam}`;
+        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}`;
 
-        if (nameParam) {
-          url = `${url}&name=${nameParam}`;
-          setOrgName(nameParam);
+        if (orgParams.nameParam) {
+          url = `${url}&name=${orgParams.nameParam}`;
+          setOrgName(orgParams.nameParam);
         }
         break;
       }
@@ -217,10 +315,14 @@ function PageContent() {
       const result: any = await ky(url).json();
       setData(result);
     }
+
+    generateTableHeader({ typeParam, commonParams, voteType, contractParams, orgParams });
   }
+
 
   useEffect(() => {
     getData();
+
   }, []);
 
   /**
@@ -235,8 +337,6 @@ function PageContent() {
 
     setIsQuerying(true);
     setData(undefined);
-
-    setTableHeader(`${type}s`);
 
     const nameParam = name || "Any";
     const partyParam = party.includes("Any") ? "Any" : party;
@@ -302,12 +402,6 @@ function PageContent() {
 
     router.push(queryString, { scroll: false });
 
-    if (awardedCount) {
-      setTableHeader("Grouping contracts by organisation");
-    } else {
-      setTableHeader("Showing individual contracts");
-    }
-
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}`);
     const contractsResult = await result.json();
     setData(contractsResult);
@@ -337,16 +431,15 @@ function PageContent() {
 
     router.push(queryString, { scroll: false });
 
-    if (awaredByParty && awaredByParty !== "Any Party") {
-      setTableHeader("Number of Countracts awarded to Organisations");
-    } else {
-      setTableHeader("Organisations and individuals");
-    }
-
     const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
     setData(result);
   }
+
+  const onToggleControls = () => {
+    setIsControlsDown(!isControlsDown);
+  }
+
 
   return (
 
@@ -365,77 +458,98 @@ function PageContent() {
 
           <Separator />
 
-          {(type === "MP" || type === "Division") && (
-            <MpsAndDivisionInsights
-              type={type}
-              name={name}
-              setName={setName}
-              voteCategory={voteCategory}
-              onChangeCategory={setVoteCategory}
-              party={party}
-              onChangeParty={setParty} // Note: we're passing the setParty function
-              voteType={voteType}
-              onChangeVoteType={setVoteType}
-              query={query}
-              onChangeQuery={setQuery}
-              fromDate={fromDate}
-              setFromDate={setFromDate}
-              toDate={toDate}
-              setToDate={setToDate}
-              onChangeVoteCategory={setVoteCategory}
-            />
-          )}
 
-          {type === "Contract" && (
-            <div id="contracts">
-              <ContractInsights
-                awardedCount={awardedCount}
-                awardedName={awardedTo}
-                onChangeAwardedName={onChangeAwardedName}
-                onChangeAwardedCount={onChangeAwardedCount}
-                party={awardedBy}
-                onChangeParty={setAwardedBy}
-                onSearch={onSearchContracts}
-                groupByContractCount={groupByContractCount}
-                setGroupByContractCount={setGroupByContractCount}
-              />
-            </div>
-          )}
+          <Button
+            variant='outline'
+            onClick={onToggleControls}
+            className='flex gap-2'
+          >
+            Controls
+            {isControlsDown ? <ArrowUp /> : <ArrowDown />}
+          </Button>
 
-          {type === "Organisation or Individual" && (
-            <OrgInsights
-              onChangeOrgName={onChangeOrgName}
-              orgName={orgName}
-              onSearch={onSearchOrgs}
-              dontatedToParty={dontatedToParty}
-              onChangeDontatedToParty={onChangeDontatedToParty}
-              awaredByParty={awaredByParty}
-              onChangeAwaredByParty={onChangeAwaredByParty}
+          <Collapsible
+            open={isControlsDown}
+            className="flex w-full"
+          >
 
-            />
-          )}
+            <CollapsibleContent className="flex flex-col w-full md:w-2/3 lg:w-1/2 xl:w-1/3 gap-2">
 
-          <div className='flex items-baseline gap-2'>
+              {(type === "MP" || type === "Division") && (
+                <MpsAndDivisionInsights
+                  type={type}
+                  name={name}
+                  setName={setName}
+                  voteCategory={voteCategory}
+                  onChangeCategory={setVoteCategory}
+                  party={party}
+                  onChangeParty={setParty} // Note: we're passing the setParty function
+                  voteType={voteType}
+                  onChangeVoteType={setVoteType}
+                  query={query}
+                  onChangeQuery={setQuery}
+                  fromDate={fromDate}
+                  setFromDate={setFromDate}
+                  toDate={toDate}
+                  setToDate={setToDate}
+                  onChangeVoteCategory={setVoteCategory}
+                />
+              )}
 
-            <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
+              {type === "Contract" && (
+                <div id="contracts">
+                  <ContractInsights
+                    awardedCount={awardedCount}
+                    awardedName={awardedTo}
+                    onChangeAwardedName={onChangeAwardedName}
+                    onChangeAwardedCount={onChangeAwardedCount}
+                    party={awardedBy}
+                    onChangeParty={setAwardedBy}
+                    onSearch={onSearchContracts}
+                    groupByContractCount={groupByContractCount}
+                    setGroupByContractCount={setGroupByContractCount}
+                  />
+                </div>
+              )}
 
-            <Input
-              id="insightsLimit"
-              className='w-[210px]'
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              type="number">
-            </Input>
-          </div>
+              {type === "Organisation or Individual" && (
+                <OrgInsights
+                  onChangeOrgName={onChangeOrgName}
+                  orgName={orgName}
+                  onSearch={onSearchOrgs}
+                  dontatedToParty={dontatedToParty}
+                  onChangeDontatedToParty={onChangeDontatedToParty}
+                  awaredByParty={awaredByParty}
+                  onChangeAwaredByParty={onChangeAwaredByParty}
 
-          <div className='w-full justify-center items-center mt-4' >
-            <Button
-              className="w-full md:w-[700px]"
-              onClick={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
-            >
-              Go
-            </Button>
-          </div>
+                />
+              )}
+
+              <div className='flex items-baseline gap-2'>
+
+                <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
+
+                <Input
+                  id="insightsLimit"
+                  className='w-[210px]'
+                  value={limit}
+                  onChange={(e) => setLimit(Number(e.target.value))}
+                  type="number">
+                </Input>
+              </div>
+
+              <div className='w-full justify-center items-center mt-4' >
+                <Button
+                  className="w-full md:w-[700px]"
+                  onClick={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
+                >
+                  Go
+                </Button>
+              </div>
+
+            </CollapsibleContent>
+          </Collapsible>
+
         </div>
 
       </div>

@@ -39,7 +39,12 @@ const CustomSelect = ({ value, onValueChange, options, disabled=false, id, class
       >
         <SelectGroup>
           {options.map(option => (
-            <SelectItem onClick={(e) => e.stopPropagation()} value={option.value} key={option.value}>{option.label}</SelectItem>
+            <SelectItem 
+              onClick={(e) => e.stopPropagation()} value={option.value} key={option.value}
+              className="mt-1 mb-1"
+            >
+                {option.label}
+            </SelectItem>
           ))}
         </SelectGroup>
       </SelectContent>
