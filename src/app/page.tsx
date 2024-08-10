@@ -136,7 +136,7 @@ export default function Home() {
 
     <div className="p-4" >
 
-      <div id="chartcontainer" ref={mainContentRef} tabIndex={0}>
+      {/* <div id="chartcontainer" ref={mainContentRef} tabIndex={0}>
 
         <Card className="flex flex-col mb-4">
           <CardHeader className="items-center p-2">
@@ -200,14 +200,15 @@ export default function Home() {
             </div>
           </CardFooter>
         </Card>
-      </div>
-{/* 
-      <div className="flex items-center space-x-2">
-       <VoteIcon/>
-        <div>          
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Commons Connect</h1>          
-        </div>
       </div> */}
+
+      <div className="flex items-center justify-center space-x-4 p-6">
+        <div className="text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 shadow-sm">Westminster Bubble</h1>
+          <p className="text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-300 italic">Connecting MPs, Votes, Donations and Contracts</p>
+        </div>
+      </div>
+
       <Search />
 
       <ChipNavigation />
