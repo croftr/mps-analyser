@@ -34,7 +34,7 @@ import { Separator } from '@radix-ui/react-separator';
 
 const types = [
   { value: "MP", label: "MPs", icon: <User /> },          // Representing a person or Member of Parliament
-  { value: "Division", label: "Votes", icon: <Vote /> }, // Representing a division or split
+  { value: "Division", label: "Division", icon: <Vote /> }, // Representing a division or split
   { value: "Contract", label: "Contracts", icon: <Handshake /> },
   { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 /> }, // Representing a broader scope 
   // { value: "Organisation or Individual", label: "Individual" },
@@ -164,15 +164,21 @@ function PageContent() {
         if ( params.commonParams?.party !== 'Any' && params.commonParams?.party !== 'Any Party') header += ` from the ${params.commonParams?.party}`;
         header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
         if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
-          header = `Voting record for MPs with ${params.commonParams.name} in thier name`;
+          header = `MPs with ${params.commonParams.name} in thier name`;
 
           if (params.commonParams?.party && params.commonParams.party !== "Any Party" && params.commonParams.party !== "Any") {
             header += ` from the ${params.commonParams?.party} party`
           }
+
+          header += ` who ${params.commonParams?.voted === "most" ? "voted most" : "voted least"}`;
+
+          header += ` on ${params.commonParams?.category || "Any"} division`;
+
         }
         break;
       case "division":
-        header = `Votes ${params.voteType ? params.voteType : ''}`;
+        header = "Divisions"
+        header += ` voted ${params.voteType ? params.voteType : ''} the ${params.commonParams?.voted}`;
         if (params.commonParams?.category !== 'Any') header += ` on ${params.commonParams?.category}`;
         header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
         if (params.commonParams?.name && params.commonParams?.name !== 'Any') {

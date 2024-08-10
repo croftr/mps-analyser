@@ -8,6 +8,9 @@ import { useRouter } from 'next/navigation'
 import { Vote, Party } from "../types";
 import DivisionSvg from "@/components/custom/divisionSvg";
 
+
+import Image from 'next/image';
+
 import { VoteIcon } from "lucide-react";
 
 import ChipNavigation from "@/components/ui/chipNavigation";
@@ -202,7 +205,50 @@ export default function Home() {
         </Card>
       </div> */}
 
-      <div className="flex items-center justify-center space-x-4 p-6">
+  <Image
+    className="absolute top-12 left-10 transform -translate-y-1/2" 
+    src="./handshake.svg"
+    alt="Handshake"
+    width={40}
+    height={40}
+  />
+
+  <Image
+    className="absolute transform -translate-y-1/2 left-1/2 -translate-x-1/2" 
+    src="./gate.svg" 
+    alt="Center Image"
+    width={40} 
+    height={40}
+  />
+
+  <Image
+    className="absolute top-12 right-10 transform -translate-y-1/2" 
+    src="./money.svg"
+    alt="Money"
+    width={40}
+    height={40}
+  />
+{/* 
+  <Image
+    className="absolute top-32 left-20" 
+    src="./bubble.svg" 
+    alt="Bubble"
+    width={20} 
+    height={20}
+  />
+
+  <Image
+    className="absolute top-32 right-24" 
+    src="./bubble.svg" 
+    alt="Bubble"
+    width={20} 
+    height={20}
+  /> */}
+
+
+
+
+      <div className="flex items-center justify-center space-x-4 p-6 mt-2">
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 shadow-sm">Westminster Bubble</h1>
           <p className="text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-300 italic">Connecting MPs, Votes, Donations and Contracts</p>
