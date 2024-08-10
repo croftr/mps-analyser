@@ -58,7 +58,6 @@ const voteTyps = [
   "against",
 ];
 
-
 //vars for contracts 
 interface ContractParams {
   awardedByParam: string;
@@ -146,53 +145,76 @@ function PageContent() {
 
   function generateTableHeader(params: {
     typeParam: string;
-    commonParams: CommonParams;
+    commonParams?: CommonParams;
     voteType?: string | null;
     contractParams?: ContractParams;
     orgParams?: OrgParams;
   }): void {
+  
+    let header = "";
 
-    // Base Headers (Common to All Types)
-    let headers: string[] = [];
-
+    console.log("common", params.commonParams);
+    console.log("contract", params.contractParams);
+    console.log("org", params.orgParams);
+  
     switch (params.typeParam.toLocaleLowerCase()) {
       case "mp":
-        if (params.commonParams.voted === "most") {
-          headers.push("Mps voted the most");
-        } else {
-          headers.push("Mps voted the least");
+        header = `${params.commonParams?.voted === "most" ? "MPs who voted most" : "MPs who voted least"}`;
+        if (params.commonParams?.category !== 'Any') header += ` on ${params.commonParams?.category}`;
+        if ( params.commonParams?.party !== 'Any' && params.commonParams?.party !== 'Any Party') header += ` from the ${params.commonParams?.party}`;
+        header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
+        if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
+          header = `Voting record for MPs with ${params.commonParams.name} in thier name`;
+
+          if (params.commonParams?.party && params.commonParams.party !== "Any Party" && params.commonParams.party !== "Any") {
+            header += ` from the ${params.commonParams?.party} party`
+          }
         }
         break;
       case "division":
-        headers.push("Votes");
+        header = `Votes ${params.voteType ? params.voteType : ''}`;
+        if (params.commonParams?.category !== 'Any') header += ` on ${params.commonParams?.category}`;
+        header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
+        if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
+          header = `Votes ${params.voteType ? params.voteType : ''} on ${params.commonParams?.name}`;
+        }
         break;
       case "contract":
         if (params.contractParams?.groupByContractParam) {
-          headers.push("Grouping contracts by organisation");
+          header = `Organisations awared more than ${params.contractParams.awardedCountParam || awardedCount} contracts`;
+          if (params.contractParams.awardedByParam !== 'Any Party') header += ` by ${params.contractParams?.awardedByParam}`;
+          if (params.contractParams?.awardedToParam !== 'Any') header += ` with ${params.contractParams.awardedToParam} in their name`;
+          header += " .Grouped by organisation"
         } else {
-          headers.push("Showing individual contracts");
+          header = "Individual contracts awarded";
+          if (params.contractParams?.awardedByParam !== 'Any Party') header += ` by ${params.contractParams?.awardedByParam}`;
+          if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any') header += ` to ${params.contractParams.awardedToParam}`;
+          if (params.contractParams?.awardedCountParam) {
+            header += ` with value over £${params.contractParams.awardedCountParam}`;
+          }
+          
         }
-
         break;
       case "org":
-
         if (params.orgParams?.awardedbyParam && params.orgParams?.awardedbyParam !== "Any Party") {
-          setTableHeader("Number of Countracts awarded to Organisations");
+          header = `Number of contracts awarded to organisations by ${params.orgParams.awardedbyParam}`;
         } else {
-          setTableHeader("Organisations and individuals");
+          header = "Organisations and individuals";
+          if (params.orgParams?.donatedtoParam !== 'Any Party') header += ` who donated to ${params.orgParams?.donatedtoParam}`;
+  
+          if (params.orgParams?.nameParam) {
+            header = `${params.orgParams.nameParam} - donations and contracts`;
+          }
         }
-
-
-        headers.push("Orgs and Idividuals");
         break;
     }
-
-    // Generate the header string 
-    const headerString = headers.join(",");
-
-    setTableHeader(headerString);
+    console.log("set ", header);
+    
+    setTableHeader(header);
   }
-
+  
+  
+  
 
   /**
    * Called when the url for the insights page contains the type=xx param
@@ -322,7 +344,6 @@ function PageContent() {
 
   useEffect(() => {
     getData();
-
   }, []);
 
   /**
@@ -349,6 +370,18 @@ function PageContent() {
       const ayeOrNo = voteType === "for" ? "aye" : "no";
       url = `${url}&ayeorno=${ayeOrNo}`;
     }
+
+    const commonParams:CommonParams = {
+      name,
+      party,
+      limit,
+      fromDate,
+      toDate,
+      category: voteCategory,
+      voted: query
+    }
+
+    generateTableHeader({ typeParam: type, commonParams, voteType });
 
     const result: any = await ky(url).json();
 
@@ -401,6 +434,14 @@ function PageContent() {
     }
 
     router.push(queryString, { scroll: false });
+
+    const contractParams:ContractParams = {
+      awardedByParam: awardedBy,
+      awardedToParam: awardedTo,
+      groupByContractParam: groupByContractCount,
+    }
+    
+    generateTableHeader({ typeParam: type, contractParams });
 
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}`);
     const contractsResult = await result.json();
