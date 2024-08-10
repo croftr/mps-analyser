@@ -33,10 +33,10 @@ import {
 import { Separator } from '@radix-ui/react-separator';
 
 const types = [
-  { value: "MP", label: "MPs", icon: <User /> },          // Representing a person or Member of Parliament
-  { value: "Division", label: "Division", icon: <Vote /> }, // Representing a division or split
-  { value: "Contract", label: "Contracts", icon: <Handshake /> },
-  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 /> }, // Representing a broader scope 
+  { value: "MP", label: "MPs", icon: <User />, fieldCount: 7 },      
+  { value: "Division", label: "Division", icon: <Vote />, fieldCount: 7 },
+  { value: "Contract", label: "Contracts", icon: <Handshake />, fieldCount: 4 },
+  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 />, fieldCount: 4 },
   // { value: "Organisation or Individual", label: "Individual" },
 ];
 
@@ -150,18 +150,19 @@ function PageContent() {
     contractParams?: ContractParams;
     orgParams?: OrgParams;
   }): void {
-  
+
     let header = "";
 
+    console.log("type ", params.typeParam.toLocaleLowerCase());
     console.log("common", params.commonParams);
     console.log("contract", params.contractParams);
     console.log("org", params.orgParams);
-  
+
     switch (params.typeParam.toLocaleLowerCase()) {
       case "mp":
         header = `${params.commonParams?.voted === "most" ? "MPs who voted most" : "MPs who voted least"}`;
         if (params.commonParams?.category !== 'Any') header += ` on ${params.commonParams?.category}`;
-        if ( params.commonParams?.party !== 'Any' && params.commonParams?.party !== 'Any Party') header += ` from the ${params.commonParams?.party}`;
+        if (params.commonParams?.party !== 'Any' && params.commonParams?.party !== 'Any Party') header += ` from the ${params.commonParams?.party}`;
         header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
         if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
           header = `MPs with ${params.commonParams.name} in thier name`;
@@ -178,49 +179,61 @@ function PageContent() {
         break;
       case "division":
         header = "Divisions"
+
         header += ` voted ${params.voteType ? params.voteType : ''} the ${params.commonParams?.voted}`;
         if (params.commonParams?.category !== 'Any') header += ` on ${params.commonParams?.category}`;
         header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
         if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
-          header = `Votes ${params.voteType ? params.voteType : ''} on ${params.commonParams?.name}`;
+
+          header += ` with ${params.commonParams?.name} in the name`;
         }
         break;
       case "contract":
+
         if (params.contractParams?.groupByContractParam) {
           header = `Organisations awared more than ${params.contractParams.awardedCountParam || awardedCount} contracts`;
           if (params.contractParams.awardedByParam !== 'Any Party') header += ` by ${params.contractParams?.awardedByParam}`;
-          if (params.contractParams?.awardedToParam !== 'Any') header += ` with ${params.contractParams.awardedToParam} in their name`;
-          header += " .Grouped by organisation"
+          if (params.contractParams?.awardedToParam && params.contractParams.awardedToParam !== 'Any') {
+            header += ` with ${params.contractParams.awardedToParam} in their name`;
+          }
+
+          header += ". Grouped by organisation"
         } else {
-          header = "Individual contracts awarded";
+          header = "Contracts awarded";
           if (params.contractParams?.awardedByParam !== 'Any Party') header += ` by ${params.contractParams?.awardedByParam}`;
-          if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any') header += ` to ${params.contractParams.awardedToParam}`;
+          if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any') {
+            header += ` to organisations with ${params.contractParams.awardedToParam} in thier name`;
+          }
           if (params.contractParams?.awardedCountParam) {
             header += ` with value over £${params.contractParams.awardedCountParam}`;
           }
-          
+
         }
         break;
       case "org":
         if (params.orgParams?.awardedbyParam && params.orgParams?.awardedbyParam !== "Any Party") {
-          header = `Number of contracts awarded to organisations by ${params.orgParams.awardedbyParam}`;
+          header = `Organisations awarded contracts by ${params.orgParams.awardedbyParam}`;
         } else {
           header = "Organisations and individuals";
-          if (params.orgParams?.donatedtoParam !== 'Any Party') header += ` who donated to ${params.orgParams?.donatedtoParam}`;
-  
-          if (params.orgParams?.nameParam) {
-            header = `${params.orgParams.nameParam} - donations and contracts`;
-          }
         }
+
+        if (params.orgParams?.donatedtoParam !== 'Any Party') {
+          header += ` who donated to ${params.orgParams?.donatedtoParam}`;
+        }
+
+        if (params.orgParams?.nameParam) {
+          header += `with ${params.orgParams.nameParam} in thier name`;
+        }
+
         break;
     }
     console.log("set ", header);
-    
+
     setTableHeader(header);
   }
-  
-  
-  
+
+
+
 
   /**
    * Called when the url for the insights page contains the type=xx param
@@ -301,6 +314,7 @@ function PageContent() {
         contractParams.groupByContractParam = searchParams.get('groupbycontract') && searchParams.get('groupbycontract') === "true" ? true : false;
         contractParams.awardedCountParam = searchParams.get('awardedcount');
 
+
         setType("Contract");
         setGroupByContractCount(contractParams.groupByContractParam);
         setAwardedBy(contractParams.awardedByParam);
@@ -377,7 +391,7 @@ function PageContent() {
       url = `${url}&ayeorno=${ayeOrNo}`;
     }
 
-    const commonParams:CommonParams = {
+    const commonParams: CommonParams = {
       name,
       party,
       limit,
@@ -441,12 +455,12 @@ function PageContent() {
 
     router.push(queryString, { scroll: false });
 
-    const contractParams:ContractParams = {
-      awardedByParam: awardedBy,
+    const contractParams: ContractParams = {
+      awardedByParam: awaredByParty,
       awardedToParam: awardedTo,
       groupByContractParam: groupByContractCount,
     }
-    
+
     generateTableHeader({ typeParam: type, contractParams });
 
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}`);
@@ -478,6 +492,14 @@ function PageContent() {
 
     router.push(queryString, { scroll: false });
 
+    const orgParams: OrgParams = {
+      nameParam: orgName,
+      donatedtoParam: dontatedToParty,
+      awardedbyParam: awaredByParty
+    }
+
+    generateTableHeader({ typeParam: "org", orgParams });
+
     const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
 
     setData(result);
@@ -505,13 +527,12 @@ function PageContent() {
 
           <Separator />
 
-
           <Button
-            variant='outline'
-            onClick={onToggleControls}
-            className='flex gap-2'
+            variant='outline'            
+            onClick={onToggleControls}            
+            className='flex gap-2 w-full'
           >
-            Controls
+            {`Controls (${types.find(i => i.value === type)?.fieldCount } fields)`}
             {isControlsDown ? <ArrowUp /> : <ArrowDown />}
           </Button>
 
@@ -585,17 +606,17 @@ function PageContent() {
                 </Input>
               </div>
 
-              <div className='w-full justify-center items-center mt-4' >
-                <Button
-                  className="w-full md:w-[700px]"
-                  onClick={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
-                >
-                  Go
-                </Button>
-              </div>
-
             </CollapsibleContent>
           </Collapsible>
+
+          <div className='w-full justify-center items-center mt-4' >
+            <Button
+              className="w-full md:w-[700px]"
+              onClick={type === "Contract" ? onSearchContracts : type === "Organisation or Individual" ? onSearchOrgs : onSearchDivisionsOrMps}
+            >
+              Go
+            </Button>
+          </div>
 
         </div>
 

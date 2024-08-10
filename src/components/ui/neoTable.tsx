@@ -55,12 +55,12 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   };
 
   const formatHeader = (value: string) => {
-    
+
     if (value.toLowerCase().includes("nameDisplayAs")) {
       return "count"
     } else if (value.toLowerCase().includes("unitname")) {
       return "name"
-    } 
+    }
 
     return value.split(".").pop() || value
   }
@@ -142,19 +142,19 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
       {data && (
         <>
           <div className="flex mb-4 items-baseline">
-            <h1 className="text-2xl font-semibold dark:text-white">{title}</h1>
-            <span className="text-gray-600 dark:text-gray-400 ml-2">
-              {`(${data.length} records)`}
-            </span>
+            <h1 className="text-xl font-semibold dark:text-white">{title}</h1>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-2 flex gap-2 items-baseline">
             <Input
               placeholder="Filter..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
-              className="max-w-sm dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600" // Dark mode input styling
+              className="dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600" 
             />
+            <span className="text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              {`(${data.length} results)`}
+            </span>
           </div>
         </>
       )}
