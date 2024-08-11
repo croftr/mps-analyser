@@ -58,13 +58,6 @@ export default function Nav() {
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <Link href="/contracts" legacyBehavior passHref>
-            <NavigationMenuLink>
-              <Handshake />
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu >
   );

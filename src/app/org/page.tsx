@@ -155,10 +155,9 @@ function PageContent() {
 
   return (
 
-    <div className="flex flex-col justify-center ring p-4">
+    <div className="flex flex-col justify-center">
 
-      <span
-        className='flex gap-2'>
+      <span className='flex gap-2 p-4'>
         {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type}
         <h4 className="font-semibold text-lg mb-2">{name}</h4>
       </span>
@@ -167,7 +166,7 @@ function PageContent() {
         <Button
           variant='outline'
           onClick={onToggleContracts}
-          className='flex gap-2'
+          className='flex gap-2 w-52'
         >
           {isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts ? contracts.length : 0} Contracts Received
           {isContractsDown ? <ArrowUp /> : <ArrowDown />}
@@ -176,7 +175,7 @@ function PageContent() {
         <Button
           variant='outline'
           onClick={onToggleDonations}
-          className='flex gap-2'
+          className='flex gap-2 w-52'
         >
           {isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData ? tableData.length : 0} Donations Made
           {isDonationssDown ? <ArrowUp /> : <ArrowDown />}
