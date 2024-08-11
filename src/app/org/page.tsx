@@ -168,7 +168,7 @@ function PageContent() {
       <Button
         variant='outline'
         onClick={onToggleContracts}
-        className='flex gap-2 w-full justify-between'
+        className='flex w-full justify-between'
       >
         <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
         {Boolean(contracts?.length) && <span>Total value {formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0))}</span>}
@@ -187,7 +187,7 @@ function PageContent() {
       <Button
         variant='outline'
         onClick={onToggleDonations}
-        className='flex gap-2 w-full justify-between'
+        className='flex w-full justify-between'
       >
 
         <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> <span> Donations Made</span></span>
