@@ -37,9 +37,6 @@ function PageContent() {
 
   const onQueryDivision = async (id: string) => {
 
-    console.log("onQueryDivision ", id);
-
-
     setDivisionDetails(undefined);
 
     const result: any = await ky(`https://commonsvotes-api.parliament.uk/data/division/${id}.json`).json();
@@ -64,10 +61,7 @@ function PageContent() {
   }
 
   const onQueryMp = (id: number) => {
-    console.log("go ", id);
-
     router.push(`mp?id=${id}`, { scroll: true });
-
   }
 
   useEffect(() => {
@@ -76,8 +70,7 @@ function PageContent() {
     const match = searchParams.toString().match(regex);
 
     if (match) {
-      const paramId = match[1];
-      console.log(paramId); // Output: 1815
+      const paramId = match[1];      
       onQueryDivision(paramId);
     } else {
       console.error("ID not found in the string ", searchParams);

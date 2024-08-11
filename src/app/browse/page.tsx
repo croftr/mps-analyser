@@ -250,7 +250,7 @@ function PageContent() {
       setMps(undefined);
       setFilteredMps(undefined);
 
-      let url = `${config.mpsApiUrl}searchMps?party=${value}&status=${statusValue}`;
+      let url = `${config.mpsApiUrl}searchMps?party=${encodeURIComponent(value)}&status=${statusValue}`;
       if (name) {
         url = `${url}&name=${name}`
       }
@@ -322,8 +322,8 @@ function PageContent() {
   }
 
   const getMps = useCallback(async ({ party = "Any", year = 0, sex = "Any", searchName, status = "All" }) => {
-    console.log("call 1 ", status);
-    let url = `${config.mpsApiUrl}searchMps?party=${party || "Any"}&year=${year || 0}&sex=${sex || "Any"}&status=${status || "Active"}`
+
+    let url = `${config.mpsApiUrl}searchMps?party=${encodeURIComponent(party||"Any")}&year=${year || 0}&sex=${sex || "Any"}&status=${status || "Active"}`
 
     if (searchName) {
       url = `${url}&name=${searchName}`
@@ -525,8 +525,7 @@ function PageContent() {
   }
 
   const onChangeFilterTypeValue = (value) => {
-
-    console.log("onChangeMpFilterTypeValue ", type, filterTypeKey, value);
+    
     setFilterTypeValue(value);
 
     if (type.startsWith("MP")) {
@@ -553,9 +552,7 @@ function PageContent() {
   }
 
   const onQueryMp = async (id: number) => {
-    router.push(`/mp?id=${id}`, { scroll: true });
-    // const mp = await ky.get(`${config.apiUrl}/mp/${id}`).json();
-    console.log(id);
+    router.push(`/mp?id=${id}`, { scroll: true });    
   }
 
   const onQueryDivision = async (id) => {

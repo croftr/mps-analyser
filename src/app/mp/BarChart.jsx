@@ -20,12 +20,7 @@ function BarChart({ barChartData, onQueryMpByName }) {
     if (res.length === 0) {
       return;
     }
-
-    // onQueryMp()
-    // Alerts "You clicked on A" if you click the "A" chart
-    console.log('You clicked on ' + barChart.current.data.labels[res[0].index]);
-    console.log('You clicked on ' + JSON.stringify(barChart.current.data));
-
+    
     onQueryMpByName(barChart.current.data.labels[res[0].index]);    
   }
 

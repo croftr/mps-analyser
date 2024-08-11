@@ -153,11 +153,6 @@ function PageContent() {
 
     let header = "";
 
-    console.log("type ", params.typeParam.toLocaleLowerCase());
-    console.log("common", params.commonParams);
-    console.log("contract", params.contractParams);
-    console.log("org", params.orgParams);
-
     switch (params.typeParam.toLocaleLowerCase()) {
       case "mp":
         header = `${params.commonParams?.voted === "most" ? "MPs who voted most" : "MPs who voted least"}`;
@@ -227,8 +222,7 @@ function PageContent() {
 
         break;
     }
-    console.log("set ", header);
-
+    
     setTableHeader(header);
   }
 

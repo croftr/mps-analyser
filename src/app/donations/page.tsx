@@ -103,8 +103,7 @@ function PageContent() {
 
   const onQueryForParty = async (row, updateUrl = true) => {
 
-    if (updateUrl) {
-      console.log("update url party");
+    if (updateUrl) {      
       router.push(`?party=${row.original.partyName}`, { scroll: true });
     }
 
@@ -121,9 +120,7 @@ function PageContent() {
 
   const onQueryForPartyDonar = async (row, updateUrl = true) => {
 
-    if (updateUrl) {
-      console.log("update url donars");
-      
+    if (updateUrl) {            
       router.push(`?party=${tableText.split(" ")[2]}&donar=${row.original.donar}`, { scroll: true });
     }
 
@@ -149,12 +146,9 @@ function PageContent() {
 
     const partyName = searchParams.get('party');
     const donar = searchParams.get('donar');
-
-    console.log("refreshData ", partyName, donar);
-
+    
     if (donar && partyName && partyName !== "all") {
-      setTableColumns(donarDetailsColumns);
-      console.log("call 1");      
+      setTableColumns(donarDetailsColumns);        
       onQueryForPartyDonar({ original: { donar } }, false);
     } else if (partyName && partyName !== "all") {
       setTableColumns(partyDonarColumns);
@@ -165,10 +159,7 @@ function PageContent() {
 
         setType(TYPES.ALL_PARTIES);
         setTableColumns(donationColumns);
-
         const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
-        console.log("all parties ", donationsResponse[0]);
-
         setTableData(donationsResponse);
         setTableText("Donations to all parties")
       } catch (error) {
@@ -188,9 +179,8 @@ function PageContent() {
 
   return (
 
-    <div className="overflow-y-hidden border">
+    <div className="overflow-y-hidden">
 
-      
       <div className="flex flex-col md:flex-row md:justify-between p-4">        
         <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : "" } <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
         <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>

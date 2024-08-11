@@ -14,11 +14,12 @@ export const PARTY_NAMES = [
     "Reform UK",
     "Scottish National Party",
     "Sinn Féin",
-    "Social Democratic and Labour Party",
+    "Social Democratic & Labour Party",
     "Speaker",    
     "Traditional Unionist Voice",
     "Ulster Unionist Party"
 ]
+
 
 export type PartyType =
     "Conservative" |

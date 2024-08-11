@@ -135,8 +135,7 @@ function PageContent() {
     setIsLoading(false);
   }
 
-  const showContract = (row: any) => {
-    console.log(row);
+  const showContract = (row: any) => {    
     router.push(`contract?supplier=${row._fields[1]}&title=${row._fields[0]}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
   }
 

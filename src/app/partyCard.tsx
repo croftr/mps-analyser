@@ -10,7 +10,7 @@ export function PartyCard({ party }: { party: Party }) {
   const router = useRouter();
 
   const getPartyMps = () => {
-    router.push(`browse?type=MP&party=${party.name}`, { scroll: true });
+    router.push(`browse?type=MP&party=${encodeURIComponent(party.name)}`, { scroll: true });
   }
   return (
     <Card 
