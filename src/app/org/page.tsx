@@ -15,8 +15,6 @@ import { DataTable } from "@/components/ui/data-table";
 import NeoTableSkeleton from '@/components/ui/neoTableSkeleton';
 import { NeoTable } from '@/components/ui/neoTable';
 
-import { Button } from "@/components/ui/button"
-
 import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
 
@@ -152,28 +150,41 @@ function PageContent() {
     setIsDonationssDown(!isDonationssDown);
   }
 
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number = 0) => {
     return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value);
   }
 
   return (
 
-    <div className="flex flex-col justify-center">
+    <div className="flex flex-col justify-center p-4 gap-1">
 
-      <span className='flex gap-2 p-4'>
-        {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type}
-        <h4 className="font-semibold text-lg mb-2">{name}</h4>
-      </span>
+      <div className="flex gap-2">
+        <span>
+          {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type}
+        </span>
+        <span className='mb-2'>
+          {name ? ( 
+            <h4 className="font-semibold text-lg">{name}</h4>
+          ) : (
+            <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>
+          )}
+        </span>
+      </div>
 
-      <Button
-        variant='outline'
+      <div
+        className="flex p-4 justify-between cursor-pointer 
+          bg-white dark:bg-gray-800 shadow-md rounded-md 
+          hover:bg-gray-100 dark:hover:bg-gray-700
+          transition-colors duration-200 active:bg-gray-200 dark:active:bg-gray-600"
         onClick={onToggleContracts}
-        className='flex w-full justify-between'
       >
-        <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
-        {Boolean(contracts?.length) && <span>Total value {formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0))}</span>}
+        <div className="flex flex-col">
+          <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
+          <span>Total value {formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0))}</span>
+        </div>
+
         {isContractsDown ? <ArrowUp /> : <ArrowDown />}
-      </Button>
+      </div>
 
       <Collapsible
         open={isContractsDown}
@@ -184,17 +195,20 @@ function PageContent() {
         </CollapsibleContent>
       </Collapsible>
 
-      <Button
-        variant='outline'
+      <div
+        className="flex p-4 justify-between cursor-pointer 
+        bg-white dark:bg-gray-800 shadow-md rounded-md 
+        hover:bg-gray-100 dark:hover:bg-gray-700
+        transition-colors duration-200 active:bg-gray-200 dark:active:bg-gray-600"
         onClick={onToggleDonations}
-        className='flex w-full justify-between'
       >
+        <div className="flex flex-col">
+          <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> <span> Donations Made</span></span>
+          <span>Total value {formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0))}</span>
+        </div>
 
-        <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> <span> Donations Made</span></span>
-        {Boolean(tableData?.length) && <span>Total value {formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0))}</span>}
-        {isDonationssDown ? <ArrowUp /> : <ArrowDown />}
-      </Button>
-
+        {isContractsDown ? <ArrowUp /> : <ArrowDown />}
+      </div>
 
       <Collapsible
         open={isDonationssDown}

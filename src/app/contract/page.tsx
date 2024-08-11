@@ -91,7 +91,7 @@ function PageContent() {
           <div className="grid grid-cols-2 gap-y-2">
 
             <div className="font-medium">Awarded to:</div>
-            <a className='text-primary' href="#" onClick={() => router.push(`org?name=${encodeURIComponent(awardedTo||"")}`)}>{awardedTo}</a>
+            <a className='text-primary hover:underline' href="#" onClick={() => router.push(`org?name=${encodeURIComponent(awardedTo||"")}`)}>{awardedTo}</a>
             
             <div className="font-medium">Description:</div>
             <div>{contract[0]._fields[0].properties.Description}</div>
@@ -136,7 +136,7 @@ function PageContent() {
             href={contract[0]._fields[0].properties.Link}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block text-blue-500 hover:underline"
+            className="mt-4 inline-block text-primary hover:underline"
           >
             View full details
           </a>

@@ -16,7 +16,7 @@ const navItems = [
     { label: "Most contracts awarded", icon: Eye, href: "/insights?type=contract&awardedto=Any&awardedby=Any%20Party&groupbycontract=true&limit=100&awardedcount=100", color: "bg-blue-100 hover:bg-blue-200" },
     { label: "Highest voting Mps", icon: Eye, href: "/insights?type=mp&name=Any&party=Any&voted=most&votetype=on&category=Any&fromdate=2015-01-01&todate=2024-08-09&limit=100", color: "bg-yellow-100 hover:bg-yellow-200" },
     { label: "Most voted against division", icon: Eye, href: "/insights?type=division&name=Any&party=Any&voted=most&votetype=against&category=Any&fromdate=2015-01-01&todate=2024-08-09&limit=100", color: "bg-orange-100 hover:bg-orange-200" },       
-    { label: "Biggest Donars", icon: Eye, href: "insights?type=org&donatedto=&awardedby=&limit=100", color: "bg-orange-100 hover:bg-orange-200" },       
+    { label: "Biggest Donars", icon: Eye, href: "insights?type=org&donatedto=&awardedby=&limit=100", color: "bg-orange-100 hover:bg-orange-200" }, //TODO 
 ];
 
 export default function ChipNavigation() {
