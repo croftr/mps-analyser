@@ -151,7 +151,12 @@ function PageContent() {
   }
 
   const formatCurrency = (value: number = 0) => {
-    return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value);
+    return new Intl.NumberFormat('en-GB', { 
+      style: 'currency', 
+      currency: 'GBP',
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 0 
+    }).format(value);
   }
 
   return (
