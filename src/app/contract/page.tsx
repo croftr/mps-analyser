@@ -29,7 +29,7 @@ function PageContent() {
   const [awardedTo, setAwardedTo] = useState<string | null>("");
   const [value, setValue] = useState(0);
 
-  const [contract, setContract] = useState<Array<any>>([]);
+  const [contract, setContract] = useState<Array<any>>();
 
   const getData = async () => {
 
@@ -44,6 +44,7 @@ function PageContent() {
     const response: Array<any> = await ky(`${config.mpsApiUrl}contracts/details?title=${titleParam}&supplier=${supplierParam}&value=${valueParam}`).json();
 
     if (!response || !response[0] || !response[0]._fields || !response[0]._fields[0] || !response[0]._fields[0].properties) {
+      setContract([])
       return <div>No contract details available.</div>; // Or a more informative message/component
     }
 
@@ -68,7 +69,7 @@ function PageContent() {
           <div className="h-6 border-l border-gray-300"></div>
         </div>
 
-        <div className="headerItem flex-1 mt-2 rounded-full p-4 ring-1 flex flex-col items-center max-w-40">
+        <div className="headerItem flex-1 mt-2 rounded-full p-4 ring-1 flex flex-col items-center min-w-40">
           <Handshake className="h-6 w-6 relative arrow-container" />
           <span className="font-medium">
             {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value)}
@@ -81,7 +82,9 @@ function PageContent() {
         </div>
       </div>
 
-      {contract[0] && (
+      {!contract && (<div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400 m-auto mt-5"></div>)}
+
+      {contract && contract[0] && (
         <div className="ring-1 rounded-md p-4">
           <h2 className="text-xl font-semibold mb-2">{contract[0]._fields[0].properties.Title}</h2>
           <div className="grid grid-cols-2 gap-y-2">
