@@ -9,6 +9,7 @@ import { Handshake } from "lucide-react"
 import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
+import { Button } from "@/components/ui/button"
 
 export default function Contract() {
   return (
@@ -90,8 +91,8 @@ function PageContent() {
           <div className="grid grid-cols-2 gap-y-2">
 
             <div className="font-medium">Awarded to:</div>
-            <div>{awardedTo}</div>
-
+            <a className='text-primary' href="#" onClick={() => router.push(`org?name=${encodeURIComponent(awardedTo||"")}`)}>{awardedTo}</a>
+            
             <div className="font-medium">Description:</div>
             <div>{contract[0]._fields[0].properties.Description}</div>
 
