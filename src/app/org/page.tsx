@@ -135,7 +135,7 @@ function PageContent() {
     setIsLoading(false);
   }
 
-  const showContract = (row: any) => {    
+  const showContract = (row: any) => {
     router.push(`contract?supplier=${row._fields[1]}&title=${row._fields[0]}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
   }
 
@@ -152,6 +152,10 @@ function PageContent() {
     setIsDonationssDown(!isDonationssDown);
   }
 
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value);
+  }
+
   return (
 
     <div className="flex flex-col justify-center">
@@ -161,38 +165,39 @@ function PageContent() {
         <h4 className="font-semibold text-lg mb-2">{name}</h4>
       </span>
 
-      <div className="flex">
-        <Button
-          variant='outline'
-          onClick={onToggleContracts}
-          className='flex gap-2 w-52'
-        >
-          {isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts ? contracts.length : 0} Contracts Received
-          {isContractsDown ? <ArrowUp /> : <ArrowDown />}
-        </Button>
-
-        <Button
-          variant='outline'
-          onClick={onToggleDonations}
-          className='flex gap-2 w-52'
-        >
-          {isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData ? tableData.length : 0} Donations Made
-          {isDonationssDown ? <ArrowUp /> : <ArrowDown />}
-        </Button>
-      </div>
+      <Button
+        variant='outline'
+        onClick={onToggleContracts}
+        className='flex gap-2 w-full justify-between'
+      >
+        <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
+        {Boolean(contracts?.length) && <span>Total value {formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0))}</span>}
+        {isContractsDown ? <ArrowUp /> : <ArrowDown />}
+      </Button>
 
       <Collapsible
-        open={isContractsDown}        
+        open={isContractsDown}
         className="flex w-full"
       >
-
         <CollapsibleContent className="flex flex-col w-full gap-2">
           <NeoTable data={contracts} title="Contracts Received" onRowClick={showContract} />
         </CollapsibleContent>
       </Collapsible>
 
+      <Button
+        variant='outline'
+        onClick={onToggleDonations}
+        className='flex gap-2 w-full justify-between'
+      >
+
+        <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> <span> Donations Made</span></span>
+        {Boolean(tableData?.length) && <span>Total value {formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0))}</span>}
+        {isDonationssDown ? <ArrowUp /> : <ArrowDown />}
+      </Button>
+
+
       <Collapsible
-        open={isDonationssDown}        
+        open={isDonationssDown}
         className="flex w-full"
       >
 
@@ -215,6 +220,7 @@ function PageContent() {
           </div>
         </CollapsibleContent>
       </Collapsible>
+
     </div>
   );
 
