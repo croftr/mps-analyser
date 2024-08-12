@@ -100,6 +100,11 @@ function PageContent() {
   const [type, setType] = useState(TYPES.ALL_PARTIES)
   const [donarStatus, setDonarStatus] = useState("")
 
+  const omRowClick = (row) => {
+    // router.push(`?party=${row.original.partyName}`, { scroll: true });
+
+    router.push(`org?name=${encodeURIComponent(row.original.donar)}`)
+  }
 
   const onQueryForParty = async (row, updateUrl = true) => {
 
@@ -119,25 +124,7 @@ function PageContent() {
   }
 
   const onQueryForPartyDonar = async (row, updateUrl = true) => {
-
-    if (updateUrl) {            
-      router.push(`?party=${tableText.split(" ")[2]}&donar=${row.original.donar}`, { scroll: true });
-    }
-
-    const donationsResponse = await ky(`${config.mpsApiUrl}donations?donar=${row.original.donar}`).json();
-    const headerInfo = Array.isArray(donationsResponse) ? donationsResponse[0] : undefined;
-
-    if (headerInfo) {
-      setTableText(`Donation to ${donationsResponse[0].partyName} by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
-    }
-
-    setDonarStatus(headerInfo.donorStatus);
-    setTableColumns(donarDetailsColumns);
-    setTableData(donationsResponse);
-
-    setType(TYPES.DONAR);
-
-    setIsLoading(false);
+    router.push(`org?name=${encodeURIComponent(row.original.donar)}`)
   }
 
   const refreshData = async () => {
