@@ -70,6 +70,7 @@ interface OrgParams {
   nameParam: string | null;
   donatedtoParam: string;
   awardedbyParam: string;
+  minTotalDonationValue: number;
 }
 
 interface CommonParams {
@@ -89,6 +90,8 @@ export default function insights() {
     </Suspense>
   );
 }
+
+//TODO add minTotalDonationValue to deeplinking and table header
 
 function PageContent() {
 
@@ -124,6 +127,7 @@ function PageContent() {
   const [orgName, setOrgName] = useState("");
   const [dontatedToParty, setDontatedToParty] = useState("");
   const [awaredByParty, setAwaredByParty] = useState("");
+  const [minTotalDonationValue, setMinTotalDonationValue] = useState(0);
 
   const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
@@ -282,6 +286,7 @@ function PageContent() {
       nameParam: '',
       donatedtoParam: '',
       awardedbyParam: '',
+      minTotalDonationValue: 0
     };
 
     switch (typeParam.toLocaleLowerCase()) {
@@ -489,12 +494,13 @@ function PageContent() {
     const orgParams: OrgParams = {
       nameParam: orgName,
       donatedtoParam: dontatedToParty,
-      awardedbyParam: awaredByParty
+      awardedbyParam: awaredByParty,
+      minTotalDonationValue: minTotalDonationValue
     }
 
     generateTableHeader({ typeParam: "org", orgParams });
 
-    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}`).json();
 
     setData(result);
   }
@@ -583,6 +589,8 @@ function PageContent() {
                   onChangeDontatedToParty={onChangeDontatedToParty}
                   awaredByParty={awaredByParty}
                   onChangeAwaredByParty={onChangeAwaredByParty}
+                  minTotalDonationValue={minTotalDonationValue}
+                  setMinTotalDonationValue={setMinTotalDonationValue}
 
                 />
               )}

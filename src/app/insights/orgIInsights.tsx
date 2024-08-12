@@ -11,6 +11,8 @@ interface OrgInsightsProps {
     orgName: string;
     onChangeOrgName: (value: string) => void;
     onSearch: () => void;
+    minTotalDonationValue: number;
+    setMinTotalDonationValue: (value: number) => void;
 }
 
 const OrgInsights = ({
@@ -20,7 +22,10 @@ const OrgInsights = ({
     dontatedToParty,
     onChangeDontatedToParty,
     awaredByParty,
-    onChangeAwaredByParty }
+    onChangeAwaredByParty,
+    minTotalDonationValue,
+    setMinTotalDonationValue
+    }
     : OrgInsightsProps) => {
 
     return (
@@ -45,7 +50,7 @@ const OrgInsights = ({
             <PartyPicker
                 party={dontatedToParty}
                 onChangeParty={onChangeDontatedToParty}
-                label="Donated to"                
+                label="Donated to"
             />
 
             <PartyPicker
@@ -55,6 +60,22 @@ const OrgInsights = ({
                 // className="items-center"
                 labelClassName="w-[80px]"
             />
+
+            <div className='flex items-baseline gap-2'>
+
+                <Label htmlFor="orgName" className="w-[80px]">Donated more than</Label>
+
+                <Input
+                    placeholder="any name"
+                    id="donationAmount"
+                    className='w-[210px]'
+                    value={minTotalDonationValue}
+                    onChange={(e) => setMinTotalDonationValue(Number(e.target.value))}
+                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                >
+                </Input>
+            </div>
+
         </div>
     )
 }
