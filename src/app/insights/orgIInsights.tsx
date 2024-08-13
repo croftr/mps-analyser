@@ -25,7 +25,7 @@ const OrgInsights = ({
     onChangeAwaredByParty,
     minTotalDonationValue,
     setMinTotalDonationValue
-    }
+}
     : OrgInsightsProps) => {
 
     return (
@@ -47,20 +47,6 @@ const OrgInsights = ({
                 </Input>
             </div>
 
-            <PartyPicker
-                party={dontatedToParty}
-                onChangeParty={onChangeDontatedToParty}
-                label="Donated to"
-            />
-
-            <PartyPicker
-                party={awaredByParty}
-                onChangeParty={onChangeAwaredByParty}
-                label="Awarded contract by"
-                // className="items-center"
-                labelClassName="w-[80px]"
-            />
-
             <div className='flex items-baseline gap-2'>
 
                 <Label htmlFor="orgName" className="w-[80px]">Donated more than</Label>
@@ -75,6 +61,20 @@ const OrgInsights = ({
                 >
                 </Input>
             </div>
+
+            <PartyPicker
+                party={dontatedToParty}
+                onChangeParty={onChangeDontatedToParty}
+                label="Donated to"
+            />
+
+            <PartyPicker
+                party={awaredByParty}
+                onChangeParty={onChangeAwaredByParty}
+                label="Awarded contract by"
+                // className="items-center"
+                labelClassName="w-[80px]"
+            />
 
         </div>
     )
