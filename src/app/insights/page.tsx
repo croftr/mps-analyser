@@ -230,9 +230,6 @@ function PageContent() {
     setTableHeader(header);
   }
 
-
-
-
   /**
    * Called when the url for the insights page contains the type=xx param
    * query the database set the search fields based on the query params in the url 
@@ -332,13 +329,15 @@ function PageContent() {
         orgParams.nameParam = searchParams.get('name');
         orgParams.donatedtoParam = searchParams.get('donatedto') || 'Any Party';
         orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';
+        orgParams.minTotalDonationValue = Number(searchParams.get('minTotalDonationValue')||0);
 
         setType("Organisation or Individual");
         setDontatedToParty(orgParams.donatedtoParam);
         setAwaredByParty(orgParams.awardedbyParam);
         setLimit(Number(commonParams.limit));
+        setMinTotalDonationValue(orgParams.minTotalDonationValue);
 
-        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}`;
+        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}`;
 
         if (orgParams.nameParam) {
           url = `${url}&name=${orgParams.nameParam}`;
@@ -484,7 +483,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}`
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}`
     if (orgName) {
       queryString = `${queryString}&name=${orgName}`;
     }
