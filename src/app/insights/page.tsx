@@ -210,20 +210,25 @@ function PageContent() {
         }
         break;
       case "org":
+
         if (params.orgParams?.awardedbyParam && params.orgParams?.awardedbyParam !== "Any Party") {
           header = `Organisations awarded contracts by ${params.orgParams.awardedbyParam}`;
         } else {
           header = "Organisations and individuals";
         }
 
-        if (params.orgParams?.donatedtoParam !== 'Any Party') {
-          header += ` who donated to ${params.orgParams?.donatedtoParam}`;
-        }
-
         if (params.orgParams?.nameParam) {
-          header += `with ${params.orgParams.nameParam} in thier name`;
+          header += ` with ${params.orgParams.nameParam} in thier name`;
         }
 
+        if (params.orgParams?.minTotalDonationValue) {
+          header += ` who donated more than £${params.orgParams?.minTotalDonationValue}`
+        } else {
+          header += " who donated"
+        }
+
+        header += ` to ${params.orgParams?.donatedtoParam || "Any Party"}`;
+      
         break;
     }
     
