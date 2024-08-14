@@ -71,6 +71,7 @@ interface OrgParams {
   donatedtoParam: string;
   awardedbyParam: string;
   minTotalDonationValue: number;
+  minDonationCount: number;
 }
 
 interface CommonParams {
@@ -90,8 +91,6 @@ export default function insights() {
     </Suspense>
   );
 }
-
-//TODO add minTotalDonationValue to deeplinking and table header
 
 function PageContent() {
 
@@ -128,6 +127,7 @@ function PageContent() {
   const [dontatedToParty, setDontatedToParty] = useState("");
   const [awaredByParty, setAwaredByParty] = useState("");
   const [minTotalDonationValue, setMinTotalDonationValue] = useState(0);
+  const [minDonationCount, setMinDonationCount] = useState(0);
 
   const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
@@ -211,11 +211,13 @@ function PageContent() {
         break;
       case "org":
 
-        if (params.orgParams?.awardedbyParam && params.orgParams?.awardedbyParam !== "Any Party") {
-          header = `Organisations awarded contracts by ${params.orgParams.awardedbyParam}`;
-        } else {
-          header = "Organisations and individuals";
-        }
+        // if (params.orgParams?.awardedbyParam && params.orgParams?.awardedbyParam !== "Any Party") {
+        //   header = `Organisations awarded contracts by ${params.orgParams.awardedbyParam}`;
+        // } else {
+        //   header = "Organisations and individuals";
+        // }
+
+        header = "Organisations and individuals";
 
         if (params.orgParams?.nameParam) {
           header += ` with ${params.orgParams.nameParam} in thier name`;
@@ -226,8 +228,11 @@ function PageContent() {
         } else {
           header += " who donated"
         }
-
+                
         header += ` to ${params.orgParams?.donatedtoParam || "Any Party"}`;
+
+        
+        header += ` where awarded more than ${params.orgParams?.minDonationCount} contracts by ${params.orgParams?.awardedbyParam}`
       
         break;
     }
@@ -288,7 +293,8 @@ function PageContent() {
       nameParam: '',
       donatedtoParam: '',
       awardedbyParam: '',
-      minTotalDonationValue: 0
+      minTotalDonationValue: 0,
+      minDonationCount: 0
     };
 
     switch (typeParam.toLocaleLowerCase()) {
@@ -335,12 +341,14 @@ function PageContent() {
         orgParams.donatedtoParam = searchParams.get('donatedto') || 'Any Party';
         orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';
         orgParams.minTotalDonationValue = Number(searchParams.get('minTotalDonationValue')||0);
+        orgParams.minDonationCount = Number(searchParams.get('minDonationCount')||0);
 
         setType("Organisation or Individual");
         setDontatedToParty(orgParams.donatedtoParam);
         setAwaredByParty(orgParams.awardedbyParam);
         setLimit(Number(commonParams.limit));
         setMinTotalDonationValue(orgParams.minTotalDonationValue);
+        setMinDonationCount(orgParams.minDonationCount);
 
         url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}`;
 
@@ -488,7 +496,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}`
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minDonationCount=${minDonationCount}`
     if (orgName) {
       queryString = `${queryString}&name=${orgName}`;
     }
@@ -499,12 +507,13 @@ function PageContent() {
       nameParam: orgName,
       donatedtoParam: dontatedToParty,
       awardedbyParam: awaredByParty,
-      minTotalDonationValue: minTotalDonationValue
+      minTotalDonationValue: minTotalDonationValue,
+      minDonationCount: minDonationCount
     }
 
     generateTableHeader({ typeParam: "org", orgParams });
 
-    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minDonationCount=${minDonationCount}`).json();
 
     setData(result);
   }
@@ -595,7 +604,8 @@ function PageContent() {
                   onChangeAwaredByParty={onChangeAwaredByParty}
                   minTotalDonationValue={minTotalDonationValue}
                   setMinTotalDonationValue={setMinTotalDonationValue}
-
+                  minDonationCount={minDonationCount}
+                  setMinDonationCount={setMinDonationCount}
                 />
               )}
 
