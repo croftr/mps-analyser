@@ -118,7 +118,7 @@ function PageContent() {
     const headerInfo = Array.isArray(donationsResponse) ? donationsResponse[0] : undefined;
 
     if (headerInfo) {
-      setTableText(`Donation to ${donationsResponse[0].partyName} by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
+      setTableText(`Donation by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
       setDonarStatus(headerInfo.donorStatus);
     }
 
