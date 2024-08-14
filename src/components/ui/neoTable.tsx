@@ -103,7 +103,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
 
     let renderedValue = value;
 
-    if (value.low) {
+    if (value.low || value.low === 0) {      
       renderedValue = value.low;
     } else if (value.year) {
       const jsDate = new Date(
@@ -113,7 +113,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
       );
       renderedValue = jsDate.toLocaleDateString();
     }
-
+        
     return renderedValue.toString();
   };
 
