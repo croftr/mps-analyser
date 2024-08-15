@@ -15,8 +15,8 @@ interface OrgInsightsProps {
     onSearch: () => void;
     minTotalDonationValue: number;
     setMinTotalDonationValue: (value: number) => void;
-    minDonationCount: number;
-    setMinDonationCount: (value: number) => void
+    minContractCount: number;
+    setMinContractCount: (value: number) => void
 }
 
 const OrgInsights = ({
@@ -29,8 +29,8 @@ const OrgInsights = ({
     onChangeAwaredByParty,
     minTotalDonationValue,
     setMinTotalDonationValue,
-    minDonationCount,
-    setMinDonationCount
+    minContractCount,
+    setMinContractCount
 }
     : OrgInsightsProps) => {
 
@@ -83,22 +83,23 @@ const OrgInsights = ({
 
                     <Input
                         placeholder="any name"
-                        disabled={true}
                         id="contractCount"
                         className='w-[210px]'
-                        value={minDonationCount}
-                        onChange={(e) => setMinDonationCount(Number(e.target.value))}
+                        value={minContractCount}
+                        onChange={(e) => setMinContractCount(Number(e.target.value))}
                         onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
                     >
                     </Input>
                 </div>
 
-                <PartyPicker
-                    party={awaredByParty}
-                    onChangeParty={onChangeAwaredByParty}
-                    label="By"
-                    labelClassName="min-w-[62px]"
-                />
+                <div className='flex items-baseline gap-2'>
+                    <Label htmlFor="contractCount" className="w-[82px]">By</Label>
+
+                    <Input
+                        disabled
+                        value={dontatedToParty}
+                    />
+                </div>
 
             </CustomFieldset>
         </div>
