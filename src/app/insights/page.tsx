@@ -71,7 +71,7 @@ interface OrgParams {
   donatedtoParam: string;
   awardedbyParam: string;
   minTotalDonationValue: number;
-  minDonationCount: number;
+  minContractCount: number;
 }
 
 interface CommonParams {
@@ -127,7 +127,7 @@ function PageContent() {
   const [dontatedToParty, setDontatedToParty] = useState("");
   const [awaredByParty, setAwaredByParty] = useState("");
   const [minTotalDonationValue, setMinTotalDonationValue] = useState(0);
-  const [minDonationCount, setMinDonationCount] = useState(0);
+  const [minContractCount, setMinContractCount] = useState(0);
 
   const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
@@ -232,7 +232,7 @@ function PageContent() {
         header += ` to ${params.orgParams?.donatedtoParam || "Any Party"}`;
 
         
-        header += ` where awarded more than ${params.orgParams?.minDonationCount} contracts by ${params.orgParams?.awardedbyParam}`
+        header += ` where awarded more than ${params.orgParams?.minContractCount} contracts by ${params.orgParams?.awardedbyParam}`
       
         break;
     }
@@ -294,7 +294,7 @@ function PageContent() {
       donatedtoParam: '',
       awardedbyParam: '',
       minTotalDonationValue: 0,
-      minDonationCount: 0
+      minContractCount: 0
     };
 
     switch (typeParam.toLocaleLowerCase()) {
@@ -341,14 +341,14 @@ function PageContent() {
         orgParams.donatedtoParam = searchParams.get('donatedto') || 'Any Party';
         orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';
         orgParams.minTotalDonationValue = Number(searchParams.get('minTotalDonationValue')||0);
-        orgParams.minDonationCount = Number(searchParams.get('minDonationCount')||0);
+        orgParams.minContractCount = Number(searchParams.get('minContractCount')||0);
 
         setType("Organisation or Individual");
         setDontatedToParty(orgParams.donatedtoParam);
         setAwaredByParty(orgParams.awardedbyParam);
         setLimit(Number(commonParams.limit));
         setMinTotalDonationValue(orgParams.minTotalDonationValue);
-        setMinDonationCount(orgParams.minDonationCount);
+        setMinContractCount(orgParams.minContractCount);
 
         url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}`;
 
@@ -496,7 +496,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minDonationCount=${minDonationCount}`
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}`
     if (orgName) {
       queryString = `${queryString}&name=${orgName}`;
     }
@@ -508,12 +508,12 @@ function PageContent() {
       donatedtoParam: dontatedToParty,
       awardedbyParam: awaredByParty,
       minTotalDonationValue: minTotalDonationValue,
-      minDonationCount: minDonationCount
+      minContractCount: minContractCount
     }
 
     generateTableHeader({ typeParam: "org", orgParams });
 
-    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minDonationCount=${minDonationCount}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}`).json();
 
     setData(result);
   }
@@ -604,8 +604,8 @@ function PageContent() {
                   onChangeAwaredByParty={onChangeAwaredByParty}
                   minTotalDonationValue={minTotalDonationValue}
                   setMinTotalDonationValue={setMinTotalDonationValue}
-                  minDonationCount={minDonationCount}
-                  setMinDonationCount={setMinDonationCount}
+                  minContractCount={minContractCount}
+                  setMinContractCount={setMinContractCount}
                 />
               )}
 
