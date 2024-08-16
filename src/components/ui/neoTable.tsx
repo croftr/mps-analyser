@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { TableBody, TableCell } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import NeoTableSkeleton from "./neoTableSkeleton";
+import { log } from "console";
 
 interface DataTableProps {
   data: any[] | undefined;
@@ -96,14 +97,33 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
     }
   }, [data]);
 
-  const renderCell = (value) => {
+  const renderCell = (value, title) => {
+    console.log("check ", title);
+
     if (!value) {
       return "";
     }
 
     let renderedValue = value;
 
-    if (value.low || value.low === 0) {      
+    if (title.toLowerCase() === "amount" || title.toLowerCase() === "value" || title.toLowerCase() === "donated amount") {
+      //format as currency
+      if (typeof value === "number") {
+
+        renderedValue = `£${value.toLocaleString()}`;
+      } else {
+        let parsedValue;
+        if (value.low || value.low === 0) {
+          parsedValue = value.low;
+        } else {
+          parsedValue = parseFloat(value);
+        }
+
+        if (!isNaN(parsedValue)) {
+          renderedValue = `£${parsedValue.toLocaleString()}`;
+        }
+      }
+    } else if (value.low || value.low === 0) {
       renderedValue = value.low;
     } else if (value.year) {
       const jsDate = new Date(
@@ -113,7 +133,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
       );
       renderedValue = jsDate.toLocaleDateString();
     }
-        
+
     return renderedValue.toString();
   };
 
@@ -150,7 +170,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
               placeholder="Filter..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
-              className="dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600" 
+              className="dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600"
             />
             <span className="text-gray-600 dark:text-gray-400 whitespace-nowrap">
               {`(${data.length} results)`}
@@ -205,7 +225,8 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
                         key={cell.id}
                         className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white whitespace-normal break-words"
                       >
-                        {renderCell(row.original._fields[originalCellIndex])}
+                        {renderCell(row.original._fields[originalCellIndex], row.original.keys[originalCellIndex])}
+                        {/* {renderCell(row)} */}
                       </TableCell>
                     );
                   })}

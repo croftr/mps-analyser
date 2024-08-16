@@ -155,7 +155,7 @@ function PageContent() {
   const [name, setName] = useState<string | null>("")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
 
-  const [donorStatus, setDonarStatus] = useState<DonationSourceType>(DonationSourceType.Company)
+  const [donorStatus, setDonarStatus] = useState<DonationSourceType>()
 
   const getData = async () => {
 
@@ -220,7 +220,7 @@ function PageContent() {
       <div className="flex flex-col ml-1 mb-2">
 
         <div className="flex gap-2">
-          <span>{donorStatus ? donorStatusIcons[donorStatus] || <HelpCircleIcon /> : <div className="h-6 w-10 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>}</span>
+          <span>{donorStatus ? donorStatusIcons[donorStatus] || <HelpCircleIcon /> : <div className="h-6 w-6 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg"></div>}</span>
 
           <span>
             {name ? (
