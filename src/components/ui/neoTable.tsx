@@ -98,8 +98,7 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   }, [data]);
 
   const renderCell = (value, title) => {
-    console.log("check ", title);
-
+    
     if (!value) {
       return "";
     }
