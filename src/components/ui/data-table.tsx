@@ -28,6 +28,10 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
         // Get the actual value from the cell
         let cellValue = cell.getValue(); // Use the getValue() method        
 
+        if (!cellValue) {
+            return "";
+        }
+
         // Check if the column header indicates currency
         if (cell.column.columnDef.header.toLowerCase().includes("amount") || cell.column.columnDef.header.toLowerCase().includes("value")) {
 
@@ -39,7 +43,7 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
                     cellValue = `£${parsedValue.toLocaleString()}`;
                 }
             }
-        } else if (cell.column.columnDef.header.toLowerCase().includes("date")) {
+        } else if (cell.column.columnDef.header.toLowerCase().includes("date")) {            
 
             const year = cellValue.year.low;
             const month = cellValue.month.low - 1; // JavaScript months are 0-indexed
