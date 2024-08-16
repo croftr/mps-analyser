@@ -18,6 +18,21 @@ import { NeoTable } from '@/components/ui/neoTable';
 import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
 
+
+import {
+  BriefcaseIcon,
+  UsersIcon,
+  BanIcon,
+  ScaleIcon,
+  HomeIcon,
+  BoxIcon,
+  Users2Icon,
+  DollarSignIcon,
+  FlagIcon,
+  HelpCircleIcon,
+  UserIcon
+} from 'lucide-react';
+
 import {
   Collapsible,
   CollapsibleContent
@@ -27,6 +42,39 @@ const TYPES = {
   ALL_PARTIES: "ALL_PARTIES",
   PARTY: "PARTY",
   DONAR: "DONAR"
+};
+
+
+enum DonorStatusEnum {
+  Company = "Company",
+  UnincorporatedAssociation = "Unincorporated Association",
+  ImpermissibleDonor = "Impermissible Donor",
+  TradeUnion = "Trade Union",
+  FriendlySociety = "Friendly Society",
+  Trust = "Trust",
+  LimitedLiabilityPartnership = "Limited Liability Partnership",
+  PublicFund = "Public Fund",
+  RegisteredPoliticalParty = "Registered Political Party",
+  Other = "Other",
+  Empty = "", // To handle the empty string case
+  UnidentifiableDonor = "Unidentifiable Donor",
+  Individual = "Individual",
+}
+
+const donorStatusIcons: { [key in string]: JSX.Element } = {
+  [DonorStatusEnum.Company]: <BriefcaseIcon />,
+  [DonorStatusEnum.UnincorporatedAssociation]: <UsersIcon />,
+  [DonorStatusEnum.ImpermissibleDonor]: <BanIcon />,
+  [DonorStatusEnum.TradeUnion]: <ScaleIcon />,
+  [DonorStatusEnum.FriendlySociety]: <HomeIcon />,
+  [DonorStatusEnum.Trust]: <BoxIcon />,
+  [DonorStatusEnum.LimitedLiabilityPartnership]: <Users2Icon />,
+  [DonorStatusEnum.PublicFund]: <DollarSignIcon />,
+  [DonorStatusEnum.RegisteredPoliticalParty]: <FlagIcon />,
+  [DonorStatusEnum.Other]: <HelpCircleIcon />,
+  [DonorStatusEnum.Empty]: <HelpCircleIcon />, // Default icon for empty string
+  [DonorStatusEnum.UnidentifiableDonor]: <UserIcon />,
+  [DonorStatusEnum.Individual]: <UserIcon />,
 };
 
 enum DonationSourceType {
@@ -107,7 +155,7 @@ function PageContent() {
   const [name, setName] = useState<string | null>("")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
 
-  const [donarStatus, setDonarStatus] = useState<DonationSourceType>(DonationSourceType.Company)
+  const [donorStatus, setDonarStatus] = useState<DonationSourceType>(DonationSourceType.Company)
 
   const getData = async () => {
 
@@ -151,30 +199,50 @@ function PageContent() {
   }
 
   const formatCurrency = (value: number = 0) => {
-    return new Intl.NumberFormat('en-GB', { 
-      style: 'currency', 
+    return new Intl.NumberFormat('en-GB', {
+      style: 'currency',
       currency: 'GBP',
-      minimumFractionDigits: 0, 
-      maximumFractionDigits: 0 
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(value);
   }
 
   return (
 
-    <div className="flex flex-col justify-center p-4 gap-1">
+    <div className="flex flex-col justify-center p-4 gap-2 mb-2">
 
-      <div className="flex gap-2">
+      <div className="flex ml-1 gap-2">
+
+        <span>{donorStatus ? donorStatusIcons[donorStatus] || <HelpCircleIcon /> : <div className="h-6 w-10 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>}</span>
+
         <span>
-          {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : type}
-        </span>
-        <span className='mb-2'>
-          {name ? ( 
-            <h4 className="font-semibold text-lg">{name}</h4>
+          {name ? (
+            <h4 className="font-semibold text-lg mb-2">{name}</h4>
           ) : (
             <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>
           )}
         </span>
       </div>
+
+
+      {tableData[0] && (
+
+        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+
+          <div className="flex flex-col space-y-2">
+            <div className="flex">
+              <span className="font-medium mr-2 dark:text-gray-300">Donor Type:</span>
+              <span className="dark:text-white">{tableData[0].donorStatus}</span>
+            </div>
+            <div className="flex">
+              <span className="font-medium mr-2 dark:text-gray-300">Accounting Unit:</span>
+              <span className="dark:text-white">{tableData[0].accountingUnitName}</span>
+              <span className="dark:text-white ml-2">{tableData[0].postcode}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       <div
         className="flex p-4 justify-between cursor-pointer 
