@@ -170,7 +170,13 @@ function PageContent() {
       setDonarStatus(headerInfo.donorStatus);
     }
 
-    setName(nameParam);
+    if (nameParam) {
+      setName(nameParam
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' '));
+    }
+
     setTableColumns(donarDetailsColumns);
     setTableData(donationsResponse);
 
@@ -211,37 +217,34 @@ function PageContent() {
 
     <div className="flex flex-col justify-center p-4 gap-2 mb-2">
 
-      <div className="flex ml-1 gap-2">
+      <div className="flex flex-col ml-1 mb-2">
 
-        <span>{donorStatus ? donorStatusIcons[donorStatus] || <HelpCircleIcon /> : <div className="h-6 w-10 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>}</span>
+        <div className="flex gap-2">
+          <span>{donorStatus ? donorStatusIcons[donorStatus] || <HelpCircleIcon /> : <div className="h-6 w-10 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>}</span>
 
-        <span>
-          {name ? (
-            <h4 className="font-semibold text-lg mb-2">{name}</h4>
-          ) : (
-            <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>
-          )}
-        </span>
-      </div>
+          <span>
+            {name ? (
+              <h4 className="font-semibold text-lg mb-2">{name}</h4>
+            ) : (
+              <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md"></div>
+            )}
+          </span>
+        </div>
 
 
-      {tableData[0] && (
-
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
-
-          <div className="flex flex-col space-y-2">
+        {tableData[0] && (
+          <div className="flex flex-col gap-1">
             <div className="flex">
-              <span className="font-medium mr-2 dark:text-gray-300">Donor Type:</span>
               <span className="dark:text-white">{tableData[0].donorStatus}</span>
             </div>
             <div className="flex">
-              <span className="font-medium mr-2 dark:text-gray-300">Accounting Unit:</span>
               <span className="dark:text-white">{tableData[0].accountingUnitName}</span>
               <span className="dark:text-white ml-2">{tableData[0].postcode}</span>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
 
 
       <div
