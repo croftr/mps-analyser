@@ -150,12 +150,11 @@ function PageContent() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [tableText, setTableText] = useState("");
-
-  const [type, setType] = useState(TYPES.DONAR)
+  
   const [name, setName] = useState<string | null>("")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
 
-  const [donorStatus, setDonarStatus] = useState<DonationSourceType>()
+  const [donorStatus, setDonarStatus] = useState<DonorStatusEnum>()
 
   const getData = async () => {
 
@@ -168,6 +167,12 @@ function PageContent() {
     if (headerInfo) {
       setTableText(`Donation by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
       setDonarStatus(headerInfo.donorStatus);
+      setTableData(donationsResponse);
+    } else {
+      //no header means its been given a contract but has no donation data so it must be an organisation 
+      setDonarStatus(DonorStatusEnum.Company);
+      setTableData([{ donorStatus: DonorStatusEnum.Company }]);
+      
     }
 
     if (nameParam) {
@@ -178,7 +183,7 @@ function PageContent() {
     }
 
     setTableColumns(donarDetailsColumns);
-    setTableData(donationsResponse);
+    
 
     setContracts(undefined)
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&limit=10000`);
