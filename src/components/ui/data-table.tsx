@@ -66,7 +66,7 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
                                     key={header.id}
                                     colSpan={header.colSpan}
                                     onClick={header.column.getToggleSortingHandler()}
-                                    className="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider cursor-pointer select-none"
+                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer select-none"
                                 >
                                     {header.isPlaceholder
                                         ? null
