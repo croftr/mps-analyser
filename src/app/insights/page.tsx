@@ -32,6 +32,7 @@ import {
   User,
   Vote
 } from "lucide-react";
+
 import { Separator } from '@radix-ui/react-separator';
 import { generateHeaderFromQueryParams } from './insightUtils';
 
@@ -362,7 +363,7 @@ function PageContent() {
     router.push(queryString, { scroll: false });
 
     const contractParams: ContractParams = {
-      awardedByParam: awaredByParty,
+      awardedByParam: awardedBy,
       awardedToParam: awardedTo,
       groupByContractParam: groupByContractCount,
       awardedCountParam: awardedCount ? awardedCount.toString() : "0"

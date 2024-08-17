@@ -1,3 +1,7 @@
+import {    
+    Info
+} from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -75,6 +79,12 @@ const OrgInsights = ({
                 />
             </CustomFieldset>
 
+            <div className="flex gap-2">
+            <Info className="w-5 h-5 text-gray-500" /> 
+                <span className="text-sm text-gray-500">Currently only same party names supported</span>
+            </div>
+
+
             <CustomFieldset legend="Contracts Awarded">
 
                 <div className='flex items-baseline gap-2'>
@@ -92,14 +102,12 @@ const OrgInsights = ({
                     </Input>
                 </div>
 
-                <div className='flex items-baseline gap-2'>
-                    <Label htmlFor="contractCount" className="w-[82px]">By</Label>
-
-                    <Input
-                        disabled
-                        value={dontatedToParty}
-                    />
-                </div>
+                <PartyPicker
+                    party={dontatedToParty}
+                    onChangeParty={onChangeDontatedToParty}
+                    label="By"
+                    labelClassName="min-w-[62px]"
+                />
 
             </CustomFieldset>
         </div>
