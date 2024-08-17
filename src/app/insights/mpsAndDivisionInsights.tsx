@@ -166,7 +166,7 @@ export default function MpsAndDivisionInsights({
           id="startSelect"
           name="from-date"
           min={EARLIEST_FROM_DATE}
-          max={new Date().toISOString().substr(0, 10)}
+          max={new Date().toISOString().substring(0, 10)}
           onChange={(e) => setFromDate(e.target.value)}
           value={fromDate}
           className="px-4 py-2 rounded-md
@@ -191,7 +191,7 @@ export default function MpsAndDivisionInsights({
           id="toDate"
           name="to-date"
           min={EARLIEST_FROM_DATE}
-          max={new Date().toISOString().substr(0, 10)}
+          max={new Date().toISOString().substring(0, 10)}
           onChange={(e) => setToDate(e.target.value)}
           value={toDate}
           className="px-4 py-2 rounded-md

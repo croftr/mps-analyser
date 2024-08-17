@@ -91,14 +91,16 @@ function PageContent() {
   const [voteType, setVoteType] = useState(voteTyps[0]);
   const [voteCategory, setVoteCategory] = useState(VOTING_CATEGORIES[0]);
   const [limit, setLimit] = useState(100);
-  const [fromDate, setFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
-  const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
+  const [fromDate, setFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substring(0, 10));
+  const [toDate, setToDate] = useState(new Date().toISOString().substring(0, 10));
 
   //contracts
   const [awardedCount, setAwardedCount] = useState<number | undefined>();
   const [awardedTo, setAwardedTo] = useState("Any");
   const [awardedBy, setAwardedBy] = useState("Any Party");
-  const [groupByContractCount, setGroupByContractCount] = useState(false);
+  const [groupByContractCount, setGroupByContractCount] = useState(false);  
+  const [contractFromDate, setContractFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substring(0, 10));
+  const [contractToDate, setContractToDate] = useState(new Date().toISOString().substring(0, 10));  
 
   //orgs
   const [orgName, setOrgName] = useState("");
@@ -158,7 +160,7 @@ function PageContent() {
       party: (searchParams.get('party') ?? 'Any')?.[0]?.toUpperCase() + (searchParams.get('party') ?? 'Any')?.slice(1) || 'Any',
       limit: parseInt(searchParams.get('limit') || '100') || 100,
       fromDate: searchParams.get('fromdate') || EARLIEST_FROM_DATE,
-      toDate: searchParams.get('todate') || new Date().toISOString().substr(0, 10),
+      toDate: searchParams.get('todate') || new Date().toISOString().substring(0, 10),
       category: searchParams.get('category') || 'Any',
       voted: searchParams.get('voted') || 'most',
     };
@@ -182,7 +184,9 @@ function PageContent() {
       awardedByParam: '',
       awardedToParam: '',
       groupByContractParam: false,
-      awardedCountParam: ''
+      awardedCountParam: '',
+      contractFromDate: '',
+      contractToDate: ''
     };
 
     const orgParams: OrgParams = {
@@ -354,7 +358,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&limit=${limit}`
+    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&limit=${limit}`
 
     if (awardedCount) {
       queryString = `${queryString}&awardedcount=${awardedCount}`;
@@ -366,12 +370,14 @@ function PageContent() {
       awardedByParam: awardedBy,
       awardedToParam: awardedTo,
       groupByContractParam: groupByContractCount,
-      awardedCountParam: awardedCount ? awardedCount.toString() : "0"
+      awardedCountParam: awardedCount ? awardedCount.toString() : "0",
+      contractFromDate: contractFromDate,
+      contractToDate: contractToDate,
     }
 
     generateTableHeader({ typeParam: type, contractParams });
 
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}`);
     const contractsResult = await result.json();
     setData(contractsResult);
   }
@@ -486,6 +492,10 @@ function PageContent() {
                     onSearch={onSearchContracts}
                     groupByContractCount={groupByContractCount}
                     setGroupByContractCount={setGroupByContractCount}
+                    contractFromDate={contractFromDate}
+                    setContractFromDate={setContractFromDate}
+                    contractToDate={contractToDate}
+                    setContractToDate={setContractToDate}
                   />
                 </div>
               )}

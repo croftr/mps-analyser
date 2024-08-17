@@ -79,8 +79,8 @@ function PageContent() {
 
   const [synopsis, setSynopsis] = useState("");
 
-  const [votefilterFrom, setVotefilterFrom] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substr(0, 10));
-  const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substr(0, 10));
+  const [votefilterFrom, setVotefilterFrom] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substring(0, 10));
+  const [votefilterTo, setVotefilterTo] = useState(new Date().toISOString().substring(0, 10));
 
   const [votefilterType, setVotefilterType] = useState("Any");
   const [filterInProgress, setFilterInProgress] = useState(false);
@@ -147,7 +147,7 @@ function PageContent() {
     }
   }
 
-  const onGetVotingSummary = async (id: number, fromDate = EARLIEST_FROM_DATE, toDate = new Date().toISOString().substr(0, 10), divisionCategory = "Any", name = "Any") => {
+  const onGetVotingSummary = async (id: number, fromDate = EARLIEST_FROM_DATE, toDate = new Date().toISOString().substring(0, 10), divisionCategory = "Any", name = "Any") => {
 
     setFilterInProgress(true);
     const result = await ky(`${config.mpsApiUrl}votecounts?id=${id}&fromDate=${fromDate}&toDate=${toDate}&category=${divisionCategory}&name=${name}`).json();
@@ -362,7 +362,7 @@ function PageContent() {
                 type="date"
                 id="start"
                 min={EARLIEST_FROM_DATE}
-                max={new Date().toISOString().substr(0, 10)}
+                max={new Date().toISOString().substring(0, 10)}
                 name="from-date"
                 onChange={(e) => onChangeSummaryDatePicker("from", e.target.value)}
                 value={votefilterFrom}
@@ -379,7 +379,7 @@ function PageContent() {
               <input
                 type="date"
                 min={EARLIEST_FROM_DATE}
-                max={new Date().toISOString().substr(0, 10)}
+                max={new Date().toISOString().substring(0, 10)}
                 id="toDate"
                 name="to-date"
                 onChange={(e) => onChangeSummaryDatePicker("to", e.target.value)}

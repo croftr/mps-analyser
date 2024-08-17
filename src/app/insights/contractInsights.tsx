@@ -2,11 +2,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
+import { EARLIEST_FROM_DATE } from "../config/constants";
+
 import PartyPicker from "@/components/custom/partyPicker";
+import CustomFieldset from "@/components/custom/customFieldset";
 
 interface ContractProps {
     awardedCount: number | undefined;
-    onChangeAwardedCount: (value: number|undefined) => void;
+    onChangeAwardedCount: (value: number | undefined) => void;
     awardedName: string;
     onChangeAwardedName: (value: string) => void;
     party: string,
@@ -14,6 +17,10 @@ interface ContractProps {
     onSearch: () => void;
     groupByContractCount: boolean,
     setGroupByContractCount: (value: boolean) => void;
+    setContractFromDate: (value: string) => void;
+    contractFromDate: string
+    setContractToDate: (value: string) => void;
+    contractToDate: string
 }
 
 const ContractInsights = ({
@@ -25,7 +32,11 @@ const ContractInsights = ({
     onChangeParty,
     onSearch,
     groupByContractCount: groupByContractCount,
-    setGroupByContractCount: setGroupByContractCount
+    setGroupByContractCount: setGroupByContractCount,
+    setContractFromDate,
+    contractFromDate,
+    setContractToDate,
+    contractToDate
 }: ContractProps) => {
 
     const onToggleGrouping = () => {
@@ -34,7 +45,7 @@ const ContractInsights = ({
         } else {
             onChangeAwardedCount(10)
         }
-        
+
         setGroupByContractCount(!groupByContractCount);
     }
 
@@ -69,23 +80,84 @@ const ContractInsights = ({
                         Group orgs
                     </Label>
 
-                    <Switch 
-                        id="individualContracts" 
-                        checked={groupByContractCount} 
-                        onCheckedChange={onToggleGrouping} 
+                    <Switch
+                        id="individualContracts"
+                        checked={groupByContractCount}
+                        onCheckedChange={onToggleGrouping}
                     />
-                    </div>
-                    <Input
-                        disabled={!groupByContractCount}
-                        id="awardedCount"
-                        placeholder="contract count"
-                        className='w-[158px]'                        
-                        value={awardedCount}
-                        onChange={(e) => onChangeAwardedCount(Number(e.target.value))}
-                        onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-                        type="number">
-                    </Input>            
+                </div>
+                <Input
+                    disabled={!groupByContractCount}
+                    id="awardedCount"
+                    placeholder="contract count"
+                    className='w-[158px]'
+                    value={awardedCount}
+                    onChange={(e) => onChangeAwardedCount(Number(e.target.value))}
+                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                    type="number">
+                </Input>
             </div>
+
+            <CustomFieldset legend="Awarded between">
+
+                <div className="flex gap-2 items-baseline">
+
+                    <Label
+                        htmlFor="startSelect"
+                        className="min-w-[80px]">
+                        from
+                    </Label>
+
+                    <input
+                        type="date"
+                        id="startSelect"
+                        name="from-date"
+                        min={EARLIEST_FROM_DATE}
+                        max={new Date().toISOString().substring(0, 10)}
+                        onChange={(e) => setContractFromDate(e.target.value)}
+                        value={contractFromDate}
+                        className="px-4 py-2 rounded-md
+                        bg-background                 
+                        border 
+                        border-gray-400 dark:border-gray-700       
+                        focus:outline-none 
+                        focus:ring-2 
+                        focus:ring-custom-outline 
+                        transition-all 
+                        duration-200 
+                        ease-in-out w-[210px]"
+                    />
+                </div>
+
+                <div className="flex gap-2 items-baseline">
+                    <Label
+                        htmlFor="startSelect"
+                        className="min-w-[80px]">
+                        to
+                    </Label>
+
+                    <input
+                        type="date"
+                        id="toDate"
+                        name="to-date"
+                        min={EARLIEST_FROM_DATE}
+                        max={new Date().toISOString().substring(0, 10)}
+                        onChange={(e) => setContractToDate(e.target.value)}
+                        value={contractToDate}
+                        className="px-4 py-2 rounded-md
+                        bg-background 
+                        border
+                        border-gray-400 dark:border-gray-700
+                        focus:outline-none 
+                        focus:ring-2 
+                        focus:ring-custom-outline 
+                        transition-all duration-200 ease-in-out w-[210px]"
+                    />
+                </div>
+
+
+            </CustomFieldset>
+
         </div>
     )
 }
