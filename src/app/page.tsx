@@ -1,58 +1,25 @@
 "use client"
 
 import * as React from "react"
-import { Calendar } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
 import ky from 'ky';
 import { useRouter } from 'next/navigation'
 import { Vote, Party } from "../types";
 import DivisionSvg from "@/components/custom/divisionSvg";
 
-
 import Image from 'next/image';
-
-import { VoteIcon } from "lucide-react";
 
 import ChipNavigation from "@/components/ui/chipNavigation";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
 import Search from "@/components/ui/search";
 
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
 
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { PartyCard } from "./partyCard";
-
-//not sure what the point of this is
-const chartConfig = {
-} satisfies ChartConfig
 
 export default function Home() {
 
-  const mainContentRef = useRef<HTMLDivElement>(null); // Ref for the container element
-
-  useEffect(() => {
-    if (mainContentRef.current) {
-      mainContentRef.current.focus();
-    }
-  }, []);
-
   const router = useRouter();
-
-  const [chartData, setChartData] = React.useState([]);
+  
   const [total, setTotal] = React.useState(0);
   const [recentVotes, setRecentVotes] = React.useState<Vote[] | undefined>();
   const [parties, setParties] = React.useState<Party[] | undefined>();
@@ -72,8 +39,6 @@ export default function Home() {
       data.push(record);
     })
 
-    //@ts-ignore
-    setChartData(data);
 
     const totalMembers = data.reduce((sum, party) => sum + party.members, 0);
 
@@ -128,7 +93,7 @@ export default function Home() {
   useEffect(() => {
     getPartyCounts();
     getParties();
-    getRecentVotes();
+    getRecentVotes();    
   }, []);
 
   const onQueryDivision = async (id: number) => {
@@ -137,98 +102,33 @@ export default function Home() {
 
   return (
 
-    <div className="p-4" >
+    <div className="p-4">
 
-      {/* <div id="chartcontainer" ref={mainContentRef} tabIndex={0}>
+      <Image
+        className="absolute top-12 left-10 transform -translate-y-1/2"
+        src="./handshake.svg"
+        alt="Handshake"
+        width={40}
+        height={40}
+      />
 
-        <Card className="flex flex-col mb-4">
-          <CardHeader className="items-center p-2">
-            <CardTitle>Current Mps</CardTitle>
-            <CardDescription>House of commons</CardDescription>
-          </CardHeader>
-          <CardContent className="px-0">
-            <ChartContainer
-              config={chartConfig}
-              className="mx-auto aspect-square max-h-[250px]"
-            >
-              <PieChart>
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Pie
-                  data={chartData}
-                  dataKey="members"
-                  nameKey="party"
-                  innerRadius={56}
-                  strokeWidth={5}
-                >
-                  <Label
-                    content={({ viewBox }) => {
-                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                        return (
-                          <text
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                          >
-                            <tspan
-                              x={viewBox.cx}
-                              y={viewBox.cy}
-                              className="fill-foreground text-3xl font-bold"
-                            >
-                              {total}
-                            </tspan>
-                            <tspan
-                              x={viewBox.cx}
-                              y={(viewBox.cy || 0) + 24}
-                              className="fill-foreground"
-                            >
-                              Mps
-                            </tspan>
-                          </text>
-                        )
-                      }
-                    }}
-                  />
-                </Pie>
-              </PieChart>
-            </ChartContainer>
-          </CardContent>
-          <CardFooter className="flex-col gap-2 text-sm p-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              <Calendar className="h-4 w-4" />
-              {`${new Date().toLocaleDateString()}`}
-            </div>
-          </CardFooter>
-        </Card>
-      </div> */}
+      <Image
+        className="absolute transform -translate-y-1/2 left-1/2 -translate-x-1/2"
+        src="./gate.svg"
+        alt="Center Image"
+        width={40}
+        height={40}
+      />
 
-  <Image
-    className="absolute top-12 left-10 transform -translate-y-1/2" 
-    src="./handshake.svg"
-    alt="Handshake"
-    width={40}
-    height={40}
-  />
-
-  <Image
-    className="absolute transform -translate-y-1/2 left-1/2 -translate-x-1/2" 
-    src="./gate.svg" 
-    alt="Center Image"
-    width={40} 
-    height={40}
-  />
-
-  <Image
-    className="absolute top-12 right-10 transform -translate-y-1/2" 
-    src="./money.svg"
-    alt="Money"
-    width={40}
-    height={40}
-  />
-{/* 
+      <Image
+        className="absolute top-12 right-10 transform -translate-y-1/2"
+        src="./money.svg"
+        alt="Money"
+        width={40}
+        height={40}
+      />
+      {
+      /* 
   <Image
     className="absolute top-32 left-20" 
     src="./bubble.svg" 
@@ -246,11 +146,9 @@ export default function Home() {
   /> */}
 
 
-
-
       <div className="flex items-center justify-center space-x-4 p-6 mt-2">
         <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 shadow-sm">Westminster Bubble</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 shadow-sm">Comons Connect</h1>
           <p className="text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-300 italic">Connecting MPs, Votes, Donations and Contracts</p>
         </div>
       </div>
@@ -258,7 +156,7 @@ export default function Home() {
       <Search />
 
       <ChipNavigation />
-
+      
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 mt-4">
         {parties && parties.filter(i => i.name !== "Speaker").map(i => <PartyCard key={i.name} party={i} />)}
       </div>

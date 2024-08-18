@@ -77,7 +77,7 @@ export default function Search() {
 
     return (
         <div className="p-2 pl-4 pr-4 mt-1 lg:mt-10 xg:mt-10 2xl:mt-10">
-            <ReactSearchAutocomplete
+            <ReactSearchAutocomplete                
                 placeholder='Search MPs or Divisions'
                 styling={{ zIndex: 1 }}
                 items={mpNames.concat(divisionNames)}                
@@ -86,9 +86,8 @@ export default function Search() {
                 onSelect={handleOnSelect}
                 onFocus={handleOnFocus}
                 maxResults={100}
-                showIcon={false}
-                autoFocus
-                formatResult={formatResult}
+                showIcon={false}              
+                formatResult={formatResult}              
             />
 
         </div>
