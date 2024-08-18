@@ -63,8 +63,7 @@ export const generateHeaderFromQueryParams = (params: {
       } else {
 
         header = "Contracts awarded";
-        console.log("check ", params.contractParams);
-
+      
         if (params.contractParams?.awardedByParam !== 'Any Party') {
           header += ` by ${params.contractParams?.awardedByParam}`;
         }

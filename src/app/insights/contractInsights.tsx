@@ -20,7 +20,9 @@ interface ContractProps {
     setContractFromDate: (value: string) => void;
     contractFromDate: string
     setContractToDate: (value: string) => void;
-    contractToDate: string
+    contractToDate: string,
+    onChangeContractName: (value: string) => void;
+    contractName: string,
 }
 
 const ContractInsights = ({
@@ -36,7 +38,9 @@ const ContractInsights = ({
     setContractFromDate,
     contractFromDate,
     setContractToDate,
-    contractToDate
+    contractToDate,
+    onChangeContractName,
+    contractName    
 }: ContractProps) => {
 
     const onToggleGrouping = () => {
@@ -68,6 +72,21 @@ const ContractInsights = ({
                     className='min-w-[210px]'
                     value={awardedName}
                     onChange={(e) => onChangeAwardedName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                >
+                </Input>
+            </div>
+
+            <div className='flex items-baseline gap-2'>
+
+                <Label htmlFor="awardedName" className="min-w-[80px]">Contract name</Label>
+
+                <Input
+                    id="awardedName"
+                    placeholder="name includes"
+                    className='min-w-[210px]'
+                    value={contractName}
+                    onChange={(e) => onChangeContractName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
                 >
                 </Input>

@@ -6,6 +6,7 @@ export interface ContractParams {
     awardedCountParam?: string | null;
     contractFromDate: string,
     contractToDate: string,
+    contractName: string
   }
   
   // vars for orgs
