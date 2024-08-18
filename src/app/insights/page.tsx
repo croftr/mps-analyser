@@ -335,7 +335,8 @@ function PageContent() {
       const orgName = row._fields[0];
       router.push(`org?name=${orgName}`, { scroll: true });
     } else if (type === "Contract") {
-      router.push(`contract?supplier=${row._fields[1]}&title=${row._fields[0]}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
+      
+      router.push(`contract?supplier=${row._fields[1]}&title=${encodeURIComponent(row._fields[0])}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
     } else {
       console.log("warning unknown type of ", type);
     }

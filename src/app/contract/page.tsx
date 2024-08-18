@@ -35,6 +35,9 @@ function PageContent() {
   const getData = async () => {
 
     const titleParam: string | null = searchParams.get('title');
+
+    
+    
     const supplierParam: string | null = searchParams.get('supplier');
     const valueParam: number = Number(searchParams.get('value'));
 
@@ -42,7 +45,7 @@ function PageContent() {
     setAwardedTo(supplierParam);
     setValue(valueParam);
 
-    const response: Array<any> = await ky(`${config.mpsApiUrl}contracts/details?title=${titleParam}&supplier=${supplierParam}&value=${valueParam}`).json();
+    const response: Array<any> = await ky(`${config.mpsApiUrl}contracts/details?title=${encodeURIComponent(titleParam||"")}&supplier=${encodeURIComponent(supplierParam||"")}&value=${valueParam}`).json();
 
     if (!response || !response[0] || !response[0]._fields || !response[0]._fields[0] || !response[0]._fields[0].properties) {
       setContract([])
