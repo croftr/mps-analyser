@@ -74,6 +74,11 @@ export const generateHeaderFromQueryParams = (params: {
 
 
       }
+      if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
+        header += ` with ${params.contractParams?.contractName} in thier title`;
+      }
+      
+
       break;
     case "org":
 
