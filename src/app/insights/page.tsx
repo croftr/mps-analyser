@@ -230,7 +230,7 @@ function PageContent() {
         setAwardedTo(contractParams.awardedToParam);
         setContractName(contractParams.contractName);
 
-        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&limit=${limit}&contractName=${contractName}`;
+        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&limit=${limit}&contractname=${contractName}`;
 
         if (contractParams.awardedCountParam) {
           setAwardedCount(Number(contractParams.awardedCountParam));
@@ -342,7 +342,6 @@ function PageContent() {
     } else {
       console.log("warning unknown type of ", type);
     }
-
   }
 
   const onChangeType = (value: string) => {
@@ -361,7 +360,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractName=${contractName}&limit=${limit}`
+    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractname=${contractName}&limit=${limit}`
 
     if (awardedCount) {
       queryString = `${queryString}&awardedcount=${awardedCount}`;

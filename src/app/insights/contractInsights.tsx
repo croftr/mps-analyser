@@ -79,7 +79,7 @@ const ContractInsights = ({
 
             <div className='flex items-baseline gap-2'>
 
-                <Label htmlFor="awardedName" className="min-w-[80px]">Contract name</Label>
+                <Label htmlFor="awardedName" className="min-w-[80px]">Contract title</Label>
 
                 <Input
                     id="awardedName"
