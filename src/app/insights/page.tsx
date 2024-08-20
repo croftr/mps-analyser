@@ -253,7 +253,7 @@ function PageContent() {
         setMinTotalDonationValue(orgParams.minTotalDonationValue);
         setMinContractCount(orgParams.minContractCount);
 
-        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}`;
+        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}`;
 
         if (orgParams.nameParam) {
           url = `${url}&name=${orgParams.nameParam}`;
