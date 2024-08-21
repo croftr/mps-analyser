@@ -2,10 +2,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
-import { EARLIEST_FROM_DATE } from "../config/constants";
+import { EARLIEST_FROM_DATE, INDUSTRIES } from "../config/constants";
 
 import PartyPicker from "@/components/custom/partyPicker";
 import CustomFieldset from "@/components/custom/customFieldset";
+import CustomSelect from "@/components/custom/customSelect";
+import IndustryPicker from "@/components/custom/IndustryPicker";
 
 interface ContractProps {
     awardedCount: number | undefined;
@@ -116,6 +118,10 @@ const ContractInsights = ({
                     type="number">
                 </Input>
             </div>
+
+            <IndustryPicker />
+
+                {/* {JSON.stringify(INDUSTRIES)} */}
 
             <CustomFieldset legend="Awarded between">
 
