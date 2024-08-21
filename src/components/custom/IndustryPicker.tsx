@@ -46,7 +46,7 @@ const IndustryPicker = ({ value, onValueChange, disabled = false, id, className 
           {INDUSTRIES.map(option => (
             <SelectItem
               onClick={(e) => e.stopPropagation()} value={option.value} key={option.value}
-              className="mt-1 mb-1"
+              className="mt-1 mb-1 border-b border-input"
             >
               <div className="flex gap-2">
                 <Icon name={option.icon} />
