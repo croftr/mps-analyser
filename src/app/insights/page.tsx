@@ -97,11 +97,12 @@ function PageContent() {
   //contracts
   const [awardedCount, setAwardedCount] = useState<number | undefined>();
   const [awardedTo, setAwardedTo] = useState("Any");
-  const [awardedBy, setAwardedBy] = useState("Any Party");
+  const [awardedBy, setAwardedBy] = useState("Any Party");  
   const [contractName, setContractName] = useState("");
   const [groupByContractCount, setGroupByContractCount] = useState(false);  
   const [contractFromDate, setContractFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substring(0, 10));
   const [contractToDate, setContractToDate] = useState(new Date().toISOString().substring(0, 10));  
+  const [industry, setIndustry] = useState("Any");
 
   //orgs
   const [orgName, setOrgName] = useState("");
@@ -360,7 +361,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractname=${contractName}&limit=${limit}`
+    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractname=${contractName}&limit=${limit}&industry=${industry}`
 
     if (awardedCount) {
       queryString = `${queryString}&awardedcount=${awardedCount}`;
@@ -380,7 +381,7 @@ function PageContent() {
 
     generateTableHeader({ typeParam: type, contractParams });
 
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractName=${contractName}`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractName=${contractName}&industry=${industry}`);
     const contractsResult = await result.json();
     setData(contractsResult);
   }
@@ -501,6 +502,8 @@ function PageContent() {
                     setContractToDate={setContractToDate}
                     onChangeContractName={setContractName}
                     contractName={contractName}
+                    industry={industry}
+                    setIndustry={setIndustry}
                   />
                 </div>
               )}

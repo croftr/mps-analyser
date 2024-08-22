@@ -25,6 +25,8 @@ interface ContractProps {
     contractToDate: string,
     onChangeContractName: (value: string) => void;
     contractName: string,
+    industry: string,
+    setIndustry: (value: string) => void;
 }
 
 const ContractInsights = ({
@@ -42,7 +44,9 @@ const ContractInsights = ({
     setContractToDate,
     contractToDate,
     onChangeContractName,
-    contractName
+    contractName,
+    industry,
+    setIndustry
 }: ContractProps) => {
 
     const onToggleGrouping = () => {
@@ -75,7 +79,7 @@ const ContractInsights = ({
 
             <div className='flex items-baseline gap-2 w-full'>
                 <Label htmlFor="awardedName" className="min-w-[80px]">Industry</Label>
-                <IndustryPicker />
+                <IndustryPicker value={industry} onValueChange={setIndustry} />
             </div>
 
             <PartyPicker
