@@ -42,7 +42,7 @@ const ContractInsights = ({
     setContractToDate,
     contractToDate,
     onChangeContractName,
-    contractName    
+    contractName
 }: ContractProps) => {
 
     const onToggleGrouping = () => {
@@ -57,6 +57,26 @@ const ContractInsights = ({
 
     return (
         <div className="flex flex-col gap-2 items-baseline flex-wrap">
+
+            <div className='flex items-baseline gap-2'>
+
+                <Label htmlFor="awardedName" className="min-w-[80px]">Title</Label>
+
+                <Input
+                    id="awardedName"
+                    placeholder="contract title includes"
+                    className='min-w-[210px]'
+                    value={contractName}
+                    onChange={(e) => onChangeContractName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                >
+                </Input>
+            </div>
+
+            <div className='flex items-baseline gap-2 w-full'>
+                <Label htmlFor="awardedName" className="min-w-[80px]">Industry</Label>
+                <IndustryPicker />
+            </div>
 
             <PartyPicker
                 party={party}
@@ -74,21 +94,6 @@ const ContractInsights = ({
                     className='min-w-[210px]'
                     value={awardedName}
                     onChange={(e) => onChangeAwardedName(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-                >
-                </Input>
-            </div>
-
-            <div className='flex items-baseline gap-2'>
-
-                <Label htmlFor="awardedName" className="min-w-[80px]">Contract title</Label>
-
-                <Input
-                    id="awardedName"
-                    placeholder="name includes"
-                    className='min-w-[210px]'
-                    value={contractName}
-                    onChange={(e) => onChangeContractName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
                 >
                 </Input>
@@ -118,10 +123,6 @@ const ContractInsights = ({
                     type="number">
                 </Input>
             </div>
-
-            <IndustryPicker />
-
-                {/* {JSON.stringify(INDUSTRIES)} */}
 
             <CustomFieldset legend="Awarded between">
 

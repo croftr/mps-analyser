@@ -119,7 +119,8 @@ export const VOTING_CATEGORIES = [
 ]
   
 export const INDUSTRIES = [
-    { value: "Animals", label: "Animals", icon: "Dog" },
+    { value: "Any", label: "Any", icon: "Factory" },
+    { value: "Animals", label: "Animals", icon: "PawPrint" },
     { value: "IT and Technology", label: "IT and Technology", icon: "Cpu" },
     { value: "Health and Social Care", label: "Health and Social Care", icon: "Heart" },
     { value: "Electrical and Electronics", label: "Electrical and Electronics", icon: "Plug" },
