@@ -12,7 +12,8 @@ import { Input } from "@/components/ui/input";
 import { TableBody, TableCell } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import NeoTableSkeleton from "./neoTableSkeleton";
-import { log } from "console";
+import { Badge } from "@/components/ui/badge"
+import { ValueSetter } from "node_modules/date-fns/parse/_lib/Setter";
 
 interface DataTableProps {
   data: any[] | undefined;
@@ -98,14 +99,31 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
   }, [data]);
 
   const renderCell = (value, title) => {
-    
+
     if (!value) {
       return "";
     }
 
     let renderedValue = value;
 
-    if (title.toLowerCase() === "amount" || title.toLowerCase() === "value" || title.toLowerCase() === "donated amount") {
+    if (Array.isArray(value)) {
+
+      // return <div className="">{value.map(i => <Badge variant="outline" key={i}>{i}</Badge>)}</div>
+      return (
+        <div className="flex flex-col gap-2">
+          {value.map((i) => (
+            <div
+              key={i}
+              className="bg-primary text-white px-3 py-1 rounded-lg flex items-center break-words" // Adjusted Tailwind classes
+            >
+              {i}
+            </div>
+          ))}
+        </div>
+      )
+
+
+    } else if (title.toLowerCase() === "amount" || title.toLowerCase() === "value" || title.toLowerCase() === "donated amount") {
       //format as currency
       if (typeof value === "number") {
 

@@ -10,6 +10,7 @@ import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
 import { Button } from "@/components/ui/button"
+import { Badge } from '@/components/ui/badge';
 
 export default function Contract() {
   return (
@@ -35,9 +36,6 @@ function PageContent() {
   const getData = async () => {
 
     const titleParam: string | null = searchParams.get('title');
-
-    
-    
     const supplierParam: string | null = searchParams.get('supplier');
     const valueParam: number = Number(searchParams.get('value'));
 
@@ -45,7 +43,7 @@ function PageContent() {
     setAwardedTo(supplierParam);
     setValue(valueParam);
 
-    const response: Array<any> = await ky(`${config.mpsApiUrl}contracts/details?title=${encodeURIComponent(titleParam||"")}&supplier=${encodeURIComponent(supplierParam||"")}&value=${valueParam}`).json();
+    const response: Array<any> = await ky(`${config.mpsApiUrl}contracts/details?title=${encodeURIComponent(titleParam || "")}&supplier=${encodeURIComponent(supplierParam || "")}&value=${valueParam}`).json();
 
     if (!response || !response[0] || !response[0]._fields || !response[0]._fields[0] || !response[0]._fields[0].properties) {
       setContract([])
@@ -94,17 +92,20 @@ function PageContent() {
           <div className="grid grid-cols-2 gap-y-2">
 
             <div className="font-medium">Awarded to:</div>
-            <a className='text-primary hover:underline' href="#" onClick={() => router.push(`org?name=${encodeURIComponent(awardedTo||"")}`)}>{awardedTo}</a>
-            
+            <a className='text-primary hover:underline' href="#" onClick={() => router.push(`org?name=${encodeURIComponent(awardedTo || "")}`)}>{awardedTo}</a>
+
             <div className="font-medium">Description:</div>
             <div>{contract[0]._fields[0].properties.Description}</div>
 
             <div className="font-medium">Industry:</div>
             <div>{contract[0]._fields[0].properties.Industry}</div>
 
-            <div className="font-medium">Category:</div>
-            <div>{contract[0]._fields[0].properties.Category}</div>
-
+            <div className="font-medium">Categories:</div>
+            <div className="flex flex-wrap gap-2">
+              {contract[0]._fields[0].properties.Categories.map((i: string) => (
+                <Badge key={i}>{i}</Badge>
+              ))}
+            </div>          
             <div className="font-medium">Awarded Value:</div>
             <div className="font-semibold">
               {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(contract[0]._fields[0].properties.AwardedValue)}
