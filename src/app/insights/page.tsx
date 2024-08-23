@@ -189,7 +189,8 @@ function PageContent() {
       awardedCountParam: '',
       contractFromDate: '',
       contractToDate: '',
-      contractName: ''
+      contractName: '',
+      industry: ''
     };
 
     const orgParams: OrgParams = {
@@ -376,7 +377,8 @@ function PageContent() {
       awardedCountParam: awardedCount ? awardedCount.toString() : "0",
       contractFromDate: contractFromDate,
       contractToDate: contractToDate,
-      contractName: contractName
+      contractName: contractName,
+      industry: industry
     }
 
     generateTableHeader({ typeParam: type, contractParams });

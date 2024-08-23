@@ -46,7 +46,7 @@ export const generateHeaderFromQueryParams = (params: {
       }
       break;
     case "contract":
-
+  
       if (params.contractParams?.groupByContractParam) {
         header = "Organisations"
         if (params.contractParams?.awardedToParam && params.contractParams.awardedToParam !== 'Any') {
@@ -76,6 +76,10 @@ export const generateHeaderFromQueryParams = (params: {
       }
       if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
         header += ` with ${params.contractParams?.contractName} in thier title`;
+      }
+
+      if (params.contractParams?.industry) {
+        header += ` for industry ${params.contractParams?.industry}`;
       }
       
 
