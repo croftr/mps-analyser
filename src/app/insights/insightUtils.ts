@@ -53,7 +53,7 @@ export const generateHeaderFromQueryParams = (params: {
           header += ` with ${params.contractParams.awardedToParam} in their name`;
         }
 
-        header += ` awared more than ${params.contractParams.awardedCountParam} contracts`;
+        header += ` awared more than ${params.contractParams.awardedCountParam} ${params.contractParams?.industry === "Any" ? "" : params.contractParams?.industry} contracts`;
 
         if (params.contractParams.awardedByParam !== 'Any Party') {
           header += ` by ${params.contractParams?.awardedByParam}`;
@@ -62,7 +62,7 @@ export const generateHeaderFromQueryParams = (params: {
         header += `.  Grouped by organisation`
       } else {
 
-        header = "Contracts awarded";
+        header = `${params.contractParams?.industry} contracts awarded`;
       
         if (params.contractParams?.awardedByParam !== 'Any Party') {
           header += ` by ${params.contractParams?.awardedByParam}`;
@@ -71,22 +71,18 @@ export const generateHeaderFromQueryParams = (params: {
         if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any') {
           header += ` to organisations with ${params.contractParams.awardedToParam} in thier name`;
         }
-
-
       }
+
       if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
         header += ` with ${params.contractParams?.contractName} in thier title`;
       }
 
-      if (params.contractParams?.industry) {
-        header += ` for industry ${params.contractParams?.industry}`;
-      }
-      
+      header += ` with a value between £${params.contractParams?.valueFrom} and £${params.contractParams?.valueTo}`;
 
       break;
     case "org":
 
-      header = "Organisations and individuals";
+      header = params.orgParams?.orgType === "Any" ? "Organisations and individuals" : `${params.orgParams?.orgType}s`;
 
       if (params.orgParams?.nameParam) {
         header += ` with ${params.orgParams.nameParam} in thier name`;
