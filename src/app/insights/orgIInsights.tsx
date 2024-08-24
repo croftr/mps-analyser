@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import PartyPicker from "@/components/custom/partyPicker";
 
 import CustomFieldset from "@/components/custom/customFieldset";
+import CustomSelect from "@/components/custom/customSelect";
 
 interface OrgInsightsProps {
     dontatedToParty: string,
@@ -20,7 +21,9 @@ interface OrgInsightsProps {
     minTotalDonationValue: number;
     setMinTotalDonationValue: (value: number) => void;
     minContractCount: number;
-    setMinContractCount: (value: number) => void
+    setMinContractCount: (value: number) => void,
+    orgType: string, 
+    setOrgType: (value: string) => void;
 }
 
 const OrgInsights = ({
@@ -34,9 +37,10 @@ const OrgInsights = ({
     minTotalDonationValue,
     setMinTotalDonationValue,
     minContractCount,
-    setMinContractCount
-}
-    : OrgInsightsProps) => {
+    setMinContractCount,
+    orgType,
+    setOrgType
+}: OrgInsightsProps) => {
 
     return (
 
@@ -56,6 +60,20 @@ const OrgInsights = ({
                 >
                 </Input>
             </div>
+
+            <div className='flex items-baseline gap-2'>
+
+                <Label htmlFor="orgName" className="w-[80px]">Type</Label>
+
+                <CustomSelect
+                    id="selectType"
+                    className="w-[210px]"
+                    value={orgType}
+                    onValueChange={setOrgType}
+                    options={["Any", "Organisation", "Individual"].map(str => ({ value: str,  label: str }))}
+                />
+            </div>
+
 
             <CustomFieldset legend="Donations Made">
                 <div className='flex items-baseline gap-2'>

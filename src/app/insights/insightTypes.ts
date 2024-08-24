@@ -19,6 +19,7 @@ export interface ContractParams {
     awardedbyParam: string;
     minTotalDonationValue: number;
     minContractCount: number;
+    orgType: string;
   }
   
   export interface CommonParams {

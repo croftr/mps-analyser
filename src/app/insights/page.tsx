@@ -108,10 +108,11 @@ function PageContent() {
 
   //orgs
   const [orgName, setOrgName] = useState("");
-  const [dontatedToParty, setDontatedToParty] = useState("");
+  const [dontatedToParty, setDontatedToParty] = useState("");  
   const [awaredByParty, setAwaredByParty] = useState("");
   const [minTotalDonationValue, setMinTotalDonationValue] = useState(0);
   const [minContractCount, setMinContractCount] = useState(0);
+  const [orgType, setOrgType] = useState("Any");
 
   const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
@@ -202,7 +203,8 @@ function PageContent() {
       donatedtoParam: '',
       awardedbyParam: '',
       minTotalDonationValue: 0,
-      minContractCount: 0
+      minContractCount: 0,
+      orgType: "Any"
     };
 
     switch (typeParam.toLocaleLowerCase()) {
@@ -252,9 +254,10 @@ function PageContent() {
       case 'org': {
         orgParams.nameParam = searchParams.get('name');
         orgParams.donatedtoParam = searchParams.get('donatedto') || 'Any Party';
-        orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';
+        orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';        
         orgParams.minTotalDonationValue = Number(searchParams.get('minTotalDonationValue')||0);
         orgParams.minContractCount = Number(searchParams.get('minContractCount')||0);
+        orgParams.orgType = searchParams.get('orgtype') || 'Any';
 
         setType("Organisation or Individual");
         setDontatedToParty(orgParams.donatedtoParam);
@@ -262,8 +265,9 @@ function PageContent() {
         setLimit(Number(commonParams.limit));
         setMinTotalDonationValue(orgParams.minTotalDonationValue);
         setMinContractCount(orgParams.minContractCount);
+        setOrgType(orgParams.orgType);
 
-        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}`;
+        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}&orgtype=${orgParams.orgType}`;
 
         if (orgParams.nameParam) {
           url = `${url}&name=${orgParams.nameParam}`;
@@ -415,7 +419,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}`
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}`
     if (orgName) {
       queryString = `${queryString}&name=${orgName}`;
     }
@@ -427,12 +431,13 @@ function PageContent() {
       donatedtoParam: dontatedToParty,
       awardedbyParam: awaredByParty,
       minTotalDonationValue: minTotalDonationValue,
-      minContractCount: minContractCount
+      minContractCount: minContractCount,
+      orgType: orgType
     }
 
     generateTableHeader({ typeParam: "org", orgParams });
 
-    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}`).json();
 
     setData(result);
   }
@@ -537,6 +542,8 @@ function PageContent() {
                   setMinTotalDonationValue={setMinTotalDonationValue}
                   minContractCount={minContractCount}
                   setMinContractCount={setMinContractCount}
+                  orgType={orgType}
+                  setOrgType={setOrgType}
                 />
               )}
 
