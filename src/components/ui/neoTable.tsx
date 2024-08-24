@@ -133,7 +133,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
         if (value.low || value.low === 0) {
           parsedValue = value.low;
         } else {
-          parsedValue = parseFloat(value);
+          parsedValue = parseInt(value);
         }
 
         if (!isNaN(parsedValue)) {

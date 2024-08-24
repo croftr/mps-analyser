@@ -37,13 +37,13 @@ export const generateHeaderFromQueryParams = (params: {
     case "division":
       header = "Divisions";
 
-      header += ` voted ${params.voteType ? `<span class='text-primary'>${params.voteType}</span>` : ''} the <span class='text-primary'>${params.commonParams?.voted}</span>`;
-      if (params.commonParams?.category !== 'Any') header += ` of type <span class='text-primary'>${params.commonParams?.category}</span>`;
-      header += ` between <span class='text-primary'>${params.commonParams?.fromDate}</span> and <span class='text-primary'>${params.commonParams?.toDate}</span>`;
       if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
-
         header += ` with <span class='text-primary'>${params.commonParams?.name}</span> in the name`;
       }
+
+      header += ` voted ${params.voteType ? `<span class='text-primary'>${params.voteType}</span>` : ''} the <span class='text-primary'>${params.commonParams?.voted}</span>`;
+      if (params.commonParams?.category !== 'Any') header += ` of type <span class='text-primary'>${params.commonParams?.category}</span>`;
+      header += ` between <span class='text-primary'>${params.commonParams?.fromDate}</span> and <span class='text-primary'>${params.commonParams?.toDate}</span>`;      
       break;
     case "contract":
 
