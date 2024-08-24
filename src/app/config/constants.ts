@@ -1,6 +1,8 @@
 
 export const EARLIEST_FROM_DATE = "2015-01-01";
 
+export const MAX_CONTRACT_VALUE = 9999999999;
+
 export const PARTY_NAMES = [
     "Any",    
     "Alliance",

@@ -8,6 +8,8 @@ export interface ContractParams {
     contractToDate: string,
     contractName: string,
     industry: string
+    valueFrom: number,    
+    valueTo: number,    
   }
   
   // vars for orgs

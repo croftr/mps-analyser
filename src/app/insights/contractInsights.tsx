@@ -27,6 +27,10 @@ interface ContractProps {
     contractName: string,
     industry: string,
     setIndustry: (value: string) => void;
+    valueFrom: number;
+    setValueFrom: (value: number) => void;
+    valueTo: number,
+    setValueTo: (value: number) => void;
 }
 
 const ContractInsights = ({
@@ -46,7 +50,11 @@ const ContractInsights = ({
     onChangeContractName,
     contractName,
     industry,
-    setIndustry
+    setIndustry,
+    valueFrom,
+    setValueFrom,
+    valueTo,
+    setValueTo
 }: ContractProps) => {
 
     const onToggleGrouping = () => {
@@ -186,6 +194,42 @@ const ContractInsights = ({
                 </div>
 
 
+            </CustomFieldset>
+
+            <CustomFieldset legend="Value between">
+                <div className='flex items-baseline gap-2'>
+                    <Label htmlFor="valueFrom" className="min-w-[80px]">Min</Label>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">£</span>
+                        </div>
+                        <Input
+                            type="number"
+                            id="valueFrom"
+                            className='min-w-[210px] pl-7' // Add left padding to accommodate the prefix
+                            value={valueFrom}
+                            onChange={(e) => setValueFrom(Number(e.target.value))}
+                            onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                        />
+                    </div>
+                </div>
+
+                <div className='flex items-baseline gap-2'>
+                    <Label htmlFor="valueTo" className="min-w-[80px]">Max</Label>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">£</span>
+                        </div>
+                        <Input
+                            type="number"
+                            id="valueTo"
+                            className='min-w-[210px] pl-7'
+                            value={valueTo}
+                            onChange={(e) => setValueTo(Number(e.target.value))}
+                            onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                        />
+                    </div>
+                </div>
             </CustomFieldset>
 
         </div>

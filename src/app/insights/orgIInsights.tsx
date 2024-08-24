@@ -1,4 +1,4 @@
-import {    
+import {
     Info
 } from "lucide-react";
 
@@ -60,15 +60,19 @@ const OrgInsights = ({
             <CustomFieldset legend="Donations Made">
                 <div className='flex items-baseline gap-2'>
                     <Label htmlFor="donationAmount" className="w-[62px]">Amount</Label>
-                    <Input
-                        placeholder="any name"
-                        id="donationAmount"
-                        className='w-[210px]'
-                        value={minTotalDonationValue}
-                        onChange={(e) => setMinTotalDonationValue(Number(e.target.value))}
-                        onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-                    >
-                    </Input>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">£</span>
+                        </div>
+                        <Input
+                            placeholder="any name"
+                            id="donationAmount"
+                            className='w-[210px] pl-7' // Add left padding to accommodate the prefix
+                            value={minTotalDonationValue}
+                            onChange={(e) => setMinTotalDonationValue(Number(e.target.value))}
+                            onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                        />
+                    </div>
                 </div>
 
                 <PartyPicker
@@ -80,7 +84,7 @@ const OrgInsights = ({
             </CustomFieldset>
 
             <div className="flex gap-2">
-            <Info className="w-5 h-5 text-gray-500" /> 
+                <Info className="w-5 h-5 text-gray-500" />
                 <span className="text-sm text-gray-500">Currently only same party names supported</span>
             </div>
 
