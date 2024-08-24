@@ -391,8 +391,8 @@ function PageContent() {
       contractToDate: contractToDate,
       contractName: contractName,
       industry: industry,
-      valueFrom: 0,
-      valueTo: MAX_CONTRACT_VALUE
+      valueFrom: valueFrom,
+      valueTo: valueTo
     }
 
     generateTableHeader({ typeParam: type, contractParams });
@@ -576,7 +576,7 @@ function PageContent() {
 
       </div>
 
-      {isQuerying && <NeoTable data={data} title={tableHeader} onRowClick={getDetails} />}
+      {isQuerying && <NeoTable data={data} title={tableHeader} onRowClick={getDetails} isHtmlTitle={true} />}
 
     </div>
   );

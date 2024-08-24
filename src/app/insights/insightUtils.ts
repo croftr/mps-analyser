@@ -13,89 +13,92 @@ export const generateHeaderFromQueryParams = (params: {
 
   switch (params.typeParam.toLocaleLowerCase()) {
     case "mp":
-      header = `${params.commonParams?.voted === "most" ? "MPs who voted most" : "MPs who voted least"}`;
-      if (params.commonParams?.category !== 'Any') header += ` on ${params.commonParams?.category}`;
-      if (params.commonParams?.party !== 'Any' && params.commonParams?.party !== 'Any Party') header += ` from the ${params.commonParams?.party}`;
-      header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
-      if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
-        header = `MPs with ${params.commonParams.name} in thier name`;
+      header = `MPs who voted ${params.commonParams?.voted === "most" ? "<span class='text-primary'>most</span>" : "<span class='text-primary'>least</span>"}`;
+      header += params.commonParams?.category !== 'Any' ? ` on <span class='text-primary'>${params.commonParams?.category}</span>` : '';
+      header += params.commonParams?.party !== 'Any' && params.commonParams?.party !== 'Any Party' ? ` from the <span class='text-primary'>${params.commonParams?.party}</span>` : '';
+      header += ` between <span class='text-primary'>${params.commonParams?.fromDate}</span> and <span class='text-primary'>${params.commonParams?.toDate}</span>`;
 
-        if (params.commonParams?.party && params.commonParams.party !== "Any Party" && params.commonParams.party !== "Any") {
-          header += ` from the ${params.commonParams?.party} party`
+      if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
+        header = `MPs with <span class='text-primary'>${params.commonParams.name}</span> in their name`;
+
+        if (params.commonParams?.party && params.commonParams.party !== "Any Party") {
+          header += ` from the <span class='text-primary'>${params.commonParams?.party}</span> party`;
         }
 
-        header += ` who ${params.commonParams?.voted === "most" ? "voted most" : "voted least"}`;
+        header += ` who ${params.commonParams?.voted === "most" ? "voted <span class='text-primary'>most</span>" : "voted <span class='text-primary'>least</span>"}`;
 
         if (params.commonParams?.category !== 'Any') {
-          header += ` on ${params.commonParams?.category}`;
+          header += ` on <span class='text-primary'>${params.commonParams?.category}</span>`;
         }
 
-        header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
-
+        header += ` between <span class='text-primary'>${params.commonParams?.fromDate}</span> and <span class='text-primary'>${params.commonParams?.toDate}</span>`;
       }
       break;
     case "division":
-      header = "Divisions"
+      header = "Divisions";
 
-      header += ` voted ${params.voteType ? params.voteType : ''} the ${params.commonParams?.voted}`;
-      if (params.commonParams?.category !== 'Any') header += ` of type ${params.commonParams?.category}`;
-      header += ` between ${params.commonParams?.fromDate} and ${params.commonParams?.toDate}`;
+      header += ` voted ${params.voteType ? `<span class='text-primary'>${params.voteType}</span>` : ''} the <span class='text-primary'>${params.commonParams?.voted}</span>`;
+      if (params.commonParams?.category !== 'Any') header += ` of type <span class='text-primary'>${params.commonParams?.category}</span>`;
+      header += ` between <span class='text-primary'>${params.commonParams?.fromDate}</span> and <span class='text-primary'>${params.commonParams?.toDate}</span>`;
       if (params.commonParams?.name && params.commonParams?.name !== 'Any') {
 
-        header += ` with ${params.commonParams?.name} in the name`;
+        header += ` with <span class='text-primary'>${params.commonParams?.name}</span> in the name`;
       }
       break;
     case "contract":
-  
+
       if (params.contractParams?.groupByContractParam) {
         header = "Organisations"
         if (params.contractParams?.awardedToParam && params.contractParams.awardedToParam !== 'Any') {
-          header += ` with ${params.contractParams.awardedToParam} in their name`;
+          header += ` with <span class='text-primary'>${params.contractParams.awardedToParam}</span> in their name`;
         }
 
-        header += ` awared more than ${params.contractParams.awardedCountParam} ${params.contractParams?.industry === "Any" ? "" : params.contractParams?.industry} contracts`;
+        header += ` awarded more than <span class='text-primary'>${params.contractParams.awardedCountParam}</span> ${params.contractParams?.industry === "Any" ? "" : `<span class='text-primary'>${params.contractParams?.industry}</span>`} contracts`;
 
         if (params.contractParams.awardedByParam !== 'Any Party') {
-          header += ` by ${params.contractParams?.awardedByParam}`;
+          header += ` by <span class='text-primary'>${params.contractParams?.awardedByParam}</span>`;
         }
 
-        header += `.  Grouped by organisation`
+        header += `. Grouped by organisation`
       } else {
 
-        header = `${params.contractParams?.industry} contracts awarded`;
-      
+
+        header = `<span class='text-primary'>${params.contractParams?.industry}</span> contracts`;
+
+        if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
+          header += ` with <span class='text-primary'>${params.contractParams?.contractName}</span> in their title`;
+        }
+  
+
+        header += ` awarded`;
+
         if (params.contractParams?.awardedByParam !== 'Any Party') {
-          header += ` by ${params.contractParams?.awardedByParam}`;
+          header += ` by <span class='text-primary'>${params.contractParams?.awardedByParam}</span>`;
         }
 
         if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any') {
-          header += ` to organisations with ${params.contractParams.awardedToParam} in thier name`;
+          header += ` to organisations with <span class='text-primary'>${params.contractParams.awardedToParam}</span> in their name`;
         }
       }
 
-      if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
-        header += ` with ${params.contractParams?.contractName} in thier title`;
-      }
-
-      header += ` with a value between £${params.contractParams?.valueFrom} and £${params.contractParams?.valueTo}`;
+      header += ` with a value between £<span class='text-primary'>${params.contractParams?.valueFrom}</span> and £<span class='text-primary'>${params.contractParams?.valueTo}</span>`;
 
       break;
     case "org":
 
-      header = params.orgParams?.orgType === "Any" ? "Organisations and individuals" : `${params.orgParams?.orgType}s`;
+      header = params.orgParams?.orgType === "Any" ? "Organisations and individuals" : `<span class='text-primary'>${params.orgParams?.orgType}s</span>`;
 
       if (params.orgParams?.nameParam) {
-        header += ` with ${params.orgParams.nameParam} in thier name`;
+        header += ` with <span class='text-primary'>${params.orgParams.nameParam}</span> in their name`;
       }
 
       if (params.orgParams?.minTotalDonationValue) {
-        header += ` who donated more than £${params.orgParams?.minTotalDonationValue} to ${params.orgParams?.donatedtoParam}`
+        header += ` who donated more than £<span class='text-primary'>${params.orgParams?.minTotalDonationValue}</span> to <span class='text-primary'>${params.orgParams?.donatedtoParam}</span>`
       }
 
       if (params.orgParams?.minContractCount) {
-        header += ` where awarded more than ${params.orgParams?.minContractCount} contracts by ${params.orgParams?.donatedtoParam}` //TODO awardedbyParam can not be set yet so using the same value as donatedtoParam
+        header += ` where awarded more than <span class='text-primary'>${params.orgParams?.minContractCount}</span> contracts by <span class='text-primary'>${params.orgParams?.donatedtoParam}</span>`
       }
-
 
       break;
   }

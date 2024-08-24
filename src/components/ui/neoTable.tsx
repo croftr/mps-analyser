@@ -19,14 +19,14 @@ interface DataTableProps {
   data: any[] | undefined;
   title: string;
   onRowClick?: (row: any) => void;
+  isHtmlTitle?: boolean
 }
 
-export function NeoTable({ data, title, onRowClick }: DataTableProps) {
+export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataTableProps) {
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<any[]>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
-
 
   useEffect(() => {
     // Initial column visibility setup
@@ -178,9 +178,17 @@ export function NeoTable({ data, title, onRowClick }: DataTableProps) {
 
       {data && (
         <>
-          <div className="flex mb-4 items-baseline">
+
+          {!isHtmlTitle && (<div className="flex mb-4 items-baseline">
             <h1 className="text-xl font-semibold dark:text-white">{title}</h1>
-          </div>
+          </div>)}
+
+          {isHtmlTitle && (
+            <div className="flex mb-4 items-baseline">
+              <h1 className="text-xl font-semibold dark:text-white" dangerouslySetInnerHTML={{ __html: title }} />
+            </div>
+          )}
+
 
           <div className="mb-2 flex gap-2 items-baseline">
             <Input
