@@ -189,6 +189,14 @@ function PageContent() {
     const contractsResult = await result.json();
     setContracts(contractsResult);
     setIsLoading(false);
+
+    setSimilarCompanies(undefined)
+    const companyResult = await fetch(`${config.mpsApiUrl}orgs/similar?name=${nameParam}`);
+    const contractsResultJson = await companyResult.json();
+    setSimilarCompanies(contractsResultJson);
+
+
+
   }
 
   const showContract = (row: any) => {
