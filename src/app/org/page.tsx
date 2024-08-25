@@ -150,9 +150,10 @@ function PageContent() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [tableText, setTableText] = useState("");
-  
+
   const [name, setName] = useState<string | null>("")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
+  const [similarCompanies, setSimilarCompanies] = useState<Array<any> | undefined>([])
 
   const [donorStatus, setDonarStatus] = useState<DonorStatusEnum>()
 
@@ -170,7 +171,7 @@ function PageContent() {
       setTableData(donationsResponse);
     } else {
       //no header means its been given a contract but has no donation data so it must be an organisation 
-      setDonarStatus(DonorStatusEnum.Company);            
+      setDonarStatus(DonorStatusEnum.Company);
     }
 
     if (nameParam) {
@@ -181,7 +182,7 @@ function PageContent() {
     }
 
     setTableColumns(donarDetailsColumns);
-    
+
 
     setContracts(undefined)
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&limit=10000`);
@@ -207,8 +208,8 @@ function PageContent() {
     setIsDonationssDown(!isDonationssDown);
   }
 
-  const formatCurrency = (value: number = 0) => {    
-    
+  const formatCurrency = (value: number = 0) => {
+
     return new Intl.NumberFormat('en-GB', {
       style: 'currency',
       currency: 'GBP',
@@ -236,17 +237,17 @@ function PageContent() {
         </div>
 
 
-        
-          <div className="flex flex-col gap-1">
-            <div className="flex">
-              <span className="dark:text-white">{tableData[0]?.donorStatus || DonorStatusEnum.Company}</span>
-            </div>
-            <div className="flex">
-              <span className="dark:text-white">{tableData[0]?.accountingUnitName}</span>
-              <span className="dark:text-white ml-2">{tableData[0]?.postcode}</span>
-            </div>
+
+        <div className="flex flex-col gap-1">
+          <div className="flex">
+            <span className="dark:text-white">{tableData[0]?.donorStatus || DonorStatusEnum.Company}</span>
           </div>
-        
+          <div className="flex">
+            <span className="dark:text-white">{tableData[0]?.accountingUnitName}</span>
+            <span className="dark:text-white ml-2">{tableData[0]?.postcode}</span>
+          </div>
+        </div>
+
       </div>
 
 
@@ -259,7 +260,7 @@ function PageContent() {
       >
         <div className="flex flex-col">
           <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
-          <span>Total value {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0)): 0}</span>
+          <span>Total value {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0)) : 0}</span>
         </div>
 
         {isContractsDown ? <ArrowUp /> : <ArrowDown />}
@@ -283,7 +284,7 @@ function PageContent() {
       >
         <div className="flex flex-col">
           <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> <span> Donations Made</span></span>
-          <span>Total value {tableData.length ? formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0)): 0}</span>          
+          <span>Total value {tableData.length ? formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0)) : 0}</span>
         </div>
 
         {isContractsDown ? <ArrowUp /> : <ArrowDown />}
@@ -313,6 +314,8 @@ function PageContent() {
           </div>
         </CollapsibleContent>
       </Collapsible>
+
+      {similarCompanies && <NeoTable data={similarCompanies} title="Similar companies" onRowClick={() => {}} isHtmlTitle={false} />}
 
     </div>
   );
