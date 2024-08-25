@@ -183,7 +183,6 @@ function PageContent() {
 
     setTableColumns(donarDetailsColumns);
 
-
     setContracts(undefined)
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&limit=10000`);
     const contractsResult = await result.json();
@@ -195,12 +194,16 @@ function PageContent() {
     const contractsResultJson = await companyResult.json();
     setSimilarCompanies(contractsResultJson);
 
-
-
   }
 
   const showContract = (row: any) => {
     router.push(`contract?supplier=${row._fields[1]}&title=${encodeURIComponent(row._fields[0])}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
+  }
+
+  const onQueryCompany = (row: any) => {
+    console.log("go ", row);
+    
+    router.push(`org?name=${row._fields[0]}`,{ scroll: true });
   }
 
   useEffect(() => {
@@ -323,7 +326,7 @@ function PageContent() {
         </CollapsibleContent>
       </Collapsible>
 
-      {similarCompanies && <NeoTable data={similarCompanies} title="Similar companies" onRowClick={() => {}} isHtmlTitle={false} />}
+      <NeoTable data={similarCompanies} title="Similar companies" onRowClick={onQueryCompany} isHtmlTitle={false} />
 
     </div>
   );
