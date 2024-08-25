@@ -37,6 +37,7 @@ import {
   Collapsible,
   CollapsibleContent
 } from "@/components/ui/collapsible"
+import CustomSelect from '@/components/custom/customSelect';
 
 const TYPES = {
   ALL_PARTIES: "ALL_PARTIES",
@@ -152,8 +153,10 @@ function PageContent() {
   const [tableText, setTableText] = useState("");
 
   const [name, setName] = useState<string | null>("")
+  const [similarityType, setSimilarityType] = useState<string | null>("basic")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
   const [similarCompanies, setSimilarCompanies] = useState<Array<any> | undefined>([])
+
 
   const [donorStatus, setDonarStatus] = useState<DonorStatusEnum>()
 
@@ -190,7 +193,7 @@ function PageContent() {
     setIsLoading(false);
 
     setSimilarCompanies(undefined)
-    const companyResult = await fetch(`${config.mpsApiUrl}orgs/similar?name=${nameParam}`);
+    const companyResult = await fetch(`${config.mpsApiUrl}orgs/similar?name=${nameParam}&type=${similarityType}`);
     const contractsResultJson = await companyResult.json();
     setSimilarCompanies(contractsResultJson);
 
@@ -202,9 +205,26 @@ function PageContent() {
 
   const onQueryCompany = (row: any) => {
     console.log("go ", row);
-    
-    router.push(`org?name=${row._fields[0]}`,{ scroll: true });
+
+    router.push(`org?name=${row._fields[0]}`, { scroll: true });
   }
+
+  const onQueryType = async (val: string) => {
+        
+    setSimilarityType(val);
+    
+    if (val !== similarityType) {
+      const type = similarityType === "jaro" ? "basic" : "jaro"
+
+      setSimilarCompanies(undefined)
+      const companyResult = await fetch(`${config.mpsApiUrl}orgs/similar?name=${name}&type=${val}`);
+      const contractsResultJson = await companyResult.json();
+      setSimilarCompanies(contractsResultJson);
+    }
+
+  }
+
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -325,6 +345,8 @@ function PageContent() {
           </div>
         </CollapsibleContent>
       </Collapsible>
+
+      <CustomSelect onValueChange={onQueryType} options={["basic","jaro"].map(i => { return { value: i, label: i } })} />
 
       <NeoTable data={similarCompanies} title="Similar companies" onRowClick={onQueryCompany} isHtmlTitle={false} />
 
