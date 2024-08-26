@@ -4,10 +4,6 @@ import { useState, useEffect, Suspense } from 'react';
 import ky from 'ky';
 import { config } from '../app.config';
 
-import TradeUnionIcon from './TradeUnionIcon';
-import IndividualIcon from './IndividualIcon';
-import CompanyIcon from './CompanyIcon';
-
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
@@ -17,7 +13,6 @@ import { NeoTable } from '@/components/ui/neoTable';
 
 import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
-
 
 import {
   BriefcaseIcon,
@@ -37,14 +32,6 @@ import {
   Collapsible,
   CollapsibleContent
 } from "@/components/ui/collapsible"
-import CustomSelect from '@/components/custom/customSelect';
-
-const TYPES = {
-  ALL_PARTIES: "ALL_PARTIES",
-  PARTY: "PARTY",
-  DONAR: "DONAR"
-};
-
 
 enum DonorStatusEnum {
   Company = "Company",
@@ -78,18 +65,6 @@ const donorStatusIcons: { [key in string]: JSX.Element } = {
   [DonorStatusEnum.Individual]: <UserIcon />,
 };
 
-enum DonationSourceType {
-  TradeUnion = "Trade Union",
-  Individual = "Individual",
-  Company = "Company",
-}
-
-const donationSourceTypes: { [key in DonationSourceType]: JSX.Element } = {
-  [DonationSourceType.TradeUnion]: <TradeUnionIcon />,
-  [DonationSourceType.Individual]: <IndividualIcon />,
-  [DonationSourceType.Company]: <CompanyIcon />,
-};
-
 const donationColumns = [
   {
     accessorKey: 'partyName',
@@ -109,7 +84,6 @@ const donationColumns = [
   },
 ];
 
-
 const donarDetailsColumns = [
   {
     accessorKey: 'donationType',
@@ -128,7 +102,6 @@ const donarDetailsColumns = [
     header: 'Party Name',
   },
 ]
-
 
 export default function Org() {
   return (
@@ -153,10 +126,8 @@ function PageContent() {
   const [tableText, setTableText] = useState("");
 
   const [name, setName] = useState<string | null>("")
-  const [similarityType, setSimilarityType] = useState<string | null>("basic")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
   const [similarCompanies, setSimilarCompanies] = useState<Array<any> | undefined>([])
-
 
   const [donorStatus, setDonarStatus] = useState<DonorStatusEnum>()
 
@@ -193,7 +164,7 @@ function PageContent() {
     setIsLoading(false);
 
     setSimilarCompanies(undefined)
-    const companyResult = await fetch(`${config.mpsApiUrl}orgs/similar?name=${nameParam}&type=${similarityType}`);
+    const companyResult = await fetch(`${config.mpsApiUrl}orgs/similar?name=${nameParam}`);
     const contractsResultJson = await companyResult.json();
     setSimilarCompanies(contractsResultJson);
 
@@ -208,23 +179,6 @@ function PageContent() {
 
     router.push(`org?name=${row._fields[0]}`, { scroll: true });
   }
-
-  const onQueryType = async (val: string) => {
-        
-    setSimilarityType(val);
-    
-    if (val !== similarityType) {
-      const type = similarityType === "jaro" ? "basic" : "jaro"
-
-      setSimilarCompanies(undefined)
-      const companyResult = await fetch(`${config.mpsApiUrl}orgs/similar?name=${name}&type=${val}`);
-      const contractsResultJson = await companyResult.json();
-      setSimilarCompanies(contractsResultJson);
-    }
-
-  }
-
-
 
   useEffect(() => {
     setIsLoading(true);
@@ -346,9 +300,7 @@ function PageContent() {
         </CollapsibleContent>
       </Collapsible>
 
-      <CustomSelect onValueChange={onQueryType} options={["basic","jaro"].map(i => { return { value: i, label: i } })} />
-
-      <NeoTable data={similarCompanies} title="Similar companies" onRowClick={onQueryCompany} isHtmlTitle={false} />
+      {donorStatus !== DonorStatusEnum.Individual && <NeoTable data={similarCompanies} title="Similar companies" onRowClick={onQueryCompany} isHtmlTitle={false} />}
 
     </div>
   );
