@@ -43,44 +43,34 @@ export const generateHeaderFromQueryParams = (params: {
 
       header += ` voted ${params.voteType ? `<span class='text-primary'>${params.voteType}</span>` : ''} the <span class='text-primary'>${params.commonParams?.voted}</span>`;
       if (params.commonParams?.category !== 'Any') header += ` of type <span class='text-primary'>${params.commonParams?.category}</span>`;
-      header += ` between <span class='text-primary'>${params.commonParams?.fromDate}</span> and <span class='text-primary'>${params.commonParams?.toDate}</span>`;      
+      header += ` between <span class='text-primary'>${params.commonParams?.fromDate}</span> and <span class='text-primary'>${params.commonParams?.toDate}</span>`;
       break;
     case "contract":
 
-      if (params.contractParams?.groupByContractParam) {
-        header = "Organisations"
-        if (params.contractParams?.awardedToParam && params.contractParams.awardedToParam !== 'Any Organisation') {
-          header += ` with <span class='text-primary'>${params.contractParams.awardedToParam}</span> in their name`;
-        }
+      header = `<span class='text-primary'>${params.contractParams?.industry|| "Any "}</span> contracts`;
 
-        header += ` awarded more than <span class='text-primary'>${params.contractParams.awardedCountParam}</span> ${params.contractParams?.industry === "Any" ? "" : `<span class='text-primary'>${params.contractParams?.industry}</span>`} contracts`;
-
-        if (params.contractParams.awardedByParam !== 'Any Party') {
-          header += ` by <span class='text-primary'>${params.contractParams?.awardedByParam}</span>`;
-        }        
-      } else {
-
-        header = `<span class='text-primary'>${params.contractParams?.industry}</span> contracts`;
-
-        if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
-          header += ` with <span class='text-primary'>${params.contractParams?.contractName}</span> in their title`;
-        }
-
-        header += ` awarded`;
-
-        if (params.contractParams?.awardedByParam !== 'Any Party') {
-          header += ` by <span class='text-primary'>${params.contractParams?.awardedByParam}</span>`;
-        }
-
-        if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any') {
-          header += ` to organisations with <span class='text-primary'>${params.contractParams.awardedToParam}</span> in their name`;
-        }
+      if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
+        header += ` with <span class='text-primary'>${params.contractParams?.contractName}</span> in their title`;
       }
+
+      header += ` awarded`;      
+
+      if (params.contractParams?.awardedByParam !== 'Any Party') {
+        header += ` by <span class='text-primary'>${params.contractParams?.awardedByParam}</span>`;
+      }
+
+      if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any Organisation') {
+        header += ` to organisations with <span class='text-primary'>${params.contractParams.awardedToParam}</span> in their name`;
+      }
+
+      params.contractParams?.contractFromDate
+
+      header += ` between <span class='text-primary'>${params.contractParams?.contractFromDate}</span> and <span class='text-primary'>${params.contractParams?.contractToDate}</span>`;
 
       if (params.contractParams?.valueFrom || params.contractParams?.valueTo) {
-        header += ` with a value between <span class='text-primary'>£${params.contractParams?.valueFrom}</span> and <span class='text-primary'>${params.contractParams?.valueTo}</span>`;
+        header += ` with a value between <span class='text-primary'>£${params.contractParams?.valueFrom}</span> and <span class='text-primary'>£${params.contractParams?.valueTo}</span>`;
       }
-      
+
       break;
     case "org":
 

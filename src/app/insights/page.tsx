@@ -162,12 +162,15 @@ function PageContent() {
     const commonParams: CommonParams = {
       name: searchParams.get('name') || 'Any',
       party: (searchParams.get('party') ?? 'Any')?.[0]?.toUpperCase() + (searchParams.get('party') ?? 'Any')?.slice(1) || 'Any',
-      limit: parseInt(searchParams.get('limit') || '100') || 100,
+      limit: searchParams.get('limit') ? Number(searchParams.get('limit' || 100)) : 100, 
       fromDate: searchParams.get('fromdate') || EARLIEST_FROM_DATE,
       toDate: searchParams.get('todate') || new Date().toISOString().substring(0, 10),
       category: searchParams.get('category') || 'Any',
       voted: searchParams.get('voted') || 'most',
     };
+
+    console.log("check ", commonParams.limit, searchParams.get('limit'));
+    
 
     const orderby = commonParams.voted === 'least' ? 'ASC' : 'DESC';
     setName(commonParams.name === 'Any' ? '' : commonParams.name);
