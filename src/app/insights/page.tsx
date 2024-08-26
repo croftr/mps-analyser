@@ -34,14 +34,13 @@ import {
 } from "lucide-react";
 
 import { Separator } from '@radix-ui/react-separator';
-import { generateHeaderFromQueryParams } from './insightUtils';
+import { generateHeaderFromQueryParams } from './tableHeaderGenerator';
 
 const types = [
   { value: "MP", label: "MPs", icon: <User />, fieldCount: 7 },      
   { value: "Division", label: "Division", icon: <Vote />, fieldCount: 7 },
-  { value: "Contract", label: "Contracts", icon: <Handshake />, fieldCount: 4 },
-  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 />, fieldCount: 4 },
-  // { value: "Organisation or Individual", label: "Individual" },
+  { value: "Contract", label: "Contracts", icon: <Handshake />, fieldCount: 9 },
+  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 />, fieldCount: 7 },  
 ];
 
 const urlTypes = [
@@ -96,7 +95,7 @@ function PageContent() {
 
   //contracts
   const [awardedCount, setAwardedCount] = useState<number | undefined>();
-  const [awardedTo, setAwardedTo] = useState("Any");
+  const [awardedTo, setAwardedTo] = useState("Any Organisation");
   const [awardedBy, setAwardedBy] = useState("Any Party");  
   const [contractName, setContractName] = useState("");
   const [groupByContractCount, setGroupByContractCount] = useState(false);  
@@ -227,13 +226,13 @@ function PageContent() {
       case 'contract': {
 
         contractParams.awardedByParam = searchParams.get('awardedby') || 'Any Party';
-        contractParams.awardedToParam = searchParams.get('awardedto') || 'Any';
+        contractParams.awardedToParam = searchParams.get('awardedto') || 'Any Organisation';
         contractParams.groupByContractParam = searchParams.get('groupbycontract') && searchParams.get('groupbycontract') === "true" ? true : false;
         contractParams.awardedCountParam = searchParams.get('awardedcount');
         contractParams.contractName = searchParams.get('contractname')||'';
-        contractParams.valueFrom = Number(searchParams.get('valuefrom' || 0));
-        contractParams.valueTo = Number(searchParams.get('valueto' || MAX_CONTRACT_VALUE));
-
+        contractParams.valueFrom = searchParams.get('valuefrom') ? Number(searchParams.get('valuefrom' || 0)) : 0;
+        contractParams.valueTo = searchParams.get('valueto') ? Number(searchParams.get('valueto' || MAX_CONTRACT_VALUE)) : MAX_CONTRACT_VALUE;
+                
         setType("Contract");
         setGroupByContractCount(contractParams.groupByContractParam);
         setAwardedBy(contractParams.awardedByParam);
@@ -549,7 +548,7 @@ function PageContent() {
 
               <div className='flex items-baseline gap-2'>
 
-                <Label htmlFor="insightsLimit" className="min-w-[80px]">limit</Label>
+                <Label htmlFor="insightsLimit" className="min-w-[80px]">Limit</Label>
 
                 <Input
                   id="insightsLimit"

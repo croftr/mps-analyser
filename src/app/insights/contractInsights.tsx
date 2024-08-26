@@ -76,8 +76,8 @@ const ContractInsights = ({
 
                 <Input
                     id="awardedName"
-                    placeholder="contract title includes"
-                    className='min-w-[210px]'
+                    placeholder="Any contract title"
+                    className='min-w-[244px]'
                     value={contractName}
                     onChange={(e) => onChangeContractName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
@@ -85,15 +85,16 @@ const ContractInsights = ({
                 </Input>
             </div>
 
-            <div className='flex items-baseline gap-2 w-full'>
+            <div className='flex items-baseline gap-2'>
                 <Label htmlFor="awardedName" className="min-w-[80px]">Industry</Label>
-                <IndustryPicker value={industry} onValueChange={setIndustry} />
+                <IndustryPicker value={industry} onValueChange={setIndustry} className="w-[244px]"/>
             </div>
 
             <PartyPicker
                 party={party}
                 onChangeParty={onChangeParty}
                 label="Awarded by"
+                selectClassName='w-[244px]'
             />
 
             <div className='flex items-baseline gap-2'>
@@ -103,7 +104,7 @@ const ContractInsights = ({
                 <Input
                     id="awardedName"
                     placeholder="name includes"
-                    className='min-w-[210px]'
+                    className='min-w-[244px]'
                     value={awardedName}
                     onChange={(e) => onChangeAwardedName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
@@ -111,7 +112,7 @@ const ContractInsights = ({
                 </Input>
             </div>
 
-            <div className="flex flex-row items-baseline gap-2">
+            {/* <div className="flex flex-row items-baseline gap-2">
 
                 <div className='flex items-center gap-2'>
                     <Label htmlFor="individualContracts" className="min-w-[80px]">
@@ -124,6 +125,8 @@ const ContractInsights = ({
                         onCheckedChange={onToggleGrouping}
                     />
                 </div>
+
+
                 <Input
                     disabled={!groupByContractCount}
                     id="awardedCount"
@@ -134,7 +137,9 @@ const ContractInsights = ({
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
                     type="number">
                 </Input>
-            </div>
+
+                
+            </div> */}
 
             <CustomFieldset legend="Awarded between">
 
@@ -155,15 +160,15 @@ const ContractInsights = ({
                         onChange={(e) => setContractFromDate(e.target.value)}
                         value={contractFromDate}
                         className="px-4 py-2 rounded-md
-                        bg-background                 
-                        border 
-                        border-gray-400 dark:border-gray-700       
-                        focus:outline-none 
-                        focus:ring-2 
-                        focus:ring-custom-outline 
-                        transition-all 
-                        duration-200 
-                        ease-in-out w-[210px]"
+                            bg-background                 
+                            border 
+                            border-gray-400 dark:border-gray-700       
+                            focus:outline-none 
+                            focus:ring-2 
+                            focus:ring-custom-outline 
+                            transition-all 
+                            duration-200 
+                            ease-in-out w-[210px]"
                     />
                 </div>
 
@@ -183,20 +188,20 @@ const ContractInsights = ({
                         onChange={(e) => setContractToDate(e.target.value)}
                         value={contractToDate}
                         className="px-4 py-2 rounded-md
-                        bg-background 
-                        border
-                        border-gray-400 dark:border-gray-700
-                        focus:outline-none 
-                        focus:ring-2 
-                        focus:ring-custom-outline 
-                        transition-all duration-200 ease-in-out w-[210px]"
+                            bg-background 
+                            border
+                            border-gray-400 dark:border-gray-700
+                            focus:outline-none 
+                            focus:ring-2 
+                            focus:ring-custom-outline 
+                            transition-all duration-200 ease-in-out w-[210px]"
                     />
                 </div>
 
 
             </CustomFieldset>
 
-            <CustomFieldset legend="Value between">
+            <CustomFieldset legend="£ Value between">
                 <div className='flex items-baseline gap-2'>
                     <Label htmlFor="valueFrom" className="min-w-[80px]">Min</Label>
                     <div className="relative">
@@ -231,6 +236,7 @@ const ContractInsights = ({
                     </div>
                 </div>
             </CustomFieldset>
+
 
         </div>
     )

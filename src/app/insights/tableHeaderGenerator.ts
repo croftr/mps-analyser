@@ -49,7 +49,7 @@ export const generateHeaderFromQueryParams = (params: {
 
       if (params.contractParams?.groupByContractParam) {
         header = "Organisations"
-        if (params.contractParams?.awardedToParam && params.contractParams.awardedToParam !== 'Any') {
+        if (params.contractParams?.awardedToParam && params.contractParams.awardedToParam !== 'Any Organisation') {
           header += ` with <span class='text-primary'>${params.contractParams.awardedToParam}</span> in their name`;
         }
 
@@ -57,18 +57,14 @@ export const generateHeaderFromQueryParams = (params: {
 
         if (params.contractParams.awardedByParam !== 'Any Party') {
           header += ` by <span class='text-primary'>${params.contractParams?.awardedByParam}</span>`;
-        }
-
-        header += `. Grouped by organisation`
+        }        
       } else {
-
 
         header = `<span class='text-primary'>${params.contractParams?.industry}</span> contracts`;
 
         if (params.contractParams?.contractName && params.contractParams?.contractName !== "Any") {
           header += ` with <span class='text-primary'>${params.contractParams?.contractName}</span> in their title`;
         }
-  
 
         header += ` awarded`;
 
@@ -81,8 +77,10 @@ export const generateHeaderFromQueryParams = (params: {
         }
       }
 
-      header += ` with a value between £<span class='text-primary'>${params.contractParams?.valueFrom}</span> and £<span class='text-primary'>${params.contractParams?.valueTo}</span>`;
-
+      if (params.contractParams?.valueFrom || params.contractParams?.valueTo) {
+        header += ` with a value between <span class='text-primary'>£${params.contractParams?.valueFrom}</span> and <span class='text-primary'>${params.contractParams?.valueTo}</span>`;
+      }
+      
       break;
     case "org":
 

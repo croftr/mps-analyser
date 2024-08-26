@@ -53,7 +53,7 @@ const OrgInsights = ({
                 <Input
                     placeholder="any name"
                     id="orgName"
-                    className='w-[210px]'
+                    className='w-[226px]'
                     value={orgName}
                     onChange={(e) => onChangeOrgName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
@@ -67,7 +67,7 @@ const OrgInsights = ({
 
                 <CustomSelect
                     id="selectType"
-                    className="w-[210px]"
+                    className="w-[226px]"
                     value={orgType}
                     onValueChange={setOrgType}
                     options={["Any", "Organisation", "Individual"].map(str => ({ value: str,  label: str }))}

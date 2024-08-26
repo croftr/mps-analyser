@@ -139,7 +139,7 @@ export const INDUSTRIES = [
     { value: "IT and Technology", label: "IT and Technology", icon: "Cpu" },
     { value: "Legal", label: "Legal", icon: "Gavel" },
     { value: "Machinery and Equipment", label: "Machinery and Equipment", icon: "Settings" },
-    { value: "Mail", label: "Postal and Courier Services", icon: "Mail" },
+    { value: "Postal and Courier Services", label: "Postal and Courier Services", icon: "Mail" },
     { value: "Office Supplies", label: "Office Supplies", icon: "Clipboard" },
     { value: "Other", label: "Other", icon: "HelpCircle" },
     { value: "Print Media", label: "Print Media", icon: "Printer" },
