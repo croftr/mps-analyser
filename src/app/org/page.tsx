@@ -300,7 +300,7 @@ function PageContent() {
         </CollapsibleContent>
       </Collapsible>
 
-      {donorStatus !== DonorStatusEnum.Individual && <NeoTable data={similarCompanies} title="Similar companies" onRowClick={onQueryCompany} isHtmlTitle={false} />}
+      <NeoTable data={similarCompanies} title="Similar names" onRowClick={onQueryCompany} isHtmlTitle={false} />
 
     </div>
   );
