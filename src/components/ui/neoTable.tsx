@@ -15,6 +15,8 @@ import NeoTableSkeleton from "./neoTableSkeleton";
 import { Badge } from "@/components/ui/badge"
 import { ValueSetter } from "node_modules/date-fns/parse/_lib/Setter";
 
+import { capitalizeWords } from "@/lib/utils";
+
 interface DataTableProps {
   data: any[] | undefined;
   title: string;
@@ -106,9 +108,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
 
     let renderedValue = value;
 
-    if (Array.isArray(value)) {
-
-      // return <div className="">{value.map(i => <Badge variant="outline" key={i}>{i}</Badge>)}</div>
+    if (Array.isArray(value)) {      
       return (
         <div className="flex flex-col gap-2">
           {value.map((i) => (
@@ -121,8 +121,6 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
           ))}
         </div>
       )
-
-
     } else if (title.toLowerCase() === "amount" || title.toLowerCase() === "value" || title.toLowerCase() === "donated amount") {
       //format as currency
       if (typeof value === "number") {
@@ -151,7 +149,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
       renderedValue = jsDate.toLocaleDateString();
     }
 
-    return renderedValue.toString();
+    return capitalizeWords(renderedValue.toString());
   };
 
   const table = useReactTable({
@@ -250,8 +248,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
                         key={cell.id}
                         className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white whitespace-normal break-words"
                       >
-                        {renderCell(row.original._fields[originalCellIndex], row.original.keys[originalCellIndex])}
-                        {/* {renderCell(row)} */}
+                        {renderCell(row.original._fields[originalCellIndex], row.original.keys[originalCellIndex])}                        
                       </TableCell>
                     );
                   })}

@@ -54,8 +54,7 @@ export default function Search() {
         }
 
         if (result) {
-            if (result?.value?.gender) {            
-                useMpStore.setState({ mp: result.value });
+            if (result?.value?.gender) {                            
                 router.push(`/mp?id=${item.id}`, { scroll: true });
             } else {
                 router.push(`/division?id=${item.id}`, { scroll: true });                

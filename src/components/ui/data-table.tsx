@@ -8,6 +8,8 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 
+import { capitalizeWords } from "@/lib/utils";
+
 interface DataTableProps {
     data: any[]; // Assuming your data is an array of objects
     columns: any[]; // Make sure to define the correct types for your columns
@@ -51,7 +53,7 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
             return `${year}/${month}/${day}`;
         }
 
-        return cellValue;
+        return capitalizeWords(cellValue.toString());
     };
 
 

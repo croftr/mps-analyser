@@ -14,6 +14,8 @@ import { NeoTable } from '@/components/ui/neoTable';
 import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
 
+import { capitalizeWords, formatCurrency } from "@/lib/utils";
+
 import {
   BriefcaseIcon,
   UsersIcon,
@@ -149,10 +151,7 @@ function PageContent() {
     }
 
     if (nameParam) {
-      setName(nameParam
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' '));
+      setName(capitalizeWords(nameParam));      
     }
 
     setTableColumns(donarDetailsColumns);
@@ -191,16 +190,6 @@ function PageContent() {
 
   const onToggleDonations = () => {
     setIsDonationssDown(!isDonationssDown);
-  }
-
-  const formatCurrency = (value: number = 0) => {
-
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'GBP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value);
   }
 
   return (
