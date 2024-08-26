@@ -136,8 +136,7 @@ function PageContent() {
   }
 
   const onChangeSummaryDatePicker = (type: string, value: string) => {
-    console.log("check ", value);
-
+  
     setIsFilterChanged(true);
 
     if (type === "from") {

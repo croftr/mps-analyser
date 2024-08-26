@@ -174,8 +174,6 @@ function PageContent() {
   }
 
   const onQueryCompany = (row: any) => {
-    console.log("go ", row);
-
     router.push(`org?name=${row._fields[0]}`, { scroll: true });
   }
 
