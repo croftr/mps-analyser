@@ -9,7 +9,7 @@ import { Handshake } from "lucide-react"
 import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
-import { formatCurrency } from "../../lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { Badge } from '@/components/ui/badge';
 
 export default function Contract() {

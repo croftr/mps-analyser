@@ -21,10 +21,11 @@ interface DataTableProps {
   data: any[] | undefined;
   title: string;
   onRowClick?: (row: any) => void;
-  isHtmlTitle?: boolean
+  isHtmlTitle?: boolean,
+  isShowingFilter?: boolean
 }
 
-export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataTableProps) {
+export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowingFilter = true }: DataTableProps) {
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<any[]>([]);
@@ -108,7 +109,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
 
     let renderedValue = value;
 
-    if (Array.isArray(value)) {      
+    if (Array.isArray(value)) {
       return (
         <div className="flex flex-col gap-2">
           {value.map((i) => (
@@ -177,28 +178,33 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
       {data && (
         <>
 
-          {!isHtmlTitle && (<div className="flex mb-4 items-baseline">
+          {!isHtmlTitle && (<div className="flex mb-4 items-baseline gap-4">
             <h1 className="text-xl font-semibold dark:text-white">{title}</h1>
-          </div>)}
-
-          {isHtmlTitle && (
-            <div className="flex mb-4 items-baseline">
-              <h1 className="text-xl font-semibold dark:text-white" dangerouslySetInnerHTML={{ __html: title }} />
-            </div>
-          )}
-
-
-          <div className="mb-2 flex gap-2 items-baseline">
-            <Input
-              placeholder="Filter..."
-              value={globalFilter ?? ""}
-              onChange={(event) => setGlobalFilter(event.target.value)}
-              className="dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600"
-            />
             <span className="text-gray-600 dark:text-gray-400 whitespace-nowrap">
               {`(${data.length} results)`}
             </span>
-          </div>
+          </div>)}
+
+          {isHtmlTitle && (
+            <div className="flex mb-4 items-baseline gap-4">
+              <h1 className="text-xl font-semibold dark:text-white" dangerouslySetInnerHTML={{ __html: title }} />
+              <span className="text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              {`(${data.length} results)`}
+            </span>
+            </div>
+          )}
+
+          {isShowingFilter && (
+            <div className="mb-2 flex gap-2 items-baseline">
+              <Input
+                placeholder="Filter..."
+                value={globalFilter ?? ""}
+                onChange={(event) => setGlobalFilter(event.target.value)}
+                className="dark:bg-gray-700 dark:focus:ring-gray-500 dark:border-gray-600"
+              />
+            </div>
+          )}
+
         </>
       )}
 
@@ -248,7 +254,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false }: DataT
                         key={cell.id}
                         className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white whitespace-normal break-words"
                       >
-                        {renderCell(row.original._fields[originalCellIndex], row.original.keys[originalCellIndex])}                        
+                        {renderCell(row.original._fields[originalCellIndex], row.original.keys[originalCellIndex])}
                       </TableCell>
                     );
                   })}

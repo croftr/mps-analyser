@@ -289,7 +289,13 @@ function PageContent() {
         </CollapsibleContent>
       </Collapsible>
 
-      <NeoTable data={similarCompanies} title="Similar names" onRowClick={onQueryCompany} isHtmlTitle={false} />
+      <NeoTable 
+        data={similarCompanies} 
+        title="Similar names" 
+        onRowClick={onQueryCompany} 
+        isHtmlTitle={false} 
+        isShowingFilter={false}
+      />
 
     </div>
   );

@@ -1,5 +1,6 @@
 
 import { ContractParams, OrgParams, CommonParams } from './insightTypes';
+import { formatCurrency } from "@/lib/utils";
 
 export const generateHeaderFromQueryParams = (params: {
   typeParam: string;
@@ -61,14 +62,12 @@ export const generateHeaderFromQueryParams = (params: {
 
       if (params.contractParams?.awardedToParam && params.contractParams?.awardedToParam !== 'Any Organisation') {
         header += ` to organisations with <span class='text-primary'>${params.contractParams.awardedToParam}</span> in their name`;
-      }
-
-      params.contractParams?.contractFromDate
+      }      
 
       header += ` between <span class='text-primary'>${params.contractParams?.contractFromDate}</span> and <span class='text-primary'>${params.contractParams?.contractToDate}</span>`;
 
       if (params.contractParams?.valueFrom || params.contractParams?.valueTo) {
-        header += ` with a value between <span class='text-primary'>£${params.contractParams?.valueFrom}</span> and <span class='text-primary'>£${params.contractParams?.valueTo}</span>`;
+        header += ` with a value between <span class='text-primary'>${formatCurrency(params.contractParams?.valueFrom)}</span> and <span class='text-primary'>${formatCurrency(params.contractParams?.valueTo)}</span>`;
       }
 
       break;
@@ -81,7 +80,7 @@ export const generateHeaderFromQueryParams = (params: {
       }
 
       if (params.orgParams?.minTotalDonationValue) {
-        header += ` who donated more than £<span class='text-primary'>${params.orgParams?.minTotalDonationValue}</span> to <span class='text-primary'>${params.orgParams?.donatedtoParam}</span>`
+        header += ` who donated more than <span class='text-primary'>${formatCurrency(params.orgParams?.minTotalDonationValue)}</span> to <span class='text-primary'>${params.orgParams?.donatedtoParam}</span>`
       }
 
       if (params.orgParams?.minContractCount) {
