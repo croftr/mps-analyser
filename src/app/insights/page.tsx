@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
-import { ArrowUp } from "lucide-react"
+import { ArrowUp, Computer } from "lucide-react"
 import { ArrowDown } from "lucide-react"
 
 import { ContractParams, OrgParams, CommonParams } from './insightTypes';
@@ -169,9 +169,6 @@ function PageContent() {
       voted: searchParams.get('voted') || 'most',
     };
 
-    console.log("check ", commonParams.limit, searchParams.get('limit'));
-    
-
     const orderby = commonParams.voted === 'least' ? 'ASC' : 'DESC';
     setName(commonParams.name === 'Any' ? '' : commonParams.name);
     setParty(commonParams.party === 'Any' ? 'Any Party' : commonParams.party);
@@ -192,8 +189,8 @@ function PageContent() {
       awardedToParam: '',
       groupByContractParam: false,
       awardedCountParam: '',
-      contractFromDate: '',
-      contractToDate: '',
+      contractFromDate: EARLIEST_FROM_DATE,
+      contractToDate: new Date().toISOString().substring(0, 10),
       contractName: '',
       industry: '',
       valueFrom: 0,
@@ -235,6 +232,9 @@ function PageContent() {
         contractParams.contractName = searchParams.get('contractname')||'';
         contractParams.valueFrom = searchParams.get('valuefrom') ? Number(searchParams.get('valuefrom' || 0)) : 0;
         contractParams.valueTo = searchParams.get('valueto') ? Number(searchParams.get('valueto' || MAX_CONTRACT_VALUE)) : MAX_CONTRACT_VALUE;
+        contractParams.industry = searchParams.get('industry') || 'Any';
+        contractParams.contractFromDate = searchParams.get('contractFromDate') || EARLIEST_FROM_DATE;
+        contractParams.contractToDate = searchParams.get('contractToDate') || new Date().toISOString().substring(0, 10);
                 
         setType("Contract");
         setGroupByContractCount(contractParams.groupByContractParam);
@@ -243,8 +243,11 @@ function PageContent() {
         setContractName(contractParams.contractName);
         setValueFrom(contractParams.valueFrom);
         setValueTo(contractParams.valueTo);
+        setIndustry(contractParams.industry);
+        setContractFromDate(contractParams.contractFromDate);
+        setContractToDate(contractParams.contractToDate);
 
-        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&limit=${limit}&contractname=${contractName}&valuefrom=${contractParams.valueFrom}&valueto=${contractParams.valueTo}`;
+        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&limit=${limit}&contractname=${contractName}&valuefrom=${contractParams.valueFrom}&valueto=${contractParams.valueTo}&industry=${contractParams.industry}&contractFromDate=${contractParams.contractFromDate}&contractToDate=${contractParams.contractToDate}`;
 
         if (contractParams.awardedCountParam) {
           setAwardedCount(Number(contractParams.awardedCountParam));

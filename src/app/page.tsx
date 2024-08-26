@@ -127,24 +127,6 @@ export default function Home() {
         width={40}
         height={40}
       />
-      {
-      /* 
-  <Image
-    className="absolute top-32 left-20" 
-    src="./bubble.svg" 
-    alt="Bubble"
-    width={20} 
-    height={20}
-  />
-
-  <Image
-    className="absolute top-32 right-24" 
-    src="./bubble.svg" 
-    alt="Bubble"
-    width={20} 
-    height={20}
-  /> */}
-
 
       <div className="flex items-center justify-center space-x-4 p-6 mt-2">
         <div className="text-center">
@@ -162,7 +144,7 @@ export default function Home() {
       </div>
 
 
-      {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
+      {/* {recentVotes && recentVotes.length === 0 && <h1>No Votes in the past 2 months</h1>}
       {recentVotes && recentVotes.length > 0 && (
         <div className="flex flex-col gap-2">
           <h3 className="mt-4 text-xl md:text-2xl font-bold text-gray-900 dark:text-white text-center md:text-left">
@@ -188,7 +170,7 @@ export default function Home() {
 
             </div>))}
         </div>
-      )}
+      )} */}
     </div>
 
 
