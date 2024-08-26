@@ -221,8 +221,6 @@ function PageContent() {
           </span>
         </div>
 
-
-
         <div className="flex flex-col gap-1">
           <div className="flex">
             <span className="dark:text-white">{tableData[0]?.donorStatus || DonorStatusEnum.Company}</span>
@@ -232,24 +230,24 @@ function PageContent() {
             <span className="dark:text-white ml-2">{tableData[0]?.postcode}</span>
           </div>
         </div>
-
       </div>
 
+      {donorStatus !== DonorStatusEnum.Individual && (
+        <div
+          className="flex p-4 justify-between cursor-pointer 
+        bg-white dark:bg-gray-800 shadow-md rounded-md 
+        hover:bg-gray-100 dark:hover:bg-gray-700
+        transition-colors duration-200 active:bg-gray-200 dark:active:bg-gray-600"
+          onClick={onToggleContracts}
+        >
+          <div className="flex flex-col">
+            <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
+            <span>Total value {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0)) : 0}</span>
+          </div>
 
-      <div
-        className="flex p-4 justify-between cursor-pointer 
-          bg-white dark:bg-gray-800 shadow-md rounded-md 
-          hover:bg-gray-100 dark:hover:bg-gray-700
-          transition-colors duration-200 active:bg-gray-200 dark:active:bg-gray-600"
-        onClick={onToggleContracts}
-      >
-        <div className="flex flex-col">
-          <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
-          <span>Total value {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0)) : 0}</span>
+          {isContractsDown ? <ArrowUp /> : <ArrowDown />}
         </div>
-
-        {isContractsDown ? <ArrowUp /> : <ArrowDown />}
-      </div>
+      )}
 
       <Collapsible
         open={isContractsDown}
@@ -259,6 +257,8 @@ function PageContent() {
           <NeoTable data={contracts} title="Contracts Received" onRowClick={showContract} />
         </CollapsibleContent>
       </Collapsible>
+
+
 
       <div
         className="flex p-4 justify-between cursor-pointer 
