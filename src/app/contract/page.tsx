@@ -74,7 +74,12 @@ function PageContent() {
         <div className="headerItem flex-1 mt-2 rounded-full p-4 ring-1 flex flex-col items-center min-w-40">
           <Handshake className="h-6 w-6 relative arrow-container" />
           <span className="font-medium">
-            {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value)}
+            {new Intl.NumberFormat('en-GB', {
+              style: 'currency',
+              currency: 'GBP',
+              minimumFractionDigits: 0, // Set minimum fraction digits to 0
+              maximumFractionDigits: 0  // Set maximum fraction digits to 0
+            }).format(value)}
           </span>
         </div>
 
@@ -105,7 +110,7 @@ function PageContent() {
               {contract[0]._fields[0].properties.Categories.map((i: string) => (
                 <Badge key={i}>{i}</Badge>
               ))}
-            </div>          
+            </div>
             <div className="font-medium">Awarded Value:</div>
             <div className="font-semibold">
               {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(contract[0]._fields[0].properties.AwardedValue)}
