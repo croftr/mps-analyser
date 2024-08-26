@@ -105,7 +105,7 @@ export default function Home() {
     <div className="p-4">
 
       <Image
-        className="absolute top-12 left-10 transform -translate-y-1/2"
+        className="absolute top-12 sm:top-28 left-10 sm:left-32 transform -translate-y-1/2"
         src="./handshake.svg"
         alt="Handshake"
         width={40}
@@ -121,7 +121,7 @@ export default function Home() {
       />
 
       <Image
-        className="absolute top-12 right-10 transform -translate-y-1/2"
+        className="absolute top-12 sm:top-28 right-10 sm:right-32 transform -translate-y-1/2"
         src="./money.svg"
         alt="Money"
         width={40}
