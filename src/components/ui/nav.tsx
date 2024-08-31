@@ -4,19 +4,14 @@ import Link from "next/link";
 
 import { Compass } from "lucide-react"
 import { Home } from "lucide-react"
-import { Eye } from "lucide-react"
+import { Zap } from "lucide-react"
 import { ReceiptPoundSterling } from "lucide-react"
-import { Handshake } from "lucide-react"
 
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 
 export default function Nav() {
@@ -45,7 +40,7 @@ export default function Nav() {
         <NavigationMenuItem>
           <Link href="/insights" legacyBehavior passHref>
             <NavigationMenuLink>
-            <Eye />
+            <Zap />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

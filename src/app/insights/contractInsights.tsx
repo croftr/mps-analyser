@@ -1,24 +1,19 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 
-import { EARLIEST_FROM_DATE, INDUSTRIES } from "../config/constants";
+import { EARLIEST_FROM_DATE } from "../config/constants";
 
 import PartyPicker from "@/components/custom/partyPicker";
 import CustomFieldset from "@/components/custom/customFieldset";
-import CustomSelect from "@/components/custom/customSelect";
 import IndustryPicker from "@/components/custom/IndustryPicker";
+import ToggleButton from "@/components/custom/toggleButton";
 
 interface ContractProps {
-    awardedCount: number | undefined;
-    onChangeAwardedCount: (value: number | undefined) => void;
     awardedName: string;
     onChangeAwardedName: (value: string) => void;
     party: string,
     onChangeParty: (value: string) => void;
     onSearch: () => void;
-    groupByContractCount: boolean,
-    setGroupByContractCount: (value: boolean) => void;
     setContractFromDate: (value: string) => void;
     contractFromDate: string
     setContractToDate: (value: string) => void;
@@ -31,18 +26,16 @@ interface ContractProps {
     setValueFrom: (value: number) => void;
     valueTo: number,
     setValueTo: (value: number) => void;
+    wholeWordMatch: boolean;
+    onToggleWholeWordMatch: () => void;
 }
 
 const ContractInsights = ({
-    awardedCount,
-    onChangeAwardedCount,
     awardedName,
     onChangeAwardedName,
     party,
     onChangeParty,
     onSearch,
-    groupByContractCount: groupByContractCount,
-    setGroupByContractCount: setGroupByContractCount,
     setContractFromDate,
     contractFromDate,
     setContractToDate,
@@ -54,18 +47,10 @@ const ContractInsights = ({
     valueFrom,
     setValueFrom,
     valueTo,
-    setValueTo
+    setValueTo,
+    wholeWordMatch,
+    onToggleWholeWordMatch
 }: ContractProps) => {
-
-    const onToggleGrouping = () => {
-        if (groupByContractCount) {
-            onChangeAwardedCount(0)
-        } else {
-            onChangeAwardedCount(10)
-        }
-
-        setGroupByContractCount(!groupByContractCount);
-    }
 
     return (
         <div className="flex flex-col gap-2 items-baseline flex-wrap">
@@ -74,20 +59,25 @@ const ContractInsights = ({
 
                 <Label htmlFor="awardedName" className="min-w-[80px]">Title</Label>
 
-                <Input
-                    id="awardedName"
-                    placeholder="Any contract title"
-                    className='min-w-[244px]'
-                    value={contractName}
-                    onChange={(e) => onChangeContractName(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-                >
-                </Input>
+                <div className="flex items-end gap-2">
+                    <Input
+                        id="awardedName"
+                        placeholder="Any contract title"
+                        className='min-w-[244px]'
+                        value={contractName}
+                        onChange={(e) => onChangeContractName(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                    >
+                    </Input>
+
+                    <ToggleButton label="Toggle Whole Word Match" isTrue={wholeWordMatch} toggleIsTrue={onToggleWholeWordMatch} />
+                </div>
+
             </div>
 
             <div className='flex items-baseline gap-2'>
                 <Label htmlFor="awardedName" className="min-w-[80px]">Industry</Label>
-                <IndustryPicker value={industry} onValueChange={setIndustry} className="w-[244px]"/>
+                <IndustryPicker value={industry} onValueChange={setIndustry} className="w-[244px]" />
             </div>
 
             <PartyPicker
@@ -111,35 +101,6 @@ const ContractInsights = ({
                 >
                 </Input>
             </div>
-
-            {/* <div className="flex flex-row items-baseline gap-2">
-
-                <div className='flex items-center gap-2'>
-                    <Label htmlFor="individualContracts" className="min-w-[80px]">
-                        Group orgs
-                    </Label>
-
-                    <Switch
-                        id="individualContracts"
-                        checked={groupByContractCount}
-                        onCheckedChange={onToggleGrouping}
-                    />
-                </div>
-
-
-                <Input
-                    disabled={!groupByContractCount}
-                    id="awardedCount"
-                    placeholder="contract count"
-                    className='w-[158px]'
-                    value={awardedCount}
-                    onChange={(e) => onChangeAwardedCount(Number(e.target.value))}
-                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-                    type="number">
-                </Input>
-
-                
-            </div> */}
 
             <CustomFieldset legend="Awarded between">
 

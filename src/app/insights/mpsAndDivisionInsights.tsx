@@ -6,6 +6,7 @@ import CustomSelect from "@/components/custom/customSelect";
 import PartyPicker from "@/components/custom/partyPicker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ToggleButton from "@/components/custom/toggleButton";
 
 const queries = [
   "most",
@@ -25,7 +26,7 @@ interface MpsAndDivisionInsightsProps {
   voteCategory: string;
   onChangeCategory: (category: string) => void;
   party: string;
-  onChangeParty: (value:string) => void;
+  onChangeParty: (value: string) => void;
   voteType: string;
   onChangeVoteType: (voteType: string) => void;
   query: string;
@@ -33,8 +34,10 @@ interface MpsAndDivisionInsightsProps {
   fromDate: string;
   setFromDate: (date: string) => void;
   toDate: string;
-  setToDate: (date: string) => void;    
-  onChangeVoteCategory: (voteType: string) => void;  
+  setToDate: (date: string) => void;
+  onChangeVoteCategory: (voteType: string) => void;
+  wholeWordMatch: boolean;
+  onToggleWholeWordMatch: () => void;
 }
 
 export default function MpsAndDivisionInsights({
@@ -53,7 +56,9 @@ export default function MpsAndDivisionInsights({
   setFromDate,
   toDate,
   setToDate,
-  onChangeVoteCategory
+  onChangeVoteCategory,
+  wholeWordMatch,
+  onToggleWholeWordMatch,
 }: MpsAndDivisionInsightsProps) {
 
   return (
@@ -66,14 +71,19 @@ export default function MpsAndDivisionInsights({
         >
           {type === "MP" ? "name" : "title"}
         </Label>
-        <Input
-          id="name"
-          className='w-[210px]'
-          type="search"
-          placeholder="includes text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+
+        <div className="flex items-end gap-2">
+          <Input
+            id="name"
+            className='w-[210px]'
+            type="search"
+            placeholder="includes text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <ToggleButton label="Toggle Whole Word Match" isTrue={wholeWordMatch} toggleIsTrue={onToggleWholeWordMatch} />
+        </div>
 
       </div>
 

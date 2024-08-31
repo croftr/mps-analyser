@@ -9,12 +9,11 @@ import PartyPicker from "@/components/custom/partyPicker";
 
 import CustomFieldset from "@/components/custom/customFieldset";
 import CustomSelect from "@/components/custom/customSelect";
+import ToggleButton from "@/components/custom/toggleButton";
 
 interface OrgInsightsProps {
     dontatedToParty: string,
     onChangeDontatedToParty: (value: string) => void;
-    awaredByParty: string
-    onChangeAwaredByParty: (value: string) => void;
     orgName: string;
     onChangeOrgName: (value: string) => void;
     onSearch: () => void;
@@ -22,8 +21,10 @@ interface OrgInsightsProps {
     setMinTotalDonationValue: (value: number) => void;
     minContractCount: number;
     setMinContractCount: (value: number) => void,
-    orgType: string, 
+    orgType: string,
     setOrgType: (value: string) => void;
+    wholeWordMatch: boolean;
+    onToggleWholeWordMatch: () => void;
 }
 
 const OrgInsights = ({
@@ -32,14 +33,14 @@ const OrgInsights = ({
     onSearch,
     dontatedToParty,
     onChangeDontatedToParty,
-    awaredByParty,
-    onChangeAwaredByParty,
     minTotalDonationValue,
     setMinTotalDonationValue,
     minContractCount,
     setMinContractCount,
     orgType,
-    setOrgType
+    setOrgType,
+    wholeWordMatch,
+    onToggleWholeWordMatch,
 }: OrgInsightsProps) => {
 
     return (
@@ -50,15 +51,19 @@ const OrgInsights = ({
 
                 <Label htmlFor="orgName" className="w-[80px]">Name</Label>
 
-                <Input
-                    placeholder="any name"
-                    id="orgName"
-                    className='w-[226px]'
-                    value={orgName}
-                    onChange={(e) => onChangeOrgName(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
-                >
-                </Input>
+                <div className="flex items-end gap-2">
+                    <Input
+                        placeholder="any name"
+                        id="orgName"
+                        className='w-[226px]'
+                        value={orgName}
+                        onChange={(e) => onChangeOrgName(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') onSearch() }}
+                    >
+                    </Input>
+
+                    <ToggleButton label="Toggle Whole Word Match" isTrue={wholeWordMatch} toggleIsTrue={onToggleWholeWordMatch} />
+                </div>
             </div>
 
             <div className='flex items-baseline gap-2'>
@@ -70,7 +75,7 @@ const OrgInsights = ({
                     className="w-[226px]"
                     value={orgType}
                     onValueChange={setOrgType}
-                    options={["Any", "Organisation", "Individual"].map(str => ({ value: str,  label: str }))}
+                    options={["Any", "Organisation", "Individual"].map(str => ({ value: str, label: str }))}
                 />
             </div>
 

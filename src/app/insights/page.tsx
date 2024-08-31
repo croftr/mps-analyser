@@ -77,6 +77,7 @@ function PageContent() {
   const [isControlsDown, setIsControlsDown] = useState(false);
 
   const [type, setType] = useState(types[0].value);
+  const [wholeWordMatch, setWholeWordMatch] = useState(false);
 
   //table
   const [data, setData] = useState();
@@ -112,6 +113,10 @@ function PageContent() {
   const [minTotalDonationValue, setMinTotalDonationValue] = useState(0);
   const [minContractCount, setMinContractCount] = useState(0);
   const [orgType, setOrgType] = useState("Any");
+
+  const onToggleWholeWordMatch = () => {
+    setWholeWordMatch(!wholeWordMatch);
+  }
 
   const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
@@ -503,21 +508,19 @@ function PageContent() {
                   toDate={toDate}
                   setToDate={setToDate}
                   onChangeVoteCategory={setVoteCategory}
+                  onToggleWholeWordMatch={onToggleWholeWordMatch}
+                  wholeWordMatch={wholeWordMatch}
                 />
               )}
 
               {type === "Contract" && (
                 <div id="contracts">
-                  <ContractInsights
-                    awardedCount={awardedCount}
+                  <ContractInsights                    
                     awardedName={awardedTo}
-                    onChangeAwardedName={onChangeAwardedName}
-                    onChangeAwardedCount={onChangeAwardedCount}
+                    onChangeAwardedName={onChangeAwardedName}                    
                     party={awardedBy}
                     onChangeParty={setAwardedBy}
-                    onSearch={onSearchContracts}
-                    groupByContractCount={groupByContractCount}
-                    setGroupByContractCount={setGroupByContractCount}
+                    onSearch={onSearchContracts}                                        
                     contractFromDate={contractFromDate}
                     setContractFromDate={setContractFromDate}
                     contractToDate={contractToDate}
@@ -530,6 +533,8 @@ function PageContent() {
                     valueTo={valueTo}
                     setValueFrom={setValueFrom}
                     setValueTo={setValueTo}
+                    onToggleWholeWordMatch={onToggleWholeWordMatch}
+                    wholeWordMatch={wholeWordMatch}
                   />
                 </div>
               )}
@@ -540,15 +545,15 @@ function PageContent() {
                   orgName={orgName}
                   onSearch={onSearchOrgs}
                   dontatedToParty={dontatedToParty}
-                  onChangeDontatedToParty={onChangeDontatedToParty}
-                  awaredByParty={awaredByParty}
-                  onChangeAwaredByParty={onChangeAwaredByParty}
+                  onChangeDontatedToParty={onChangeDontatedToParty}                  
                   minTotalDonationValue={minTotalDonationValue}
                   setMinTotalDonationValue={setMinTotalDonationValue}
                   minContractCount={minContractCount}
                   setMinContractCount={setMinContractCount}
                   orgType={orgType}
                   setOrgType={setOrgType}
+                  onToggleWholeWordMatch={onToggleWholeWordMatch}
+                  wholeWordMatch={wholeWordMatch}
                 />
               )}
 
