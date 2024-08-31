@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { config } from '../app.config';
 import { NeoTable } from '@/components/ui/neoTable'
 
-import { ArrowUp, Computer } from "lucide-react"
+import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
 
 import { ContractParams, OrgParams, CommonParams } from './insightTypes';
@@ -117,6 +117,8 @@ function PageContent() {
   const onToggleWholeWordMatch = () => {
     setWholeWordMatch(!wholeWordMatch);
   }
+  
+  const onGetMatchType = (value:boolean=wholeWordMatch) => (value || wholeWordMatch) ? "whole" : "partial"
 
   const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
@@ -172,6 +174,7 @@ function PageContent() {
       toDate: searchParams.get('todate') || new Date().toISOString().substring(0, 10),
       category: searchParams.get('category') || 'Any',
       voted: searchParams.get('voted') || 'most',
+      matchType: searchParams.get("matchtype") || "partial",
     };
 
     const orderby = commonParams.voted === 'least' ? 'ASC' : 'DESC';
@@ -182,6 +185,7 @@ function PageContent() {
     setToDate(commonParams.toDate);
     setQuery(commonParams.voted);
     setVoteCategory(capitalizeWords(commonParams.category));
+    setWholeWordMatch(commonParams.matchType === "whole" ? true : false);
 
     // Type-Specific Logic
     let url: string | undefined = undefined;
@@ -214,12 +218,12 @@ function PageContent() {
     switch (typeParam.toLocaleLowerCase()) {
       case 'mp': {
         setType("MP");
-        url = `${config.mpsApiUrl}insights/mpvotes?limit=${commonParams.limit}&orderby=${orderby}&partyIncludes=${commonParams.party}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
+        url = `${config.mpsApiUrl}insights/mpvotes?limit=${commonParams.limit}&orderby=${orderby}&partyIncludes=${commonParams.party}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}&matchtype=${commonParams.matchType}`;
         break;
       }
       case 'division': {
         setType("Division");
-        url = `${config.mpsApiUrl}insights/divisionvotes?limit=${commonParams.limit}&orderby=${orderby}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}`;
+        url = `${config.mpsApiUrl}insights/divisionvotes?limit=${commonParams.limit}&orderby=${orderby}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}&matchtype=${commonParams.matchType}`;
         voteType = searchParams.get('votetype');
         setVoteType(voteType === 'for' ? 'on' : voteType === 'against' ? 'against' : 'on');
         if (voteType && (voteType === 'for' || voteType === 'against')) {
@@ -252,7 +256,7 @@ function PageContent() {
         setContractFromDate(contractParams.contractFromDate);
         setContractToDate(contractParams.contractToDate);
 
-        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&limit=${limit}&contractname=${contractName}&valuefrom=${contractParams.valueFrom}&valueto=${contractParams.valueTo}&industry=${contractParams.industry}&contractFromDate=${contractParams.contractFromDate}&contractToDate=${contractParams.contractToDate}`;
+        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&limit=${limit}&contractname=${contractName}&valuefrom=${contractParams.valueFrom}&valueto=${contractParams.valueTo}&industry=${contractParams.industry}&contractFromDate=${contractParams.contractFromDate}&contractToDate=${contractParams.contractToDate}&matchtype=${commonParams.matchType}`;
 
         if (contractParams.awardedCountParam) {
           setAwardedCount(Number(contractParams.awardedCountParam));
@@ -277,7 +281,7 @@ function PageContent() {
         setMinContractCount(orgParams.minContractCount);
         setOrgType(orgParams.orgType);
 
-        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}&orgtype=${orgParams.orgType}`;
+        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}&orgtype=${orgParams.orgType}&matchtype=${commonParams.matchType}`;
 
         if (orgParams.nameParam) {
           url = `${url}&name=${orgParams.nameParam}`;
@@ -308,7 +312,7 @@ function PageContent() {
    * Set url in browser from fields set at query time 
    */
   const setUrlFromQueryFields = (nameParam: string, partyParam: string) => {
-    const queryString = `?type=${type.toLowerCase()}&name=${nameParam}&party=${partyParam}&voted=${query}&votetype=${voteType}&category=${voteCategory}&fromdate=${fromDate}&todate=${toDate}&limit=${limit}`
+    const queryString = `?type=${type.toLowerCase()}&name=${nameParam}&party=${partyParam}&voted=${query}&votetype=${voteType}&category=${voteCategory}&fromdate=${fromDate}&todate=${toDate}&limit=${limit}&matchtype=${onGetMatchType()}`
     router.push(queryString, { scroll: false });
   }
 
@@ -322,7 +326,7 @@ function PageContent() {
 
     setUrlFromQueryFields(nameParam, partyParam);
 
-    let url = `${config.mpsApiUrl}insights/${type === 'MP' ? 'mpvotes' : 'divisionvotes'}?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${partyParam}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${nameParam}`;
+    let url = `${config.mpsApiUrl}insights/${type === 'MP' ? 'mpvotes' : 'divisionvotes'}?limit=${limit}&orderby=${query === 'most' ? 'DESC' : 'ASC'}&partyIncludes=${partyParam}&fromDate=${fromDate}&toDate=${toDate}&category=${voteCategory}&name=${nameParam}&matchtype=${onGetMatchType()}`;
 
     if (type === 'Division' && voteType !== 'on') {
       const ayeOrNo = voteType === "for" ? "aye" : "no";
@@ -336,7 +340,8 @@ function PageContent() {
       fromDate,
       toDate,
       category: voteCategory,
-      voted: query
+      voted: query,
+      matchType: "partial",
     }
 
     generateTableHeader({ typeParam: type, commonParams, voteType });
@@ -375,16 +380,13 @@ function PageContent() {
   const onChangeAwardedName = (value: string) => {
     setAwardedTo(value);
   }
-  const onChangeAwardedCount = (value: number | undefined) => {
-    setAwardedCount(value);
-  }
-
+  
   const onSearchContracts = async () => {
 
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractname=${contractName}&limit=${limit}&industry=${industry}&valuefrom=${valueFrom}&valueto=${valueTo}`
+    let queryString = `?type=${type.toLowerCase()}&awardedto=${awardedTo}&awardedby=${awardedBy}&groupbycontract=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractname=${contractName}&limit=${limit}&industry=${industry}&valuefrom=${valueFrom}&valueto=${valueTo}&matchtype=${onGetMatchType()}`
 
     if (awardedCount) {
       queryString = `${queryString}&awardedcount=${awardedCount}`;
@@ -407,7 +409,7 @@ function PageContent() {
 
     generateTableHeader({ typeParam: type, contractParams });
 
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractName=${contractName}&industry=${industry}&valuefrom=${valueFrom}&valueto=${valueTo}`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${awardedTo}&awardedCount=${awardedCount}&awardedBy=${awardedBy}&limit=${limit}&groupByContractCount=${groupByContractCount}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}&contractName=${contractName}&industry=${industry}&valuefrom=${valueFrom}&valueto=${valueTo}&matchtype=${onGetMatchType()}`);
     const contractsResult = await result.json();
     setData(contractsResult);
   }
@@ -421,15 +423,11 @@ function PageContent() {
     setDontatedToParty(value);
   }
 
-  const onChangeAwaredByParty = (value: string) => {
-    setAwaredByParty(value);
-  }
-
   const onSearchOrgs = async () => {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}`
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}`
     if (orgName) {
       queryString = `${queryString}&name=${orgName}`;
     }
@@ -447,7 +445,7 @@ function PageContent() {
 
     generateTableHeader({ typeParam: "org", orgParams });
 
-    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}`).json();
 
     setData(result);
   }

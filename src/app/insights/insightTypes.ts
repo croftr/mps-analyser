@@ -30,4 +30,5 @@ export interface ContractParams {
     toDate: string; 
     category: string;
     voted: string;
+    matchType: string;
   }
