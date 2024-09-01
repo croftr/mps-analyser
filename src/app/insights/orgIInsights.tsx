@@ -14,6 +14,8 @@ import ToggleButton from "@/components/custom/toggleButton";
 interface OrgInsightsProps {
     dontatedToParty: string,
     onChangeDontatedToParty: (value: string) => void;
+    awardedByParty: string,
+    onChangeAwardedByarty: (value: string) => void;
     orgName: string;
     onChangeOrgName: (value: string) => void;
     onSearch: () => void;
@@ -33,6 +35,8 @@ const OrgInsights = ({
     onSearch,
     dontatedToParty,
     onChangeDontatedToParty,
+    awardedByParty,
+    onChangeAwardedByarty,
     minTotalDonationValue,
     setMinTotalDonationValue,
     minContractCount,
@@ -130,8 +134,8 @@ const OrgInsights = ({
                 </div>
 
                 <PartyPicker
-                    party={dontatedToParty}
-                    onChangeParty={onChangeDontatedToParty}
+                    party={awardedByParty}
+                    onChangeParty={onChangeAwardedByarty}
                     label="By"
                     labelClassName="min-w-[62px]"
                 />

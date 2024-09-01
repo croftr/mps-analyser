@@ -424,9 +424,17 @@ function PageContent() {
     setDontatedToParty(value);
   }
 
+  const onChangeAwardedByParty = (value: string) => {
+    setAwaredByParty(value);
+  }
+
   const onSearchOrgs = async () => {
     setIsQuerying(true);
     setData(undefined);
+
+    console.log("check 1 ", awardedBy);
+    console.log("check 2 ", awaredByParty);
+    
 
     let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}`
     if (orgName) {
@@ -553,6 +561,8 @@ function PageContent() {
                   setOrgType={setOrgType}
                   onToggleWholeWordMatch={onToggleWholeWordMatch}
                   wholeWordMatch={wholeWordMatch}
+                  awardedByParty={awaredByParty}
+                  onChangeAwardedByarty={onChangeAwardedByParty}
                 />
               )}
 
