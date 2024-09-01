@@ -229,7 +229,7 @@ function PageContent() {
         >
           <div className="flex flex-col">
             <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
-            <span>Total value {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[3]).reduce((sum, value) => sum + value, 0)) : 0}</span>
+            <span>Total value {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[2]).reduce((sum, value) => sum + value, 0)) : 0}</span>
           </div>
 
           {isContractsDown ? <ArrowUp /> : <ArrowDown />}
