@@ -157,7 +157,7 @@ function PageContent() {
     setTableColumns(donarDetailsColumns);
 
     setContracts(undefined)
-    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&limit=10000`);
+    const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&isawaredtoknown=true&limit=10000`);
     const contractsResult = await result.json();
     setContracts(contractsResult);
     setIsLoading(false);
