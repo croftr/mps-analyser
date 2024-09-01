@@ -159,6 +159,7 @@ function PageContent() {
     const typeParam = searchParams.get('type');
 
     if (!typeParam || !urlTypes.includes(typeParam)) {
+      setIsControlsDown(true);
       return;
     }
 
