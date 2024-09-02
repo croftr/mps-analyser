@@ -174,7 +174,7 @@ function PageContent() {
       const nameParam = votefilterTitle || "Any";
 
       const response = await ky(
-        `${config.mpsApiUrl}votingDetailsNeo?id=${mpDetails?.value?.id}&type=${type}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${nameParam}`
+        `${config.mpsApiUrl}votingDetails?id=${mpDetails?.value?.id}&type=${type}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}&name=${nameParam}`
       ).json();
 
       // @ts-ignore      
@@ -215,7 +215,7 @@ function PageContent() {
     } else if (includeOrExclude === "Include" && includeOrExcludeParties !== "All Parties") {
       queryParams = `&partyIncludes=${includeOrExcludeParties}`;
     }
-    const url = `${config.mpsApiUrl}votingSimilarityNeo?limit=${limit}&orderby=${orderby}&name=${mpData?.value?.nameDisplayAs}&id=${mpData?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
+    const url = `${config.mpsApiUrl}votingSimilarity?limit=${limit}&orderby=${orderby}&name=${mpData?.value?.nameDisplayAs}&id=${mpData?.value?.id}&fromDate=${votefilterFrom}&toDate=${votefilterTo}&category=${votefilterType}${queryParams}`;
     const result: [] = await ky(url).json();
     setSimilarityResult(result);
   };
