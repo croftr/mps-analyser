@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const MpCardSkeleton = () => {
   return (
-    <div className="relative p-4 border border-gray-200 rounded-md animate-pulse">
+    <div className="relative p-4 border border-gray-300 dark:border-gray-700 rounded-md animate-pulse">
       <div className="absolute top-4 left-4">
         <Skeleton className="h-5 w-5 rounded-full bg-gray-200 dark:bg-gray-700" />
       </div>
