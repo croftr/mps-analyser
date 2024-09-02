@@ -129,7 +129,7 @@ function PageContent() {
 
   const [name, setName] = useState<string | null>("")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
-  const [similarCompanies, setSimilarCompanies] = useState<Array<any> | undefined>([])
+  const [similarCompanies, setSimilarCompanies] = useState<Array<any> | undefined>()
 
   const [donorStatus, setDonarStatus] = useState<DonorStatusEnum>()
 
@@ -151,7 +151,7 @@ function PageContent() {
     }
 
     if (nameParam) {
-      setName(capitalizeWords(nameParam));      
+      setName(capitalizeWords(nameParam));
     }
 
     setTableColumns(donarDetailsColumns);
@@ -170,7 +170,7 @@ function PageContent() {
   }
 
   const showContract = (row: any) => {
-    router.push(`contract?supplier=${row._fields[1]}&title=${encodeURIComponent(row._fields[0])}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
+    router.push(`contract?supplier=${row._fields[1]}&title=${encodeURIComponent(row._fields[0])}&value=${row._fields[2]}&awardedby=${row._fields[1]}`, { scroll: true });
   }
 
   const onQueryCompany = (row: any) => {
@@ -287,11 +287,11 @@ function PageContent() {
         </CollapsibleContent>
       </Collapsible>
 
-      <NeoTable 
-        data={similarCompanies} 
-        title="Similar names" 
-        onRowClick={onQueryCompany} 
-        isHtmlTitle={false} 
+       <NeoTable
+        data={similarCompanies}
+        title="Similar names"
+        onRowClick={onQueryCompany}
+        isHtmlTitle={false}
         isShowingFilter={false}
       />
 
