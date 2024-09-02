@@ -422,10 +422,12 @@ function PageContent() {
 
   const onChangeDontatedToParty = (value: string) => {
     setDontatedToParty(value);
+    setAwaredByParty(value);
   }
 
   const onChangeAwardedByParty = (value: string) => {
     setAwaredByParty(value);
+    setDontatedToParty(value);
   }
 
   const onSearchOrgs = async () => {
