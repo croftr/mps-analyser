@@ -29,7 +29,7 @@
       --foreground: #f7fafc;
 
       /* Primary Color (Dark Mode) */
-      --clr-primary: #980c4c;
+      --clr-primary: #c31c67;
       --clr-primary-dark: #74093a; /* Darker shade for hover in dark mode */
 
       --input: #1f2937; /* Darker input background for dark mode */
