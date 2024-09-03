@@ -37,7 +37,18 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
 
         // Check if the column header indicates currency
         if (cell.column.columnDef.header.toLowerCase() === "party name") {
-            return <PartyLabel partyName={cellValue} />
+            
+
+            let partyValue;
+
+            const deregIndex = cellValue.toLowerCase().indexOf("deregistered");
+            if (deregIndex !== -1) {
+                partyValue = cellValue.substr(0, deregIndex).trim(); 
+            } else {
+                partyValue = cellValue
+            }
+
+            return <PartyLabel partyName={partyValue} />
         } else if (cell.column.columnDef.header.toLowerCase().includes("amount") || cell.column.columnDef.header.toLowerCase().includes("value")) {
 
             if (typeof cellValue === "number") {

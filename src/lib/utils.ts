@@ -39,23 +39,21 @@ export const capitalizeWords = (inputString: string = ""): string => {
 }
 
 export const convertNeo4jDateToString = (neo4jDate:any) => {
-
+  console.log("step 1 ", neo4jDate);
+  
   const {
     year: { low: year },
     month: { low: month },
-    day: { low: day },
-    hour: { low: hour },
-    minute: { low: minute },
-    second: { low: second },
-    nanosecond: { low: nanosecond },
-    timeZoneOffsetSeconds: { low: timeZoneOffsetSeconds },
+    day: { low: day },  
   } = neo4jDate;
 
   // Construct a Date object (adjusting month as it's 0-indexed)
-  const date = new Date(Date.UTC(year, month - 1, day, hour, minute, second, nanosecond));
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  console.log("step 2 ", date);
 
   // Apply timezone offset (if needed)
-  date.setTime(date.getTime() - timeZoneOffsetSeconds * 1000);
+  // date.setTime(date.getTime() - timeZoneOffsetSeconds * 1000);
 
   const formattedDate = date.toLocaleString('en-GB', { 
     year: 'numeric', 
@@ -63,6 +61,7 @@ export const convertNeo4jDateToString = (neo4jDate:any) => {
     day: 'numeric' 
     // Removed hour, minute, second, and timeZoneName options
   });
+  console.log("step 3 ", formattedDate);
   return formattedDate;
 }
 

@@ -197,6 +197,10 @@ function PageContent() {
 
     const typeParam = searchParams.get('type');
 
+    let key = types.find(i => i.value === typeParam)?.dateLookup || 'mpsLastUpdate';
+    //@ts-ignore
+    setLastUpdated(lastUpdateData[key])
+
     if (!typeParam || !urlTypes.includes(typeParam)) {
       setIsControlsDown(true);            
       return;
@@ -341,12 +345,7 @@ function PageContent() {
     }
 
     generateTableHeader({ typeParam, commonParams, voteType, contractParams, orgParams });
-
-    let key = types.find(i => i.value === typeParam)?.dateLookup || 'mpsLastUpdate';
-
-    //@ts-ignore
-    setLastUpdated(lastUpdateData[key])
-
+    
   }
 
   useEffect(() => {
