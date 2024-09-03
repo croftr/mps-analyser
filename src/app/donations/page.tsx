@@ -101,9 +101,7 @@ function PageContent() {
   const [donarStatus, setDonarStatus] = useState("")
   const [lastUpdated, setLastUpdated] = useState("")
 
-  const omRowClick = (row: any) => {
-    // router.push(`?party=${row.original.partyName}`, { scroll: true });
-
+  const omRowClick = (row: any) => {        
     router.push(`org?name=${encodeURIComponent(row.original.donar)}`)
   }
 
@@ -130,6 +128,8 @@ function PageContent() {
   }
 
   const refreshData = async () => {
+
+    setTableText(undefined);    
 
     setIsLoading(true);
 
@@ -178,11 +178,12 @@ function PageContent() {
       <div className="flex flex-col md:flex-row md:justify-between p-4">
         <span className='flex items-center gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : ""}
           <h2 className="font-semibold text-gray-900 dark:text-white">Donations to</h2>
-          {type === TYPES.ALL_PARTIES ? tableText : <PartyLabel partyName={tableText} />}
+          {isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : type === TYPES.ALL_PARTIES ? tableText : <PartyLabel partyName={tableText} />}
+          
         </span>
         <div className="flex flex-col">
           <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Last updated{lastUpdated}</h3>
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Last updated {lastUpdated}</h3>
         </div>
 
       </div>

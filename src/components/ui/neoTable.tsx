@@ -15,7 +15,7 @@ import NeoTableSkeleton from "./neoTableSkeleton";
 import { Badge } from "@/components/ui/badge"
 import { ValueSetter } from "node_modules/date-fns/parse/_lib/Setter";
 
-import { capitalizeWords } from "@/lib/utils";
+import { capitalizeWords, formatCurrency } from "@/lib/utils";
 
 import PartyLabel from "@/components/ui/partyLabel";
 
@@ -135,23 +135,39 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
           ))}
         </div>
       )
-    } else if (title.toLowerCase() === "amount" || title.toLowerCase() === "value" || title.toLowerCase() === "donated amount") {
-      //format as currency
-      if (typeof value === "number") {
+    } else if (title.toLowerCase() === "amount" || title.toLowerCase() === "value" || title.toLowerCase() === "donated amount" || title.toLowerCase() === "awarded value") {
 
-        renderedValue = `£${value.toLocaleString()}`;
+      let numericValue;
+      if (typeof value === "number" || typeof value === "string") {
+        numericValue = value
       } else {
-        let parsedValue;
-        if (value.low || value.low === 0) {
-          parsedValue = value.low;
-        } else {
-          parsedValue = parseInt(value);
-        }
 
-        if (!isNaN(parsedValue)) {
-          renderedValue = `£${parsedValue.toLocaleString()}`;
+        if (value.high) {
+          //TODO not handling large numbers correcty 
+          numericValue = value.low + value.high * 2**32;
+        } else {
+          numericValue = value.low;
         }
       }
+
+      renderedValue = formatCurrency(numericValue);
+
+      //format as currency
+      // if (typeof value === "number") {
+
+      //   renderedValue = `£${value.toLocaleString()}`;
+      // } else {
+      //   let parsedValue;
+      //   if (value.low || value.low === 0) {
+      //     parsedValue = value.low;
+      //   } else {
+      //     parsedValue = parseInt(value);
+      //   }
+
+      //   if (!isNaN(parsedValue)) {
+      //     renderedValue = `£${parsedValue.toLocaleString()}`;
+      //   }
+      // }
     } else if (value.low || value.low === 0) {
       renderedValue = value.low;
     } else if (value.year) {

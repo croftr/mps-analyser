@@ -37,8 +37,7 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
 
         // Check if the column header indicates currency
         if (cell.column.columnDef.header.toLowerCase() === "party name") {
-            
-
+    
             let partyValue;
 
             const deregIndex = cellValue.toLowerCase().indexOf("deregistered");

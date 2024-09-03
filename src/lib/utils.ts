@@ -5,13 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const formatCurrency = (value: number = 0) => {
-  return new Intl.NumberFormat('en-GB', {
+export const formatCurrency = (value: number = 0) => {  
+  
+  let result =  new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   }).format(value);
+  
+  return result;
 }
 
 export const capitalizeWords = (inputString: string = ""): string => {
@@ -38,8 +41,7 @@ export const capitalizeWords = (inputString: string = ""): string => {
   return capitalizedWords.join(" ");
 }
 
-export const convertNeo4jDateToString = (neo4jDate:any) => {
-  console.log("step 1 ", neo4jDate);
+export const convertNeo4jDateToString = (neo4jDate:any) => {  
   
   const {
     year: { low: year },
@@ -50,18 +52,13 @@ export const convertNeo4jDateToString = (neo4jDate:any) => {
   // Construct a Date object (adjusting month as it's 0-indexed)
   const date = new Date(Date.UTC(year, month - 1, day));
 
-  console.log("step 2 ", date);
-
-  // Apply timezone offset (if needed)
-  // date.setTime(date.getTime() - timeZoneOffsetSeconds * 1000);
-
   const formattedDate = date.toLocaleString('en-GB', { 
     year: 'numeric', 
     month: 'long', 
     day: 'numeric' 
     // Removed hour, minute, second, and timeZoneName options
   });
-  console.log("step 3 ", formattedDate);
+  
   return formattedDate;
 }
 
