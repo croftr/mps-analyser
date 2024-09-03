@@ -21,7 +21,7 @@ const PartyLabel = ({ partyName = "" }) => {
     };
     return (
         <span
-            className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium mt-2 mb-1" // Added Tailwind classes
+            className="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-medium mt-2 mb-1" // Added Tailwind classes
             style={{
                 backgroundColor: PARTY_COLOUR[partyName]?.backgroundColour,
                 color: PARTY_COLOUR[partyName]?.foregroundColour,

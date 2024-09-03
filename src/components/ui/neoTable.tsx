@@ -17,6 +17,8 @@ import { ValueSetter } from "node_modules/date-fns/parse/_lib/Setter";
 
 import { capitalizeWords } from "@/lib/utils";
 
+import PartyLabel from "@/components/ui/partyLabel";
+
 interface DataTableProps {
   data: any[] | undefined;
   title: string;
@@ -109,7 +111,18 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
 
     let renderedValue = value;
 
-    if (Array.isArray(value)) {
+    if (title.toLowerCase() === "party") {
+      return <PartyLabel partyName={value} />
+    } else if (title.toLowerCase() === "awarded by") {
+      return <div className="flex flex-col gap-2">
+        {value.map((i) => (
+          <PartyLabel
+            key={i}
+            partyName={i}
+          />
+        ))}
+      </div>
+    } else if (Array.isArray(value)) {
       return (
         <div className="flex flex-col gap-2">
           {value.map((i) => (
@@ -189,8 +202,8 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
             <div className="flex mb-4 items-baseline gap-4">
               <h1 className="text-xl font-semibold dark:text-white" dangerouslySetInnerHTML={{ __html: title }} />
               <span className="text-gray-600 dark:text-gray-400 whitespace-nowrap">
-              {`(${data.length} results)`}
-            </span>
+                {`(${data.length} results)`}
+              </span>
             </div>
           )}
 

@@ -8,6 +8,7 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 
+import PartyLabel from "@/components/ui/partyLabel";
 import { capitalizeWords } from "@/lib/utils";
 
 interface DataTableProps {
@@ -35,7 +36,9 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
         }
 
         // Check if the column header indicates currency
-        if (cell.column.columnDef.header.toLowerCase().includes("amount") || cell.column.columnDef.header.toLowerCase().includes("value")) {
+        if (cell.column.columnDef.header.toLowerCase() === "party name") {
+            return <PartyLabel partyName={cellValue} />
+        } else if (cell.column.columnDef.header.toLowerCase().includes("amount") || cell.column.columnDef.header.toLowerCase().includes("value")) {
 
             if (typeof cellValue === "number") {
                 cellValue = `£${cellValue.toLocaleString()}`;
