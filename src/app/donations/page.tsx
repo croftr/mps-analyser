@@ -6,14 +6,15 @@ import ky from 'ky';
 import { config } from '../app.config';
 import { DataTable } from "@/components/ui/data-table"; // Make sure you have this component
 
-import TradeUnionIcon from './TradeUnionIcon'; 
-import IndividualIcon from './IndividualIcon'; 
-import CompanyIcon from './CompanyIcon'; 
+import TradeUnionIcon from './TradeUnionIcon';
+import IndividualIcon from './IndividualIcon';
+import CompanyIcon from './CompanyIcon';
 
 import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
 import NeoTableSkeleton from '@/components/ui/neoTableSkeleton';
+import PartyLabel from '@/components/ui/partyLabel';
 
 const donationColumns = [
   {
@@ -57,7 +58,7 @@ const donarDetailsColumns = [
   {
     accessorKey: 'receivedDate',
     header: 'Date',
-  },  
+  },
   {
     accessorKey: 'amount',
     header: 'Amount',
@@ -71,9 +72,9 @@ const TYPES = {
 };
 
 const donationSourceTypes = {
-  "Trade Union" : <TradeUnionIcon />,
-  "Individual" : <IndividualIcon />,
-  "Company" : <CompanyIcon />   
+  "Trade Union": <TradeUnionIcon />,
+  "Individual": <IndividualIcon />,
+  "Company": <CompanyIcon />
 }
 
 
@@ -108,7 +109,7 @@ function PageContent() {
 
   const onQueryForParty = async (row, updateUrl = true) => {
 
-    if (updateUrl) {      
+    if (updateUrl) {
       router.push(`?party=${row.original.partyName}`, { scroll: true });
     }
 
@@ -116,7 +117,7 @@ function PageContent() {
 
     setTableColumns(partyDonarColumns);
     setTableData(donationsResponse);
-    setTableText(`Donations to ${row.original.partyName}`)
+    setTableText(row.original.partyName)
     setType(TYPES.PARTY);
 
     setIsLoading(false);
@@ -133,9 +134,9 @@ function PageContent() {
 
     const partyName = searchParams.get('party');
     const donar = searchParams.get('donar');
-    
+
     if (donar && partyName && partyName !== "all") {
-      setTableColumns(donarDetailsColumns);        
+      setTableColumns(donarDetailsColumns);
       onQueryForPartyDonar({ original: { donar } }, false);
     } else if (partyName && partyName !== "all") {
       setTableColumns(partyDonarColumns);
@@ -148,7 +149,7 @@ function PageContent() {
         setTableColumns(donationColumns);
         const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
         setTableData(donationsResponse);
-        setTableText("Donations to all parties")
+        setTableText("All parties")
       } catch (error) {
         console.error("Error fetching donations:", error);
         // Optionally, set an error state or display an error message
@@ -168,11 +169,13 @@ function PageContent() {
 
     <div className="overflow-y-hidden">
 
-      <div className="flex flex-col md:flex-row md:justify-between p-4">        
-        <span className='flex gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : "" } <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2></span>
+      <div className="flex flex-col md:flex-row md:justify-between p-4">
+        <span className='flex items-center gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : ""}
+          <h2 className="font-semibold text-gray-900 dark:text-white">Donations to</h2> 
+          {type === TYPES.ALL_PARTIES ? tableText : <PartyLabel partyName={tableText} />}
+        </span>
         <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
       </div>
-
 
       {isLoading ? (
         <NeoTableSkeleton columns={4} />
@@ -184,9 +187,9 @@ function PageContent() {
             type === TYPES.ALL_PARTIES
               ? onQueryForParty
               : type === TYPES.PARTY
-              ? onQueryForPartyDonar
-              : undefined
-          }          
+                ? onQueryForPartyDonar
+                : undefined
+          }
         />
       )}
     </div>

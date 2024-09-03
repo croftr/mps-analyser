@@ -4,7 +4,7 @@ export const EARLIEST_FROM_DATE = "2015-01-01";
 export const MAX_CONTRACT_VALUE = 9999999999;
 
 export const PARTY_NAMES = [
-    "Any",    
+    "Any",
     "Alliance",
     "Conservative",
     "Democratic Unionist Party",
@@ -17,7 +17,7 @@ export const PARTY_NAMES = [
     "Scottish National Party",
     "Sinn Féin",
     "Social Democratic & Labour Party",
-    "Speaker",    
+    "Speaker",
     "Traditional Unionist Voice",
     "Ulster Unionist Party"
 ]
@@ -59,6 +59,32 @@ interface PartyColor {
     foregroundColour: string;
 }
 
+export const PARTY_COLOUR_BAK: Record<string, PartyColor> = {
+    "Alliance": { backgroundColour: "#cdaf2d", foregroundColour: "#FFFFFF" },
+    "Alba Party": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
+    "Conservative": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
+    "Democratic Unionist Party": { backgroundColour: "#cc3300", foregroundColour: "#FFFFFF" },
+    "Green Party": { backgroundColour: "#78b82a", foregroundColour: "#FFFFFF" },
+    "Independent": { backgroundColour: "#909090", foregroundColour: "#FFFFFF" },
+    "Labour": { backgroundColour: "#d50000", foregroundColour: "#ffffff" },
+    "Liberal Democrat": { backgroundColour: "#faa01a", foregroundColour: "#FFFFFF" },
+    "Plaid Cymru": { backgroundColour: "#348837", foregroundColour: "#ffffff" },
+    "Reform UK": { backgroundColour: "#12b6cf", foregroundColour: "#ffffff" },
+    "Scottish National Party": { backgroundColour: "#fff685", foregroundColour: "#000000" },
+    "Sinn Féin": { backgroundColour: "#02665f", foregroundColour: "#FFFFFF" },
+    "Sinn Fin": { backgroundColour: "#02665f", foregroundColour: "#FFFFFF" },
+    "Social Democratic and Labour Party": { backgroundColour: "#4ea268", foregroundColour: "#000000" },
+    "Social Democratic & Labour Party": { backgroundColour: "#4ea268", foregroundColour: "#000000" },
+    "Traditional Unionist Voice": { backgroundColour: "#0c3a6a", foregroundColour: "#ffffff" },
+    "Ulster Unionist Party": { backgroundColour: "#a1cdf0", foregroundColour: "#FFFFFF" },
+    "Workers Party of Britain": { backgroundColour: "#DB241E", foregroundColour: "#FFFFFF" },
+    "UK Independence Party": { backgroundColour: "purple", foregroundColour: "gold" },
+    "Cooperative Party": { backgroundColour: "#3f1d70", foregroundColour: "white" },
+    "The Reclaim Party": { backgroundColour: "#14172d", foregroundColour: "white" },
+    "The Socialist Party of Great Britain": { backgroundColour: "#cf2e2e", foregroundColour: "white" },
+    "Womens Equality Party": { backgroundColour: "#6e2d91", foregroundColour: "white" },
+};
+
 export const PARTY_COLOUR: Record<string, PartyColor> = {
     "Alliance": { backgroundColour: "#cdaf2d", foregroundColour: "#FFFFFF" },
     "Alba Party": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
@@ -72,14 +98,72 @@ export const PARTY_COLOUR: Record<string, PartyColor> = {
     "Reform UK": { backgroundColour: "#12b6cf", foregroundColour: "#ffffff" },
     "Scottish National Party": { backgroundColour: "#fff685", foregroundColour: "#000000" },
     "Sinn Féin": { backgroundColour: "#02665f", foregroundColour: "#FFFFFF" },
+    "Sinn Fin": { backgroundColour: "#02665f", foregroundColour: "#FFFFFF" },
     "Social Democratic and Labour Party": { backgroundColour: "#4ea268", foregroundColour: "#000000" },
     "Social Democratic & Labour Party": { backgroundColour: "#4ea268", foregroundColour: "#000000" },
     "Traditional Unionist Voice": { backgroundColour: "#0c3a6a", foregroundColour: "#ffffff" },
     "Ulster Unionist Party": { backgroundColour: "#a1cdf0", foregroundColour: "#FFFFFF" },
     "Workers Party of Britain": { backgroundColour: "#DB241E", foregroundColour: "#FFFFFF" },
-    
-};
-
+    "UK Independence Party": { backgroundColour: "purple", foregroundColour: "gold" },
+    "Cooperative Party": { backgroundColour: "#3f1d70", foregroundColour: "white" },
+    "The Reclaim Party": { backgroundColour: "#14172d", foregroundColour: "white" },
+    "The Socialist Party of Great Britain": { backgroundColour: "#cf2e2e", foregroundColour: "white" },
+    "Womens Equality Party": { backgroundColour: "#6e2d91", foregroundColour: "white" },
+    "British National Party": { backgroundColour: "#841416", foregroundColour: "#FFFFFF" }, // Far-right, often associated with darker reds/browns
+    "The New Party": { backgroundColour: "#909090", foregroundColour: "#FFFFFF" }, // Generic grey for unknown ideology
+    "Alliance Party of Northern Ireland": { backgroundColour: "#f6c644", foregroundColour: "#000000" }, // Yellow often used, assuming moderate
+    "Scottish Green Party": { backgroundColour: "#6ab023", foregroundColour: "#FFFFFF" }, // Green, similar to other Green parties
+    "Christian Party": { backgroundColour: "#007fff", foregroundColour: "#FFFFFF" }, // Blue often associated with Christianity
+    "The Peoples Alliance": { backgroundColour: "#909090", foregroundColour: "#FFFFFF" },  // Generic grey for unknown ideology
+    "Renew": { backgroundColour: "#0087dc", foregroundColour: "#FFFFFF" }, // Light blue, suggestive of renewal/progress
+    "Scottish Socialist Party": { backgroundColour: "#e30613", foregroundColour: "#FFFFFF" }, // Red, typical for socialist parties
+    "UNP": { backgroundColour: "#909090", foregroundColour: "#FFFFFF" },  // Generic grey, unclear what UNP stands for
+    "True Fair Party": { backgroundColour: "#008080", foregroundColour: "#FFFFFF" }, // Teal, conveying balance/fairness    
+    "True and Fair Party": { backgroundColour: "#008080", foregroundColour: "#FFFFFF" }, // Teal, conveying balance/fairness    
+    "Communist Party of Britain": { backgroundColour: "#ed1c24", foregroundColour: "#FFFFFF" }, // Red, classic communist color
+    "The Independent Group for Change": { backgroundColour: "#659cef", foregroundColour: "#FFFFFF" }, // Light blue, suggesting independence/centrism
+    "The Blah Party": { backgroundColour: "#f0f0f0", foregroundColour: "#000000" }, // Very light grey for a 'blah' party
+    "Cannabis is Safer than Alcohol": { backgroundColour: "#90ee90", foregroundColour: "#000000" }, // Light green, association with cannabis
+    "London Real Party": { backgroundColour: "#909090", foregroundColour: "#FFFFFF" }, // Generic grey for unknown ideology   
+    "Hersham Village Society": { backgroundColour: "#468499", foregroundColour: "#FFFFFF" }, // Local/community feel, muted blue
+    "People Before Profit": { backgroundColour: "#be1e2d", foregroundColour: "#FFFFFF" }, // Red, left-wing/socialist leaning
+    "Advance Together": { backgroundColour: "#32cd32", foregroundColour: "#000000" }, // Green, suggests progress/forward movement
+    "Trust": { backgroundColour: "#ffd700", foregroundColour: "#000000" }, // Gold, conveys trust/reliability
+    "Mums Army": { backgroundColour: "#f08080", foregroundColour: "#000000" }, // Light pink, maternal association
+    "Scottish Voice": { backgroundColour: "#000080", foregroundColour: "#FFFFFF" }, // Dark blue, perhaps representing Scotland
+    "All Peoples Party": { backgroundColour: "#ffa500", foregroundColour: "#000000" }, // Orange, suggests inclusivity
+    "We Demand A Referendum Now": { backgroundColour: "#800080", foregroundColour: "#FFFFFF" }, // Purple, sense of urgency/demand
+    "Pro Democracy Libertaseu": { backgroundColour: "#0000ff", foregroundColour: "#FFFFFF" }, // Blue, common for pro-democracy groups
+    "Socialist Alliance": { backgroundColour: "#de0505", foregroundColour: "#FFFFFF" }, // Red, typical for socialist groups
+    "No2EUYes to Democracy": { backgroundColour: "#1e90ff", foregroundColour: "#FFFFFF" }, // Blue, pro-democracy stance
+    "mums4justice": { backgroundColour: "#da70d6", foregroundColour: "#000000" }, // Light purple, maternal/justice theme
+    "The Respect Party": { backgroundColour: "#f4a460", foregroundColour: "#000000" }, // Sandy brown, perhaps conveying respect/dignity
+    "Dont Cook Party": { backgroundColour: "#909090", foregroundColour: "#FFFFFF" }, // Generic grey, humorous/unclear ideology
+    "Jury Team": { backgroundColour: "#808000", foregroundColour: "#FFFFFF" }, // Olive green, legal/justice theme
+    "ProLife": { backgroundColour: "#ffc0cb", foregroundColour: "#000000" }, // Light pink, often associated with pro-life
+    "Duma Polska Polish Pride": { backgroundColour: "#dc143c", foregroundColour: "#FFFFFF" }, // Crimson, perhaps Polish flag reference
+    "NO2EU": { backgroundColour: "#add8e6", foregroundColour: "#000000" }, // Light blue, anti-EU stance
+    "womentheworld": { backgroundColour: "#ff00ff", foregroundColour: "#FFFFFF" }, // Magenta, representing women/global theme
+    "Forward Wales": { backgroundColour: "#008000", foregroundColour: "#FFFFFF" }, // Green, perhaps Welsh reference, progress
+    "The Buckinghamshire Campaign for Democracy": { backgroundColour: "#4169e1", foregroundColour: "#FFFFFF" }, // Royal blue, democracy theme
+    "The Liberal Party": { backgroundColour: "#ffff00", foregroundColour: "#000000" }, // Yellow, classic liberal color
+    "Animal Welfare Party": { backgroundColour: "#8b4513", foregroundColour: "#FFFFFF" }, // Brown, animal/earth association
+    "Legalise Cannabis Alliance": { backgroundColour: "#006400", foregroundColour: "#FFFFFF" }, // Dark green, cannabis association
+    "Tower Hamlets First": { backgroundColour: "#66cdaa", foregroundColour: "#000000" }, // Local/community feel, muted green
+    "The Radical Party": { backgroundColour: "#ff4500", foregroundColour: "#FFFFFF" }, // Orange-red, suggests radical change
+    "All For Unity": { backgroundColour: "#87ceeb", foregroundColour: "#000000" }, // Sky blue, unity/togetherness theme
+    "Freedom and Responsibility": { backgroundColour: "#a52a2a", foregroundColour: "#FFFFFF" }, // Brown, earthy/grounded feel
+    "Better Bedford Independent Party": { backgroundColour: "#c6e2ff", foregroundColour: "#000000" }, // Light blue, local/independent feel
+    "United Kingdom First": { backgroundColour: "#b22222", foregroundColour: "#FFFFFF" }, // Red, nationalist association
+    "Fulham Group": { backgroundColour: "#ffffff", foregroundColour: "#000000" }, // White, neutral/local focus
+    "Veritas": { backgroundColour: "#00ced1", foregroundColour: "#000000" }, // Turquoise, perhaps truth/transparency
+    "East Herts People": { backgroundColour: "#deb887", foregroundColour: "#000000" }, // Tan, local/community feel
+    "Rejoin EU": { backgroundColour: "#00008b", foregroundColour: "#FFFFFF" }, // Dark blue, pro-EU stance
+    "Democracy 2015": { backgroundColour: "#483d8b", foregroundColour: "#FFFFFF" }, // Dark blue, democracy theme
+    "Yorkshire Party": { backgroundColour: "#fffacd", foregroundColour: "#000000" }, // Pale yellow, perhaps Yorkshire rose reference
+    "Scottish Libertarian Party": { backgroundColour: "#ffff00", foregroundColour: "#000000" },
+    "Both Unions Party of Northern Ireland": { backgroundColour: "#9acd32", foregroundColour: "#FFFFFF" }
+}
 
 export const VOTING_CATEGORIES = [
     "Any",
@@ -119,12 +203,12 @@ export const VOTING_CATEGORIES = [
     "Wales",
     "Environmental Protection",
 ]
-  
+
 export const INDUSTRIES = [
     { value: "Any", label: "Any", icon: "Factory" },
     { value: "Advertising and Marketing", label: "Advertising and Marketing", icon: "Megaphone" },
     { value: "Agriculture", label: "Agriculture", icon: "Sprout" },
-    { value: "Animals", label: "Animals", icon: "PawPrint" },    
+    { value: "Animals", label: "Animals", icon: "PawPrint" },
     { value: "Cleaning", label: "Cleaning", icon: "Droplets" },
     { value: "Construction and Engineering", label: "Construction and Engineering", icon: "Drill" },
     { value: "Consultancy", label: "Consultancy", icon: "UserCog" },
