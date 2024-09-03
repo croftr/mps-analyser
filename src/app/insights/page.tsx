@@ -9,6 +9,8 @@ import OrgInsights from './orgIInsights';
 import CustomChipSelect from "@/components/custom/customChipSelect";
 import MpsAndDivisionInsights from './mpsAndDivisionInsights';
 
+import { convertNeo4jDateToString } from '@/lib/utils';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,11 +38,18 @@ import {
 import { Separator } from '@radix-ui/react-separator';
 import { generateHeaderFromQueryParams } from './tableHeaderGenerator';
 
+interface LastUpdateDataType {
+  donationsLastUpdate: string;
+  mpsLastUpdate: string;
+  contractsLastUpdate: string;
+  divisionsLastUpdate: string;
+}
+
 const types = [
-  { value: "MP", label: "MPs", icon: <User />, fieldCount: 7 },      
-  { value: "Division", label: "Division", icon: <Vote />, fieldCount: 7 },
-  { value: "Contract", label: "Contracts", icon: <Handshake />, fieldCount: 9 },
-  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 />, fieldCount: 7 },  
+  { value: "MP", label: "MPs", icon: <User />, fieldCount: 7, dateLookup: "mpsLastUpdate" },
+  { value: "Division", label: "Division", icon: <Vote />, fieldCount: 7, dateLookup: "divisionsLastUpdate" },
+  { value: "Contract", label: "Contracts", icon: <Handshake />, fieldCount: 9, dateLookup: "contractsLastUpdate" },
+  { value: "Organisation or Individual", label: "Organisation or Individual", icon: <Building2 />, fieldCount: 7, dateLookup: "donationsLastUpdate" },
 ];
 
 const urlTypes = [
@@ -78,6 +87,8 @@ function PageContent() {
 
   const [type, setType] = useState(types[0].value);
   const [wholeWordMatch, setWholeWordMatch] = useState(false);
+  const [lastUpdatedValues, setLastUpdatedValues] = useState<LastUpdateDataType>();
+  const [lastUpdated, setLastUpdated] = useState("");
 
   //table
   const [data, setData] = useState();
@@ -97,18 +108,18 @@ function PageContent() {
   //contracts
   const [awardedCount, setAwardedCount] = useState<number | undefined>();
   const [awardedTo, setAwardedTo] = useState("Any Organisation");
-  const [awardedBy, setAwardedBy] = useState("Any Party");  
+  const [awardedBy, setAwardedBy] = useState("Any Party");
   const [contractName, setContractName] = useState("");
-  const [groupByContractCount, setGroupByContractCount] = useState(false);  
+  const [groupByContractCount, setGroupByContractCount] = useState(false);
   const [contractFromDate, setContractFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substring(0, 10));
-  const [contractToDate, setContractToDate] = useState(new Date().toISOString().substring(0, 10));  
+  const [contractToDate, setContractToDate] = useState(new Date().toISOString().substring(0, 10));
   const [industry, setIndustry] = useState("Any");
   const [valueFrom, setValueFrom] = useState(0);
   const [valueTo, setValueTo] = useState(MAX_CONTRACT_VALUE);
 
   //orgs
   const [orgName, setOrgName] = useState("");
-  const [dontatedToParty, setDontatedToParty] = useState("");  
+  const [dontatedToParty, setDontatedToParty] = useState("");
   const [awaredByParty, setAwaredByParty] = useState("");
   const [minTotalDonationValue, setMinTotalDonationValue] = useState(0);
   const [minContractCount, setMinContractCount] = useState(0);
@@ -117,8 +128,8 @@ function PageContent() {
   const onToggleWholeWordMatch = () => {
     setWholeWordMatch(!wholeWordMatch);
   }
-  
-  const onGetMatchType = (value:boolean=wholeWordMatch) => (value || wholeWordMatch) ? "whole" : "partial"
+
+  const onGetMatchType = (value: boolean = wholeWordMatch) => (value || wholeWordMatch) ? "whole" : "partial"
 
   const capitalizeWords = (inputString: string) => {
     if (!inputString || inputString.trim() === '') {
@@ -146,7 +157,35 @@ function PageContent() {
     orgParams?: OrgParams;
   }): void {
     const header = generateHeaderFromQueryParams(params)
-    setTableHeader(header);  
+    setTableHeader(header);
+  }
+
+
+  const getMetaData = async () => {
+
+    const lastUpdateData: LastUpdateDataType = {
+      donationsLastUpdate: "",
+      mpsLastUpdate: "",
+      contractsLastUpdate: "",
+      divisionsLastUpdate: "",
+    }
+
+    const metadataResponse: LastUpdateDataType = await ky(`${config.mpsApiUrl}metadata`).json();
+
+
+    Object.keys(metadataResponse).forEach(key => {
+
+      if (key in lastUpdateData) { // Type guard to check if the key exists in lastUpdateData
+        lastUpdateData[key as keyof LastUpdateDataType] = convertNeo4jDateToString(metadataResponse[key as keyof LastUpdateDataType]);
+      }
+
+    })
+    console.log("lastUpdateData ", lastUpdateData);
+
+    setLastUpdatedValues(lastUpdateData);
+
+    getData(lastUpdateData);    
+  
   }
 
   /**
@@ -154,12 +193,12 @@ function PageContent() {
    * query the database set the search fields based on the query params in the url 
    *
    */
-  const getData = async () => {
+  const getData = async (lastUpdateData:LastUpdateDataType) => {
 
     const typeParam = searchParams.get('type');
 
     if (!typeParam || !urlTypes.includes(typeParam)) {
-      setIsControlsDown(true);
+      setIsControlsDown(true);            
       return;
     }
 
@@ -170,7 +209,7 @@ function PageContent() {
     const commonParams: CommonParams = {
       name: searchParams.get('name') || 'Any',
       party: (searchParams.get('party') ?? 'Any')?.[0]?.toUpperCase() + (searchParams.get('party') ?? 'Any')?.slice(1) || 'Any',
-      limit: searchParams.get('limit') ? Number(searchParams.get('limit' || 100)) : 100, 
+      limit: searchParams.get('limit') ? Number(searchParams.get('limit' || 100)) : 100,
       fromDate: searchParams.get('fromdate') || EARLIEST_FROM_DATE,
       toDate: searchParams.get('todate') || new Date().toISOString().substring(0, 10),
       category: searchParams.get('category') || 'Any',
@@ -217,13 +256,13 @@ function PageContent() {
     };
 
     switch (typeParam.toLocaleLowerCase()) {
-      case 'mp': {
-        setType("MP");
+      case 'mp': {        
+        setType("MP");        
         url = `${config.mpsApiUrl}insights/mpvotes?limit=${commonParams.limit}&orderby=${orderby}&partyIncludes=${commonParams.party}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}&matchtype=${commonParams.matchType}`;
         break;
       }
       case 'division': {
-        setType("Division");
+        setType("Division");        
         url = `${config.mpsApiUrl}insights/divisionvotes?limit=${commonParams.limit}&orderby=${orderby}&fromDate=${commonParams.fromDate}&toDate=${commonParams.toDate}&category=${commonParams.category}&name=${commonParams.name}&matchtype=${commonParams.matchType}`;
         voteType = searchParams.get('votetype');
         setVoteType(voteType === 'for' ? 'on' : voteType === 'against' ? 'against' : 'on');
@@ -239,14 +278,14 @@ function PageContent() {
         contractParams.awardedToParam = searchParams.get('awardedto') || 'Any Organisation';
         contractParams.groupByContractParam = searchParams.get('groupbycontract') && searchParams.get('groupbycontract') === "true" ? true : false;
         contractParams.awardedCountParam = searchParams.get('awardedcount');
-        contractParams.contractName = searchParams.get('contractname')||'';
+        contractParams.contractName = searchParams.get('contractname') || '';
         contractParams.valueFrom = searchParams.get('valuefrom') ? Number(searchParams.get('valuefrom' || 0)) : 0;
         contractParams.valueTo = searchParams.get('valueto') ? Number(searchParams.get('valueto' || MAX_CONTRACT_VALUE)) : MAX_CONTRACT_VALUE;
         contractParams.industry = searchParams.get('industry') || 'Any';
         contractParams.contractFromDate = searchParams.get('contractFromDate') || EARLIEST_FROM_DATE;
         contractParams.contractToDate = searchParams.get('contractToDate') || new Date().toISOString().substring(0, 10);
-                
-        setType("Contract");
+
+        setType("Contract");        
         setGroupByContractCount(contractParams.groupByContractParam);
         setAwardedBy(contractParams.awardedByParam);
         setAwardedTo(contractParams.awardedToParam);
@@ -269,9 +308,9 @@ function PageContent() {
       case 'org': {
         orgParams.nameParam = searchParams.get('name');
         orgParams.donatedtoParam = searchParams.get('donatedto') || 'Any Party';
-        orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';        
-        orgParams.minTotalDonationValue = Number(searchParams.get('minTotalDonationValue')||0);
-        orgParams.minContractCount = Number(searchParams.get('minContractCount')||0);
+        orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';
+        orgParams.minTotalDonationValue = Number(searchParams.get('minTotalDonationValue') || 0);
+        orgParams.minContractCount = Number(searchParams.get('minContractCount') || 0);
         orgParams.orgType = searchParams.get('orgtype') || 'Any';
 
         setType("Organisation or Individual");
@@ -302,11 +341,16 @@ function PageContent() {
     }
 
     generateTableHeader({ typeParam, commonParams, voteType, contractParams, orgParams });
+
+    let key = types.find(i => i.value === typeParam)?.dateLookup || 'mpsLastUpdate';
+
+    //@ts-ignore
+    setLastUpdated(lastUpdateData[key])
+
   }
 
-
   useEffect(() => {
-    getData();
+    getMetaData();    
   }, []);
 
   /**
@@ -367,21 +411,22 @@ function PageContent() {
     } else if ((type === "Organisation or Individual") || (type === "Contract" && groupByContractCount)) {
       const orgName = row._fields[0];
       router.push(`org?name=${orgName}`, { scroll: true });
-    } else if (type === "Contract") {            
+    } else if (type === "Contract") {
       router.push(`contract?supplier=${row._fields[1]}&title=${encodeURIComponent(row._fields[0])}&value=${row._fields[3]}&awardedby=${row._fields[2]}`, { scroll: true });
     } else {
       console.log("warning unknown type of ", type);
     }
   }
 
-  const onChangeType = (value: string) => {
+  const onChangeType = (value: string) => {    
     setType(value);
+    lookupLastUpdated(value);
   }
 
   const onChangeAwardedName = (value: string) => {
     setAwardedTo(value);
   }
-  
+
   const onSearchContracts = async () => {
 
     setIsQuerying(true);
@@ -430,13 +475,26 @@ function PageContent() {
     setDontatedToParty(value);
   }
 
+  const lookupLastUpdated = (typeValue:string) => {
+
+    let key = types.find(i => i.value === typeValue)?.dateLookup || 'mpsLastUpdate';
+        
+    //@ts-ignore
+    const value =  lastUpdatedValues[key];
+
+    console.log("value ", value);
+
+    setLastUpdated(value);
+    
+  }
+
   const onSearchOrgs = async () => {
     setIsQuerying(true);
     setData(undefined);
 
     console.log("check 1 ", awardedBy);
     console.log("check 2 ", awaredByParty);
-    
+
 
     let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}`
     if (orgName) {
@@ -481,14 +539,18 @@ function PageContent() {
             options={types.map(str => ({ value: str.value, label: str.label, icon: str.icon }))}
           />
 
+          <div className="flex">
+            {lastUpdated && <span>Last updated {lastUpdated}</span>}
+          </div>
+
           <Separator />
 
           <Button
-            variant='outline'            
-            onClick={onToggleControls}            
+            variant='outline'
+            onClick={onToggleControls}
             className='flex gap-2 w-full'
           >
-            {`Controls (${types.find(i => i.value === type)?.fieldCount } fields)`}
+            {`Controls (${types.find(i => i.value === type)?.fieldCount} fields)`}
             {isControlsDown ? <ArrowUp /> : <ArrowDown />}
           </Button>
 
@@ -524,12 +586,12 @@ function PageContent() {
 
               {type === "Contract" && (
                 <div id="contracts">
-                  <ContractInsights                    
+                  <ContractInsights
                     awardedName={awardedTo}
-                    onChangeAwardedName={onChangeAwardedName}                    
+                    onChangeAwardedName={onChangeAwardedName}
                     party={awardedBy}
                     onChangeParty={setAwardedBy}
-                    onSearch={onSearchContracts}                                        
+                    onSearch={onSearchContracts}
                     contractFromDate={contractFromDate}
                     setContractFromDate={setContractFromDate}
                     contractToDate={contractToDate}
@@ -554,7 +616,7 @@ function PageContent() {
                   orgName={orgName}
                   onSearch={onSearchOrgs}
                   dontatedToParty={dontatedToParty}
-                  onChangeDontatedToParty={onChangeDontatedToParty}                  
+                  onChangeDontatedToParty={onChangeDontatedToParty}
                   minTotalDonationValue={minTotalDonationValue}
                   setMinTotalDonationValue={setMinTotalDonationValue}
                   minContractCount={minContractCount}

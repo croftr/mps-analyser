@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 'use client';
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 
 import NeoTableSkeleton from '@/components/ui/neoTableSkeleton';
 import PartyLabel from '@/components/ui/partyLabel';
+import { convertNeo4jDateToString } from '@/lib/utils';
 
 const donationColumns = [
   {
@@ -86,8 +87,6 @@ export default function Donations() {
   );
 }
 
-
-
 function PageContent() {
 
   const router = useRouter();
@@ -100,14 +99,15 @@ function PageContent() {
   const [tableText, setTableText] = useState("");
   const [type, setType] = useState(TYPES.ALL_PARTIES)
   const [donarStatus, setDonarStatus] = useState("")
+  const [lastUpdated, setLastUpdated] = useState("")
 
-  const omRowClick = (row) => {
+  const omRowClick = (row: any) => {
     // router.push(`?party=${row.original.partyName}`, { scroll: true });
 
     router.push(`org?name=${encodeURIComponent(row.original.donar)}`)
   }
 
-  const onQueryForParty = async (row, updateUrl = true) => {
+  const onQueryForParty = async (row: any, updateUrl = true) => {
 
     if (updateUrl) {
       router.push(`?party=${row.original.partyName}`, { scroll: true });
@@ -116,6 +116,7 @@ function PageContent() {
     const donationsResponse = await ky(`${config.mpsApiUrl}donations?partyname=${row.original.partyName}`).json();
 
     setTableColumns(partyDonarColumns);
+    //@ts-ignore
     setTableData(donationsResponse);
     setTableText(row.original.partyName)
     setType(TYPES.PARTY);
@@ -147,9 +148,14 @@ function PageContent() {
 
         setType(TYPES.ALL_PARTIES);
         setTableColumns(donationColumns);
-        const donationsResponse = await ky(`${config.mpsApiUrl}donations`).json();
+        const donationsResponse: any = await ky(`${config.mpsApiUrl}donations`).json();
         setTableData(donationsResponse);
-        setTableText("All parties")
+        setTableText("All parties");
+
+        const metadataResponse: any = await ky(`${config.mpsApiUrl}metadata`).json();
+        const formattedDateString = convertNeo4jDateToString(metadataResponse.donationsLastUpdate);
+        setLastUpdated(formattedDateString);
+
       } catch (error) {
         console.error("Error fetching donations:", error);
         // Optionally, set an error state or display an error message
@@ -171,10 +177,14 @@ function PageContent() {
 
       <div className="flex flex-col md:flex-row md:justify-between p-4">
         <span className='flex items-center gap-2'> {type === TYPES.DONAR ? donationSourceTypes[donarStatus] ? donationSourceTypes[donarStatus] : (donarStatus) : ""}
-          <h2 className="font-semibold text-gray-900 dark:text-white">Donations to</h2> 
+          <h2 className="font-semibold text-gray-900 dark:text-white">Donations to</h2>
           {type === TYPES.ALL_PARTIES ? tableText : <PartyLabel partyName={tableText} />}
         </span>
-        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
+        <div className="flex flex-col">
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Last updated{lastUpdated}</h3>
+        </div>
+
       </div>
 
       {isLoading ? (
