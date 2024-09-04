@@ -10,3 +10,9 @@ export interface Vote {
     backgroundColour: string
     foregroundColour: string,
   }
+
+  export interface NeoNumber {
+    low: number,
+    high: number,  
+  }
+  

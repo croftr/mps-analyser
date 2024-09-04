@@ -1,5 +1,8 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { NeoNumber } from "../types"
+
+import Long from 'long';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -62,3 +65,8 @@ export const convertNeo4jDateToString = (neo4jDate:any) => {
   return formattedDate;
 }
 
+export const convertNeoNumberToJsNumber = (value: NeoNumber): BigInt => {
+  const longValue = new Long(value.low, value.high); // Create a Long object
+  // return longValue.toString()
+  return BigInt(longValue.toString())
+};

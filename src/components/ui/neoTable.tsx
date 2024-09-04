@@ -15,7 +15,7 @@ import NeoTableSkeleton from "./neoTableSkeleton";
 import { Badge } from "@/components/ui/badge"
 import { ValueSetter } from "node_modules/date-fns/parse/_lib/Setter";
 
-import { capitalizeWords, formatCurrency } from "@/lib/utils";
+import { capitalizeWords, formatCurrency, convertNeoNumberToJsNumber } from "@/lib/utils";
 
 import PartyLabel from "@/components/ui/partyLabel";
 
@@ -142,9 +142,8 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
         numericValue = value
       } else {
 
-        if (value.high) {
-          //TODO not handling large numbers correcty 
-          numericValue = value.low + value.high * 2**32;
+        if (value.high) { //large numbers are too big for js numbers need to convert to bigint          
+          numericValue = convertNeoNumberToJsNumber( {low: value.low, high: value.high});
         } else {
           numericValue = value.low;
         }
