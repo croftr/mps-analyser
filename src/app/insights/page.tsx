@@ -37,13 +37,8 @@ import {
 
 import { Separator } from '@radix-ui/react-separator';
 import { generateHeaderFromQueryParams } from './tableHeaderGenerator';
+import { LastUpdateDataType, Neo4jDate } from '@/types';
 
-interface LastUpdateDataType {
-  donationsLastUpdate: string;
-  mpsLastUpdate: string;
-  contractsLastUpdate: string;
-  divisionsLastUpdate: string;
-}
 
 const types = [
   { value: "MP", label: "MPs", icon: <User />, fieldCount: 7, dateLookup: "mpsLastUpdate" },
@@ -164,23 +159,21 @@ function PageContent() {
   const getMetaData = async () => {
 
     const lastUpdateData: LastUpdateDataType = {
-      donationsLastUpdate: "",
-      mpsLastUpdate: "",
-      contractsLastUpdate: "",
-      divisionsLastUpdate: "",
+      donationsLastUpdate: undefined,
+      mpsLastUpdate: undefined,
+      contractsLastUpdate: undefined,
+      divisionsLastUpdate: undefined,
     }
 
     const metadataResponse: LastUpdateDataType = await ky(`${config.mpsApiUrl}metadata`).json();
 
-
-    Object.keys(metadataResponse).forEach(key => {
-
-      if (key in lastUpdateData) { // Type guard to check if the key exists in lastUpdateData
+    Object.keys(metadataResponse).forEach(key => {      
+      if (key in lastUpdateData) { 
+        //@ts-ignore
         lastUpdateData[key as keyof LastUpdateDataType] = convertNeo4jDateToString(metadataResponse[key as keyof LastUpdateDataType]);
       }
-
     })
-    console.log("lastUpdateData ", lastUpdateData);
+
 
     setLastUpdatedValues(lastUpdateData);
 

@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { NeoNumber } from "../types"
+import { Neo4jNumber, Neo4jDate } from "../types"
 
 import Long from 'long';
 
@@ -44,29 +44,39 @@ export const capitalizeWords = (inputString: string = ""): string => {
   return capitalizedWords.join(" ");
 }
 
-export const convertNeo4jDateToString = (neo4jDate:any) => {  
-  
+export const convertNeo4jDateToString = (neo4jDate: Neo4jDate): string => {
   const {
     year: { low: year },
     month: { low: month },
-    day: { low: day },  
+    day: { low: day },
   } = neo4jDate;
 
-  // Construct a Date object (adjusting month as it's 0-indexed)
+  // Validation: Check if the month is within the valid range
+  if (month < 1 || month > 12) {
+    return 'Invalid Date';
+  }
+
+  // Construct a Date object (adjusting month)
   const date = new Date(Date.UTC(year, month - 1, day));
 
-  const formattedDate = date.toLocaleString('en-GB', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-    // Removed hour, minute, second, and timeZoneName options
-  });
-  
-  return formattedDate;
-}
+  // Additional validation: Check if the constructed date is valid
+  if (isNaN(date.getTime())) {
+    return 'Invalid Date';
+  }
 
-export const convertNeoNumberToJsNumber = (value: NeoNumber): BigInt => {
-  const longValue = new Long(value.low, value.high); // Create a Long object
-  // return longValue.toString()
+  const formattedDate = date.toLocaleString('en-GB', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  console.log("done ", formattedDate);
+  
+
+  return formattedDate;
+};
+
+export const convertNeoNumberToJsNumber = (value: Neo4jNumber): BigInt => {
+  const longValue = new Long(value.low, value.high); // Create a Long object  
   return BigInt(longValue.toString())
 };
