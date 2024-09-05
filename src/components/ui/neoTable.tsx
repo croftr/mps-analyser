@@ -113,7 +113,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
 
     if (title.toLowerCase() === "party") {
       return <PartyLabel partyName={value} />
-    } else if (title.toLowerCase() === "awarded by") {
+    } else if (title.toLowerCase() === "awarded by" || title.toLowerCase() === "donated to") {
       return <div className="flex flex-col gap-2">
         {value.map((i) => (
           <PartyLabel
