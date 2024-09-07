@@ -248,8 +248,8 @@ function PageContent() {
           onClick={onToggleContracts}
         >
           <div className="flex flex-col">
-            <span className='flex gap-4'><span> Contracts Received:</span> <span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span></span>
-            <div className='flex'><div className='w-[154px]'>Total value:</div> {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[2]).reduce((sum, value) => sum + value, 0)) : 0}</div>
+            <span className='flex'><div className='w-[150px]'> Contracts Received:</div> <span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span></span>
+            <div className='flex'><div className='w-[150px]'>Total value:</div> {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[2]).reduce((sum, value) => sum + value, 0)) : 0}</div>
           </div>
 
           {isContractsDown ? <ArrowUp /> : <ArrowDown />}
@@ -278,8 +278,8 @@ function PageContent() {
         onClick={onToggleDonations}
       >
         <div className="flex flex-col">
-          <span className='flex gap-4'><span> Donations Made:</span> <span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> </span>
-          <div className="flex"><div className='w-[138px]'>Total value:</div> {tableData.length ? formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0)) : 0}</div>
+          <span className='flex'><div className='w-[150px]'> Donations Made:</div> <span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> </span>
+          <div className="flex"><div className='w-[150px]'>Total value:</div> {tableData.length ? formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0)) : 0}</div>
         </div>
 
         {isContractsDown ? <ArrowUp /> : <ArrowDown />}
@@ -309,7 +309,7 @@ function PageContent() {
         onClick={onToggleNames}
       >
         <div className="flex flex-col">
-          <span className='flex gap-4'><span> Similar Names:</span> <span>{!similarCompanies ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : similarCompanies?.length || 0}</span></span>
+          <span className='flex'><div className='w-[150px]'>Similar Names:</div> <span>{!similarCompanies ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : similarCompanies?.length || 0}</span></span>
         </div>
 
         {isContractsDown ? <ArrowUp /> : <ArrowDown />}
