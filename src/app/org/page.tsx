@@ -8,7 +8,6 @@ import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
 import { DataTable } from "@/components/ui/data-table";
-import NeoTableSkeleton from '@/components/ui/neoTableSkeleton';
 import { NeoTable } from '@/components/ui/neoTable';
 
 import { ArrowUp } from "lucide-react"
@@ -67,25 +66,6 @@ const donorStatusIcons: { [key in string]: JSX.Element } = {
   [DonorStatusEnum.Individual]: <UserIcon />,
 };
 
-const donationColumns = [
-  {
-    accessorKey: 'partyName',
-    header: 'Party Name',
-  },
-  {
-    accessorKey: 'memberCount',
-    header: 'Member Count',
-  },
-  {
-    accessorKey: 'donationCount',
-    header: 'Donation Count',
-  },
-  {
-    accessorKey: 'totalDonationValue',
-    header: 'Total Donation Value',
-  },
-];
-
 const donarDetailsColumns = [
   {
     accessorKey: 'partyName',
@@ -122,11 +102,8 @@ function PageContent() {
   const [isDonationssDown, setIsDonationssDown] = useState(false);
   const [isNamesDown, setIsNamesDown] = useState(false);
 
-  const [tableData, setTableData] = useState<Array<any>>([]);
-  const [tableColumns, setTableColumns] = useState(donationColumns);
+  const [tableData, setTableData] = useState<Array<any>>([]);  
   const [isLoading, setIsLoading] = useState(true);
-
-  const [tableText, setTableText] = useState("");
 
   const [name, setName] = useState<string | null>("")
   const [contracts, setContracts] = useState<Array<any> | undefined>()
@@ -142,8 +119,7 @@ function PageContent() {
 
     const headerInfo = Array.isArray(donationsResponse) ? donationsResponse[0] : undefined;
 
-    if (headerInfo) {
-      setTableText(`Donation by ${headerInfo.donar} ${headerInfo.accountingUnitName}`)
+    if (headerInfo) {      
       setDonarStatus(headerInfo.donorStatus);
       setTableData(donationsResponse);
     } else {
@@ -154,9 +130,7 @@ function PageContent() {
     if (nameParam) {
       setName(capitalizeWords(nameParam));      
     }
-
-    setTableColumns(donarDetailsColumns);
-
+    
     setContracts(undefined)
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&isawaredtoknown=true&limit=10000`);
     const contractsResult = await result.json();
@@ -236,7 +210,6 @@ function PageContent() {
           </div>
         </div>
         )}
-
       </div>
 
       {donorStatus !== DonorStatusEnum.Individual && (
@@ -289,17 +262,15 @@ function PageContent() {
         open={isDonationssDown}
         className="flex w-full"
       >
-
         <CollapsibleContent className="flex flex-col w-full gap-2">
           <DataTable
             data={tableData}
             isShowingHeader={true}
-            columns={tableColumns}
+            columns={donarDetailsColumns}
             onRowClick={() => { }}
           />
         </CollapsibleContent>
       </Collapsible>
-
 
       <div
         className="flex p-4 justify-between cursor-pointer 

@@ -142,16 +142,12 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
       if (typeof value === "number" || typeof value === "string") {
         numericValue = value
       } else {
-
-        if (value.high) { //large numbers are too big for js numbers need to convert to bigint          
-          numericValue = convertNeoNumberToJsNumber( {low: value.low, high: value.high});
-        } else {
-          numericValue = value.low;
-        }
+        //large numbers are too big for js numbers need to convert to bigint          
+        numericValue = convertNeoNumberToJsNumber({ low: value.low, high: value.high });
       }
 
       renderedValue = formatCurrency(numericValue);
-      
+
     } else if (value.low || value.low === 0) {
       renderedValue = value.low;
     } else if (value.year) {
