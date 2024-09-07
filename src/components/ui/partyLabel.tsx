@@ -14,7 +14,8 @@ const PartyLabel = ({ partyName = "" }) => {
             "Traditional Unionist Voice": "TUV",
             "Social Democratic and Labour Party": "SDLP",
             "Social Democratic & Labour Party": "SDLP",
-            "Workers Party of Britain": "Workers Party"
+            "Workers Party of Britain": "Workers Party",
+            "UK Independence Party": "UKIP",
         };
 
         return name?.startsWith("Speaker") ? "Speaker" : partyAbbreviations[name || ""] || name || ""; // Handle undefined party

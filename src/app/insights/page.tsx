@@ -155,7 +155,6 @@ function PageContent() {
     setTableHeader(header);
   }
 
-
   const getMetaData = async () => {
 
     const lastUpdateData: LastUpdateDataType = {
