@@ -23,11 +23,12 @@ interface DataTableProps {
   data: any[] | undefined;
   title: string;
   onRowClick?: (row: any) => void;
-  isHtmlTitle?: boolean,
-  isShowingFilter?: boolean
+  isHtmlTitle?: boolean;
+  isShowingFilter?: boolean;
+  isShowingHeader?: boolean;
 }
 
-export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowingFilter = true }: DataTableProps) {
+export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowingFilter = true, isShowingHeader = true }: DataTableProps) {
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<any[]>([]);
@@ -150,23 +151,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
       }
 
       renderedValue = formatCurrency(numericValue);
-
-      //format as currency
-      // if (typeof value === "number") {
-
-      //   renderedValue = `£${value.toLocaleString()}`;
-      // } else {
-      //   let parsedValue;
-      //   if (value.low || value.low === 0) {
-      //     parsedValue = value.low;
-      //   } else {
-      //     parsedValue = parseInt(value);
-      //   }
-
-      //   if (!isNaN(parsedValue)) {
-      //     renderedValue = `£${parsedValue.toLocaleString()}`;
-      //   }
-      // }
+      
     } else if (value.low || value.low === 0) {
       renderedValue = value.low;
     } else if (value.year) {
@@ -206,14 +191,14 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
       {data && (
         <>
 
-          {!isHtmlTitle && (<div className="flex mb-4 items-baseline gap-4">
+          {isShowingHeader && !isHtmlTitle && (<div className="flex mb-4 items-baseline gap-4">
             <h1 className="text-xl font-semibold dark:text-white">{title}</h1>
             <span className="text-gray-600 dark:text-gray-400 whitespace-nowrap">
               {`(${data.length} results)`}
             </span>
           </div>)}
 
-          {isHtmlTitle && (
+          {isShowingHeader && isHtmlTitle && (
             <div className="flex mb-4 items-baseline gap-4">
               <h1 className="text-xl font-semibold dark:text-white" dangerouslySetInnerHTML={{ __html: title }} />
               <span className="text-gray-600 dark:text-gray-400 whitespace-nowrap">
@@ -222,7 +207,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
             </div>
           )}
 
-          {isShowingFilter && (
+          {isShowingHeader && isShowingFilter && (
             <div className="mb-2 flex gap-2 items-baseline">
               <Input
                 placeholder="Filter..."
@@ -293,7 +278,7 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
         </div>
       ) : (
         <div className="text-center text-gray-500 dark:text-gray-400">
-          No data returned
+          No data
         </div>
       )}
     </div>

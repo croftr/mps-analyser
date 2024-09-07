@@ -120,6 +120,7 @@ function PageContent() {
 
   const [isContractsDown, setIsContractsDown] = useState(false);
   const [isDonationssDown, setIsDonationssDown] = useState(false);
+  const [isNamesDown, setIsNamesDown] = useState(false);
 
   const [tableData, setTableData] = useState<Array<any>>([]);
   const [tableColumns, setTableColumns] = useState(donationColumns);
@@ -190,6 +191,10 @@ function PageContent() {
     setIsDonationssDown(!isDonationssDown);
   }
 
+  const onToggleNames = () => {
+    setIsNamesDown(!isNamesDown);
+  }
+
   return (
 
     <div className="flex flex-col justify-center p-4 gap-2 mb-2">
@@ -210,7 +215,7 @@ function PageContent() {
 
         <div className="flex flex-col gap-1">
           <div className="flex">
-            <span className="dark:text-white">{tableData[0]?.donorStatus || DonorStatusEnum.Company}</span>
+            <span className="dark:text-white">{tableData[0]?.donorStatus}</span>
           </div>
           <div className="flex">
             <span className="dark:text-white">{tableData[0]?.accountingUnitName}</span>
@@ -241,11 +246,14 @@ function PageContent() {
         className="flex w-full"
       >
         <CollapsibleContent className="flex flex-col w-full gap-2">
-          <NeoTable data={contracts} title="Contracts Received" onRowClick={showContract} />
+          <NeoTable
+            data={contracts}
+            isShowingHeader={false}
+            title="Contracts Received"
+            onRowClick={showContract}
+          />
         </CollapsibleContent>
       </Collapsible>
-
-
 
       <div
         className="flex p-4 justify-between cursor-pointer 
@@ -268,32 +276,45 @@ function PageContent() {
       >
 
         <CollapsibleContent className="flex flex-col w-full gap-2">
-          <div>
-            <div className="flex flex-col md:flex-row md:justify-between p-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{tableText}</h2>
-              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total donations since 01-Jan-2000</h3>
-            </div>
-
-            {isLoading ? (
-              <NeoTableSkeleton columns={4} />
-            ) : (
-              <DataTable
-                data={tableData}
-                columns={tableColumns}
-                onRowClick={() => { }}
-              />
-            )}
-          </div>
+          <DataTable
+            data={tableData}
+            isShowingHeader={true}
+            columns={tableColumns}
+            onRowClick={() => { }}
+          />
         </CollapsibleContent>
       </Collapsible>
 
-       <NeoTable
-        data={similarCompanies}
-        title="Similar names"
-        onRowClick={onQueryCompany}
-        isHtmlTitle={false}
-        isShowingFilter={false}
-      />
+
+      <div
+        className="flex p-4 justify-between cursor-pointer 
+        bg-white dark:bg-gray-800 shadow-md rounded-md 
+        hover:bg-gray-100 dark:hover:bg-gray-700
+        transition-colors duration-200 active:bg-gray-200 dark:active:bg-gray-600"
+        onClick={onToggleNames}
+      >
+        <div className="flex flex-col">
+          <span className='flex gap-4'><span>{!similarCompanies ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : similarCompanies?.length || 0}</span> <span> Similar Names</span></span>
+        </div>
+
+        {isContractsDown ? <ArrowUp /> : <ArrowDown />}
+      </div>
+
+      <Collapsible
+        open={isNamesDown}
+        className="flex w-full"
+      >
+        <CollapsibleContent className="flex flex-col w-full gap-2">
+          <NeoTable
+            data={similarCompanies}
+            title="Similar names"
+            onRowClick={onQueryCompany}
+            isShowingHeader={false}
+          />
+        </CollapsibleContent>
+      </Collapsible>
+
+
 
     </div>
   );

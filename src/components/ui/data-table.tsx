@@ -15,9 +15,10 @@ interface DataTableProps {
     data: any[]; // Assuming your data is an array of objects
     columns: any[]; // Make sure to define the correct types for your columns
     onRowClick: Function;
+    isShowingHeader?: boolean
 }
 
-export function DataTable({ data, columns, onRowClick }: DataTableProps) {
+export function DataTable({ data, columns, onRowClick, isShowingHeader = true }: DataTableProps) {
     const table = useReactTable({
         data,
         columns,
@@ -37,12 +38,12 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
 
         // Check if the column header indicates currency
         if (cell.column.columnDef.header.toLowerCase() === "party name") {
-    
+
             let partyValue;
 
             const deregIndex = cellValue.toLowerCase().indexOf("deregistered");
             if (deregIndex !== -1) {
-                partyValue = cellValue.substr(0, deregIndex).trim(); 
+                partyValue = cellValue.substr(0, deregIndex).trim();
             } else {
                 partyValue = cellValue
             }
@@ -58,7 +59,7 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
                     cellValue = `£${parsedValue.toLocaleString()}`;
                 }
             }
-        } else if (cell.column.columnDef.header.toLowerCase().includes("date")) {            
+        } else if (cell.column.columnDef.header.toLowerCase().includes("date")) {
 
             const year = cellValue.year.low;
             const month = cellValue.month.low - 1; // JavaScript months are 0-indexed
@@ -73,37 +74,39 @@ export function DataTable({ data, columns, onRowClick }: DataTableProps) {
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-800">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                                <th
-                                    key={header.id}
-                                    colSpan={header.colSpan}
-                                    onClick={header.column.getToggleSortingHandler()}
-                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer select-none"
-                                >
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext()
-                                        )}
-                                    {header.column.getIsSorted() ? (
-                                        <span>
-                                            {header.column.getIsSorted() === 'desc' ? ' 🔽' : ' 🔼'}
-                                        </span>
-                                    ) : null}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
+                {isShowingHeader && (
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <th
+                                        key={header.id}
+                                        colSpan={header.colSpan}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer select-none"
+                                    >
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                        {header.column.getIsSorted() ? (
+                                            <span>
+                                                {header.column.getIsSorted() === 'desc' ? ' 🔽' : ' 🔼'}
+                                            </span>
+                                        ) : null}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+                )}
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
                     {table.getRowModel().rows.map((row) => (
                         <tr
-                        className={`${onRowClick ? "hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" : ""} ${onRowClick === undefined && 'no-hover'}`} 
-                            onClick={onRowClick ? () => onRowClick(row) : () => {}}
+                            className={`${onRowClick ? "hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" : ""} ${onRowClick === undefined && 'no-hover'}`}
+                            onClick={onRowClick ? () => onRowClick(row) : () => { }}
                             key={row.id}
                         >
                             {row.getVisibleCells().map((cell) => (
