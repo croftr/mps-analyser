@@ -37,7 +37,7 @@ export function DataTable({ data, columns, onRowClick, isShowingHeader = true }:
         }
 
         // Check if the column header indicates currency
-        if (cell.column.columnDef.header.toLowerCase() === "party name") {
+        if (cell.column.columnDef.header.toLowerCase() === "party" || cell.column.columnDef.header.toLowerCase() === "party name") {
 
             let partyValue;
 

@@ -88,20 +88,20 @@ const donationColumns = [
 
 const donarDetailsColumns = [
   {
-    accessorKey: 'donationType',
-    header: 'Type',
-  },
-  {
-    accessorKey: 'receivedDate',
-    header: 'Date',
+    accessorKey: 'partyName',
+    header: 'Party',
   },
   {
     accessorKey: 'amount',
     header: 'Amount',
   },
   {
-    accessorKey: 'partyName',
-    header: 'Party Name',
+    accessorKey: 'receivedDate',
+    header: 'Date',
+  },
+  {
+    accessorKey: 'donationType',
+    header: 'Type',
   },
 ]
 
@@ -152,7 +152,7 @@ function PageContent() {
     }
 
     if (nameParam) {
-      setName(capitalizeWords(nameParam));
+      setName(capitalizeWords(nameParam));      
     }
 
     setTableColumns(donarDetailsColumns);
@@ -213,15 +213,30 @@ function PageContent() {
           </span>
         </div>
 
-        <div className="flex flex-col gap-1">
+        {name && (
+          <div className="flex flex-col gap-1">
+            <div className="flex">
+              <span className="dark:text-white">{tableData[0]?.donorStatus}</span>
+            </div>
+            <div className="flex">
+              <span className="dark:text-white">{tableData[0]?.accountingUnitName}</span>
+              <span className="dark:text-white ml-2">{tableData[0]?.postcode}</span>
+            </div>
+          </div>
+        )}
+
+        {!name && (
+          <div className="flex flex-col gap-1 mt-4">
           <div className="flex">
-            <span className="dark:text-white">{tableData[0]?.donorStatus}</span>
+            <div className="h-4 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div> {/* Placeholder for donorStatus */}
           </div>
           <div className="flex">
-            <span className="dark:text-white">{tableData[0]?.accountingUnitName}</span>
-            <span className="dark:text-white ml-2">{tableData[0]?.postcode}</span>
+            <div className="h-4 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div> {/* Placeholder for accountingUnitName */}
+            <div className="h-4 w-16 bg-gray-300 dark:bg-gray-600 rounded animate-pulse ml-2"></div> {/* Placeholder for postcode */}
           </div>
         </div>
+        )}
+
       </div>
 
       {donorStatus !== DonorStatusEnum.Individual && (
@@ -233,8 +248,8 @@ function PageContent() {
           onClick={onToggleContracts}
         >
           <div className="flex flex-col">
-            <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span> <span> Contracts Received</span></span>
-            <span>Total value {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[2]).reduce((sum, value) => sum + value, 0)) : 0}</span>
+            <span className='flex gap-4'><span> Contracts Received:</span> <span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : contracts?.length || 0}</span></span>
+            <div className='flex'><div className='w-[154px]'>Total value:</div> {contracts?.length ? formatCurrency(contracts?.map(i => i._fields[2]).reduce((sum, value) => sum + value, 0)) : 0}</div>
           </div>
 
           {isContractsDown ? <ArrowUp /> : <ArrowDown />}
@@ -263,8 +278,8 @@ function PageContent() {
         onClick={onToggleDonations}
       >
         <div className="flex flex-col">
-          <span className='flex gap-4'><span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> <span> Donations Made</span></span>
-          <span>Total value {tableData.length ? formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0)) : 0}</span>
+          <span className='flex gap-4'><span> Donations Made:</span> <span>{isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : tableData?.length || 0}</span> </span>
+          <div className="flex"><div className='w-[138px]'>Total value:</div> {tableData.length ? formatCurrency(tableData.map(i => i.amount).reduce((sum, amount) => sum + amount, 0)) : 0}</div>
         </div>
 
         {isContractsDown ? <ArrowUp /> : <ArrowDown />}
@@ -294,7 +309,7 @@ function PageContent() {
         onClick={onToggleNames}
       >
         <div className="flex flex-col">
-          <span className='flex gap-4'><span>{!similarCompanies ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : similarCompanies?.length || 0}</span> <span> Similar Names</span></span>
+          <span className='flex gap-4'><span> Similar Names:</span> <span>{!similarCompanies ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400"></div> : similarCompanies?.length || 0}</span></span>
         </div>
 
         {isContractsDown ? <ArrowUp /> : <ArrowDown />}
