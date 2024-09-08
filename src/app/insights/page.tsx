@@ -471,9 +471,7 @@ function PageContent() {
     let key = types.find(i => i.value === typeValue)?.dateLookup || 'mpsLastUpdate';
         
     //@ts-ignore
-    const value =  lastUpdatedValues[key];
-
-    console.log("value ", value);
+    const value =  lastUpdatedValues[key];    
 
     setLastUpdated(value);
     
@@ -482,10 +480,6 @@ function PageContent() {
   const onSearchOrgs = async () => {
     setIsQuerying(true);
     setData(undefined);
-
-    console.log("check 1 ", awardedBy);
-    console.log("check 2 ", awaredByParty);
-
 
     let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}`
     if (orgName) {

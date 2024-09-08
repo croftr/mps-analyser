@@ -109,20 +109,34 @@ export function NeoTable({ data, title, onRowClick, isHtmlTitle = false, isShowi
     if (!value) {
       return "";
     }
-
+    
     let renderedValue = value;
 
     if (title.toLowerCase() === "party") {
       return <PartyLabel partyName={value} />
     } else if (title.toLowerCase() === "awarded by" || title.toLowerCase() === "donated to") {
-      return <div className="flex flex-col gap-2">
-        {value.map((i) => (
-          <PartyLabel
-            key={i}
-            partyName={i}
-          />
-        ))}
-      </div>
+
+      if (Array.isArray(value)) {
+        return <div className="flex flex-col gap-2">
+          {
+            value.map((i) => (
+              <PartyLabel
+                key={i}
+                partyName={i}
+              />
+            ))
+          }
+        </div>
+
+      } else {
+
+        return <PartyLabel
+          key={value}
+          partyName={value}
+        />
+
+      }
+            
     } else if (Array.isArray(value)) {
       return (
         <div className="flex flex-col gap-2">
