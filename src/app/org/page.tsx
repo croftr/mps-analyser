@@ -17,7 +17,7 @@ import { capitalizeWords, formatCurrency } from "@/lib/utils";
 
 import { PARTY_COLOUR } from ".././../app/config/constants";
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LabelList } from 'recharts';
 import { ChartContainer } from '@/components/ui/chart' // Assuming you have this component
 
 import { PieChart, Pie, Cell, Label } from 'recharts';
@@ -302,7 +302,7 @@ function PageContent() {
       </div>
 
       {contractCountChart && (
-        <div className='flex gap-4 mb-4'>
+        <div className='flex flex-col gap-4 mb-4'>
           <div>
             <Card>
               <CardHeader className="items-center pb-0">
@@ -319,7 +319,7 @@ function PageContent() {
                     data={contractCountChart}
                   >
                     <XAxis dataKey="name" />
-                    <YAxis  />
+                    <YAxis />
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="contracts" fill="#8884d8" />
@@ -352,6 +352,60 @@ function PageContent() {
                 </ChartContainer>
               </CardContent>
             </Card>
+          </div>
+
+          <div className='flex flex-col gap-4 mb-4'>
+            
+            <div>
+              <Card>
+                <CardHeader className="items-center pb-0">
+                  <CardDescription>Contracts Received by Party</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-1 pb-0">
+                  <ChartContainer
+                    config={chartConfig} // Assuming you have a suitable chartConfig for contracts
+                    className="mx-auto aspect-square max-h-[250px]"
+                  >
+                    <PieChart>
+                      <ChartTooltip content={<ChartTooltipContent nameKey="contracts" hideLabel />} />
+                      <Pie data={contractCountChart} dataKey="contracts">
+                        <LabelList
+                          dataKey="name" // Assuming 'name' holds the party name in contractCountChart
+                          className="fill-background"
+                          stroke="none"
+                          fontSize={12}
+                          formatter={(value: string) => value} // Directly display the party name
+                        />
+                      </Pie>
+                    </PieChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div>
+              <Card>
+                <CardHeader className="pb-0">
+                  <CardDescription>Donations Made by Party</CardDescription>
+                </CardHeader>
+                <CardContent className="pb-1">
+                  <ChartContainer config={chartConfig}>
+                    <PieChart>
+                      <ChartTooltip content={<ChartTooltipContent nameKey="donations" hideLabel />} />
+                      <Pie data={donationCountChart} dataKey="donations">
+                        <LabelList
+                          dataKey="name" // Assuming 'name' holds the party name in donationCountChart
+                          className="fill-background"
+                          stroke="none"
+                          fontSize={12}
+                          formatter={(value: string) => value} // Directly display the party name
+                        />
+                      </Pie>
+                    </PieChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       )
