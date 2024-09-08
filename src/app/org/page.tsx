@@ -17,10 +17,8 @@ import { capitalizeWords, formatCurrency } from "@/lib/utils";
 
 import { PARTY_COLOUR } from ".././../app/config/constants";
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LabelList } from 'recharts';
-import { ChartContainer } from '@/components/ui/chart' // Assuming you have this component
-
-import { PieChart, Pie, Cell, Label } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { ChartContainer } from '@/components/ui/chart'
 
 
 import {
@@ -301,115 +299,55 @@ function PageContent() {
         )}
       </div>
 
-      {contractCountChart && (
-        <div className='flex flex-col gap-4 mb-4'>
-          <div>
-            <Card>
-              <CardHeader className="items-center pb-0">
-                <CardDescription>Contracts received by party</CardDescription>
-              </CardHeader>
-              <CardContent className="pb-1">
-                <ChartContainer
-                  config={chartConfig}
-                  className="mx-auto max-h-[250px]"
-                >
-                  <BarChart
-                    width={500} // Adjust width as needed
-                    height={300} // Adjust height as needed
-                    data={contractCountChart}
-                  >
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="contracts" fill="#8884d8" />
-                  </BarChart>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-          </div>
+      <div className='flex flex-col gap-2 mb-1'>
 
+        <Card>
+          <CardHeader className="items-center pb-0">
+            <CardDescription>Contracts received by party</CardDescription>
+          </CardHeader>
+          <CardContent className="pb-1">
+            <ChartContainer
+              config={chartConfig}
+              className="mx-auto max-h-[250px]"
+            >
+              <BarChart                
+                width={500} // Adjust width as needed
+                height={300} // Adjust height as needed
+                data={contractCountChart}
+              >
+                <XAxis dataKey="name"/>
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="contracts" fill="#8884d8" />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
 
-          <div>
-            <Card>
-              <CardHeader className="pb-0">
-                <CardDescription>Donations madeby party</CardDescription>
-              </CardHeader>
-              <CardContent className="pb-1">
-                <ChartContainer config={chartConfig}>
-                  <BarChart
-                    width={500} // Adjust width as needed
-                    height={300} // Adjust height as needed
-                    data={donationCountChart}
-                  >
+        <Card>
+          <CardHeader className="items-center pb-0">
+            <CardDescription>Donations madeby party</CardDescription>
+          </CardHeader>
+          <CardContent className="pb-1">
+            <ChartContainer config={chartConfig}>
+              <BarChart
+                width={500} // Adjust width as needed
+                height={300} // Adjust height as needed
+                data={donationCountChart}
+              >
 
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="donations" fill="#8884d8" />
-                  </BarChart>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-          </div>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="donations" fill="#8884d8" />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
 
-          <div className='flex flex-col gap-4 mb-4'>
-            
-            <div>
-              <Card>
-                <CardHeader className="items-center pb-0">
-                  <CardDescription>Contracts Received by Party</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 pb-0">
-                  <ChartContainer
-                    config={chartConfig} // Assuming you have a suitable chartConfig for contracts
-                    className="mx-auto aspect-square max-h-[250px]"
-                  >
-                    <PieChart>
-                      <ChartTooltip content={<ChartTooltipContent nameKey="contracts" hideLabel />} />
-                      <Pie data={contractCountChart} dataKey="contracts">
-                        <LabelList
-                          dataKey="name" // Assuming 'name' holds the party name in contractCountChart
-                          className="fill-background"
-                          stroke="none"
-                          fontSize={12}
-                          formatter={(value: string) => value} // Directly display the party name
-                        />
-                      </Pie>
-                    </PieChart>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div>
-              <Card>
-                <CardHeader className="pb-0">
-                  <CardDescription>Donations Made by Party</CardDescription>
-                </CardHeader>
-                <CardContent className="pb-1">
-                  <ChartContainer config={chartConfig}>
-                    <PieChart>
-                      <ChartTooltip content={<ChartTooltipContent nameKey="donations" hideLabel />} />
-                      <Pie data={donationCountChart} dataKey="donations">
-                        <LabelList
-                          dataKey="name" // Assuming 'name' holds the party name in donationCountChart
-                          className="fill-background"
-                          stroke="none"
-                          fontSize={12}
-                          formatter={(value: string) => value} // Directly display the party name
-                        />
-                      </Pie>
-                    </PieChart>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      )
-      }
+      </div>
 
       {donorStatus !== DonorStatusEnum.Individual && (
         <div
