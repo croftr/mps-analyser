@@ -46,8 +46,8 @@ enum DonorStatusEnum {
   RegisteredPoliticalParty = "Registered Political Party",
   Other = "Other",
   Empty = "", // To handle the empty string case
-  UnidentifiableDonor = "Unidentifiable Donor",
-  Individual = "Individual",
+  UnidentifiableDonor = "Unidentifiable",
+  Individual = "Individual",  
 }
 
 const donorStatusIcons: { [key in string]: JSX.Element } = {
@@ -63,7 +63,7 @@ const donorStatusIcons: { [key in string]: JSX.Element } = {
   [DonorStatusEnum.Other]: <HelpCircleIcon />,
   [DonorStatusEnum.Empty]: <HelpCircleIcon />, // Default icon for empty string
   [DonorStatusEnum.UnidentifiableDonor]: <UserIcon />,
-  [DonorStatusEnum.Individual]: <UserIcon />,
+  [DonorStatusEnum.Individual]: <UserIcon />,  
 };
 
 const donarDetailsColumns = [
@@ -102,7 +102,7 @@ function PageContent() {
   const [isDonationssDown, setIsDonationssDown] = useState(false);
   const [isNamesDown, setIsNamesDown] = useState(false);
 
-  const [tableData, setTableData] = useState<Array<any>>([]);  
+  const [tableData, setTableData] = useState<Array<any>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [name, setName] = useState<string | null>("")
@@ -119,8 +119,13 @@ function PageContent() {
 
     const headerInfo = Array.isArray(donationsResponse) ? donationsResponse[0] : undefined;
 
-    if (headerInfo) {      
-      setDonarStatus(headerInfo.donorStatus);
+    if (headerInfo) {
+      if (headerInfo.donationType === "Impermissible Donor" || headerInfo.donorStatus === "Unidentifiable Donor") {
+        setDonarStatus(DonorStatusEnum.UnidentifiableDonor);
+      } else {
+        setDonarStatus(headerInfo.donorStatus);
+      }
+
       setTableData(donationsResponse);
     } else {
       //no header means its been given a contract but has no donation data so it must be an organisation 
@@ -128,9 +133,9 @@ function PageContent() {
     }
 
     if (nameParam) {
-      setName(capitalizeWords(nameParam));      
+      setName(capitalizeWords(nameParam));
     }
-    
+
     setContracts(undefined)
     const result = await fetch(`${config.mpsApiUrl}contracts?orgName=${nameParam}&isawaredtoknown=true&limit=10000`);
     const contractsResult = await result.json();
@@ -177,7 +182,6 @@ function PageContent() {
 
         <div className="flex gap-2">
           <span>{donorStatus ? donorStatusIcons[donorStatus] || <HelpCircleIcon /> : <div className="h-6 w-6 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg"></div>}</span>
-
           <span>
             {name ? (
               <h4 className="font-semibold text-lg mb-2">{name}</h4>
@@ -187,7 +191,7 @@ function PageContent() {
           </span>
         </div>
 
-        {name && (
+        {name && donorStatus !== DonorStatusEnum.UnidentifiableDonor && (
           <div className="flex flex-col gap-1">
             <div className="flex">
               <span className="dark:text-white">{tableData[0]?.donorStatus}</span>
@@ -199,16 +203,27 @@ function PageContent() {
           </div>
         )}
 
+        {name && donorStatus === DonorStatusEnum.UnidentifiableDonor && (
+          <div className="flex flex-col gap-1">
+            <div className="flex">
+              <span className="dark:text-white">It has not been possible to identify these donars or organisations</span>
+            </div>
+            <div className="flex">
+              <span className="dark:text-white">Expanding the details will give more information</span>              
+            </div>
+          </div>
+        )}
+
         {!name && (
           <div className="flex flex-col gap-1 mt-4">
-          <div className="flex">
-            <div className="h-4 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div> {/* Placeholder for donorStatus */}
+            <div className="flex">
+              <div className="h-4 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div> {/* Placeholder for donorStatus */}
+            </div>
+            <div className="flex">
+              <div className="h-4 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div> {/* Placeholder for accountingUnitName */}
+              <div className="h-4 w-16 bg-gray-300 dark:bg-gray-600 rounded animate-pulse ml-2"></div> {/* Placeholder for postcode */}
+            </div>
           </div>
-          <div className="flex">
-            <div className="h-4 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div> {/* Placeholder for accountingUnitName */}
-            <div className="h-4 w-16 bg-gray-300 dark:bg-gray-600 rounded animate-pulse ml-2"></div> {/* Placeholder for postcode */}
-          </div>
-        </div>
         )}
       </div>
 
