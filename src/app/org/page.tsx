@@ -310,39 +310,49 @@ function PageContent() {
               config={chartConfig}
               className="mx-auto max-h-[250px]"
             >
-              <BarChart                
-                width={500} // Adjust width as needed
-                height={300} // Adjust height as needed
-                data={contractCountChart}
-              >
-                <XAxis dataKey="name"/>
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="contracts" fill="#8884d8" />
-              </BarChart>
+              {!contractCountChart ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500 m-auto mt-10"></div>
+                :
+                (
+                  <BarChart
+                    width={500} // Adjust width as needed
+                    height={300} // Adjust height as needed
+                    data={contractCountChart}
+                  >
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="contracts" fill="#8884d8" />
+                  </BarChart>
+                )
+              }
             </ChartContainer>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="items-center pb-0">
-            <CardDescription>Donations madeby party</CardDescription>
+            <CardDescription>Donations made by party</CardDescription>
           </CardHeader>
           <CardContent className="pb-1">
             <ChartContainer config={chartConfig}>
-              <BarChart
-                width={500} // Adjust width as needed
-                height={300} // Adjust height as needed
-                data={donationCountChart}
-              >
 
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="donations" fill="#8884d8" />
-              </BarChart>
+              {!donationCountChart ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500 m-auto mt-10"></div>
+                :
+                (<BarChart
+                  width={500} // Adjust width as needed
+                  height={300} // Adjust height as needed
+                  data={donationCountChart}
+                >
+
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="donations" fill="#8884d8" />
+                </BarChart>)}
+
+
             </ChartContainer>
           </CardContent>
         </Card>
