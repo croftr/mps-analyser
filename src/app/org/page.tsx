@@ -303,7 +303,7 @@ function PageContent() {
 
         <Card>
           <CardHeader className="items-center pb-0">
-            <CardDescription>Contracts received by party</CardDescription>
+            <CardDescription>Contracts received from party</CardDescription>
           </CardHeader>
           <CardContent className="pb-1">
             <ChartContainer
@@ -319,9 +319,7 @@ function PageContent() {
                     data={contractCountChart}
                   >
                     <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
+                    <YAxis />                    
                     <Bar dataKey="contracts" fill="#8884d8" />
                   </BarChart>
                 )
@@ -332,7 +330,7 @@ function PageContent() {
 
         <Card>
           <CardHeader className="items-center pb-0">
-            <CardDescription>Donations made by party</CardDescription>
+            <CardDescription>Donations made to party</CardDescription>
           </CardHeader>
           <CardContent className="pb-1">
             <ChartContainer config={chartConfig}>
@@ -346,9 +344,7 @@ function PageContent() {
                 >
 
                   <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
+                  <YAxis />                  
                   <Bar dataKey="donations" fill="#8884d8" />
                 </BarChart>)}
 
