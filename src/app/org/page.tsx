@@ -316,6 +316,7 @@ function PageContent() {
                   <BarChart
                     width={500} // Adjust width as needed
                     height={300} // Adjust height as needed
+                    barSize={60}
                     data={contractCountChart}
                   >
                     <XAxis dataKey="name" />
@@ -340,12 +341,13 @@ function PageContent() {
                 (<BarChart
                   width={500} // Adjust width as needed
                   height={300} // Adjust height as needed
+                  barSize={60}
                   data={donationCountChart}
                 >
 
                   <XAxis dataKey="name" />
                   <YAxis />                  
-                  <Bar dataKey="donations" fill="#8884d8" />
+                  <Bar dataKey="donations" fill="#8884d8" />                  
                 </BarChart>)}
 
 
