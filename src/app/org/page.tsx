@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, ReactNode } from 'react';
 import ky from 'ky';
 import { config } from '../app.config';
 
@@ -14,6 +14,30 @@ import { ArrowUp } from "lucide-react"
 import { ArrowDown } from "lucide-react"
 
 import { capitalizeWords, formatCurrency } from "@/lib/utils";
+
+import { PARTY_COLOUR } from ".././../app/config/constants";
+
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { ChartContainer } from '@/components/ui/chart' // Assuming you have this component
+
+import { PieChart, Pie, Cell, Label } from 'recharts';
+
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+import {
+  ChartConfig,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+
 
 import {
   BriefcaseIcon,
@@ -34,6 +58,8 @@ import {
   CollapsibleContent
 } from "@/components/ui/collapsible"
 
+type PartyCounts = Record<string, number>;
+
 enum DonorStatusEnum {
   Company = "Company",
   UnincorporatedAssociation = "Unincorporated Association",
@@ -47,7 +73,7 @@ enum DonorStatusEnum {
   Other = "Other",
   Empty = "", // To handle the empty string case
   UnidentifiableDonor = "Unidentifiable",
-  Individual = "Individual",  
+  Individual = "Individual",
 }
 
 const donorStatusIcons: { [key in string]: JSX.Element } = {
@@ -63,7 +89,7 @@ const donorStatusIcons: { [key in string]: JSX.Element } = {
   [DonorStatusEnum.Other]: <HelpCircleIcon />,
   [DonorStatusEnum.Empty]: <HelpCircleIcon />, // Default icon for empty string
   [DonorStatusEnum.UnidentifiableDonor]: <UserIcon />,
-  [DonorStatusEnum.Individual]: <UserIcon />,  
+  [DonorStatusEnum.Individual]: <UserIcon />,
 };
 
 const donarDetailsColumns = [
@@ -111,6 +137,12 @@ function PageContent() {
 
   const [donorStatus, setDonarStatus] = useState<DonorStatusEnum>()
 
+  const [contractCountChart, setContractCountChart] = useState<any>();
+  const [donationCountChart, setDonationCountChart] = useState<any>();
+
+  const chartConfig = {
+  } satisfies ChartConfig
+
   const getData = async () => {
 
     const nameParam = searchParams.get('name');
@@ -147,6 +179,8 @@ function PageContent() {
     const contractsResultJson = await companyResult.json();
     setSimilarCompanies(contractsResultJson);
 
+    chartSummaryData(contractsResult, donationsResponse);
+
   }
 
   const showContract = (row: any) => {
@@ -172,6 +206,46 @@ function PageContent() {
 
   const onToggleNames = () => {
     setIsNamesDown(!isNamesDown);
+  }
+
+  const chartSummaryData = (contractsResult: Array<any>, donationsResponse: Array<any>): void => {
+
+    console.log("go ", donationsResponse);
+
+    const partyContractCounts: PartyCounts = {};
+    const partyDonationCounts: PartyCounts = {};
+
+    contractsResult?.forEach(i => {
+      const contractParties = i._fields[1];
+
+      contractParties.forEach((party: string) => {
+        if (partyContractCounts[party]) {
+          partyContractCounts[party] = partyContractCounts[party] + 1;
+        } else {
+          partyContractCounts[party] = 1;
+        }
+      });
+    })
+
+    donationsResponse?.forEach(i => {
+
+      if (partyDonationCounts[i.partyName]) {
+        partyDonationCounts[i.partyName] = partyDonationCounts[i.partyName] + 1;
+      } else {
+        partyDonationCounts[i.partyName] = 1;
+      }
+    });
+
+    console.log("partyCounts ", partyContractCounts);
+
+    const contractChartData = Object.entries(partyContractCounts).map(([name, contracts]) => ({ name, contracts, fill: PARTY_COLOUR[name].backgroundColour }));
+    const donarChartData = Object.entries(partyDonationCounts).map(([name, donations]) => ({ name, donations, fill: PARTY_COLOUR[name].backgroundColour }));
+
+    console.log("chartData ", donarChartData);
+
+    setContractCountChart(contractChartData);
+    setDonationCountChart(donarChartData);
+
   }
 
   return (
@@ -209,7 +283,7 @@ function PageContent() {
               <span className="dark:text-white">It has not been possible to identify these donars or organisations</span>
             </div>
             <div className="flex">
-              <span className="dark:text-white">Expanding the details will give more information</span>              
+              <span className="dark:text-white">Expanding the details will give more information</span>
             </div>
           </div>
         )}
@@ -226,6 +300,62 @@ function PageContent() {
           </div>
         )}
       </div>
+
+      {contractCountChart && (
+        <div className='flex gap-4 mb-4'>
+          <div>
+            <Card>
+              <CardHeader className="items-center pb-0">
+                <CardDescription>Contracts received by party</CardDescription>
+              </CardHeader>
+              <CardContent className="pb-1">
+                <ChartContainer
+                  config={chartConfig}
+                  className="mx-auto max-h-[250px]"
+                >
+                  <BarChart
+                    width={500} // Adjust width as needed
+                    height={300} // Adjust height as needed
+                    data={contractCountChart}
+                  >
+                    <XAxis dataKey="name" />
+                    <YAxis  />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="contracts" fill="#8884d8" />
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+
+          <div>
+            <Card>
+              <CardHeader className="pb-0">
+                <CardDescription>Donations madeby party</CardDescription>
+              </CardHeader>
+              <CardContent className="pb-1">
+                <ChartContainer config={chartConfig}>
+                  <BarChart
+                    width={500} // Adjust width as needed
+                    height={300} // Adjust height as needed
+                    data={donationCountChart}
+                  >
+
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="donations" fill="#8884d8" />
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )
+      }
 
       {donorStatus !== DonorStatusEnum.Individual && (
         <div

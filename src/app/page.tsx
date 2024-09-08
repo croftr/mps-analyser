@@ -4,7 +4,6 @@ import * as React from "react"
 import ky from 'ky';
 import { useRouter } from 'next/navigation'
 import { Vote, Party } from "../types";
-import DivisionSvg from "@/components/custom/divisionSvg";
 
 import Image from 'next/image';
 
