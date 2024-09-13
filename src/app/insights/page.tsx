@@ -292,7 +292,10 @@ function PageContent() {
         setContractFromDate(contractParams.contractFromDate);
         setContractToDate(contractParams.contractToDate);
 
-        url = `${config.mpsApiUrl}contracts?limit=${limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&contractname=${contractName}&valuefrom=${contractParams.valueFrom}&valueto=${contractParams.valueTo}&industry=${contractParams.industry}&contractFromDate=${contractParams.contractFromDate}&contractToDate=${contractParams.contractToDate}&matchtype=${commonParams.matchType}`;
+        console.log("check ", contractParams.contractName);
+        
+
+        url = `${config.mpsApiUrl}contracts?limit=${commonParams.limit}&awardedBy=${contractParams.awardedByParam}&orgName=${contractParams.awardedToParam}&groupByContractCount=${contractParams.groupByContractParam}&contractName=${contractParams.contractName}&valuefrom=${contractParams.valueFrom}&valueto=${contractParams.valueTo}&industry=${contractParams.industry}&contractFromDate=${contractParams.contractFromDate}&contractToDate=${contractParams.contractToDate}&matchtype=${commonParams.matchType}`;
 
         if (contractParams.awardedCountParam) {
           setAwardedCount(Number(contractParams.awardedCountParam));
