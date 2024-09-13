@@ -59,33 +59,7 @@ interface PartyColor {
     foregroundColour: string;
 }
 
-export const PARTY_COLOUR_BAK: Record<string, PartyColor> = {
-    "Alliance": { backgroundColour: "#cdaf2d", foregroundColour: "#FFFFFF" },
-    "Alba Party": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
-    "Conservative": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
-    "Democratic Unionist Party": { backgroundColour: "#cc3300", foregroundColour: "#FFFFFF" },
-    "Green Party": { backgroundColour: "#78b82a", foregroundColour: "#FFFFFF" },
-    "Independent": { backgroundColour: "#909090", foregroundColour: "#FFFFFF" },
-    "Labour": { backgroundColour: "#d50000", foregroundColour: "#ffffff" },
-    "Liberal Democrat": { backgroundColour: "#faa01a", foregroundColour: "#FFFFFF" },
-    "Plaid Cymru": { backgroundColour: "#348837", foregroundColour: "#ffffff" },
-    "Reform UK": { backgroundColour: "#12b6cf", foregroundColour: "#ffffff" },
-    "Scottish National Party": { backgroundColour: "#fff685", foregroundColour: "#000000" },
-    "Sinn Féin": { backgroundColour: "#02665f", foregroundColour: "#FFFFFF" },
-    "Sinn Fin": { backgroundColour: "#02665f", foregroundColour: "#FFFFFF" },
-    "Social Democratic and Labour Party": { backgroundColour: "#4ea268", foregroundColour: "#000000" },
-    "Social Democratic & Labour Party": { backgroundColour: "#4ea268", foregroundColour: "#000000" },
-    "Traditional Unionist Voice": { backgroundColour: "#0c3a6a", foregroundColour: "#ffffff" },
-    "Ulster Unionist Party": { backgroundColour: "#a1cdf0", foregroundColour: "#FFFFFF" },
-    "Workers Party of Britain": { backgroundColour: "#DB241E", foregroundColour: "#FFFFFF" },
-    "UK Independence Party": { backgroundColour: "purple", foregroundColour: "gold" },
-    "Cooperative Party": { backgroundColour: "#3f1d70", foregroundColour: "white" },
-    "The Reclaim Party": { backgroundColour: "#14172d", foregroundColour: "white" },
-    "The Socialist Party of Great Britain": { backgroundColour: "#cf2e2e", foregroundColour: "white" },
-    "Womens Equality Party": { backgroundColour: "#6e2d91", foregroundColour: "white" },
-};
-
-export const PARTY_COLOUR: Record<string, PartyColor> = {
+const PARTY_COLOUR: Record<string, PartyColor> = {
     "Alliance": { backgroundColour: "#cdaf2d", foregroundColour: "#FFFFFF" },
     "Alba Party": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
     "Conservative": { backgroundColour: "#0063ba", foregroundColour: "#ffffff" },
@@ -164,6 +138,35 @@ export const PARTY_COLOUR: Record<string, PartyColor> = {
     "Scottish Libertarian Party": { backgroundColour: "#ffff00", foregroundColour: "#000000" },
     "Both Unions Party of Northern Ireland": { backgroundColour: "#9acd32", foregroundColour: "#FFFFFF" }
 }
+
+export const getPartyColour = (name: string): PartyColor => {
+
+    let record: PartyColor | undefined = PARTY_COLOUR[name];
+
+    if (record) {
+        return record; // Exact match found, return immediately
+    }
+
+    // 2. If no exact match, try partial match
+    const wordsToExclude = ["the", "and", "party"];
+    const nameWords = name
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((word) => !wordsToExclude.includes(word));
+
+    for (const partyName in PARTY_COLOUR) {
+        if (nameWords.some((word) => partyName.toLowerCase().includes(word))) {
+            record = PARTY_COLOUR[partyName];
+            console.warn(`Using partial match '${partyName}' for '${name}'`);
+            return record;
+        }
+    }
+
+    console.warn("No match found for ", name);
+    return { backgroundColour: "lightgrey", foregroundColour: "black" };
+
+}
+
 
 export const VOTING_CATEGORIES = [
     "Any",

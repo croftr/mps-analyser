@@ -3,7 +3,6 @@ import * as React from 'react'
 import Image from "next/image";
 import CustomSvg from '../custom/customSvg';
 import PartyLabel from './partyLabel';
-import { PARTY_COLOUR } from ".././../app/config/constants";
 
 import {
   Tooltip,

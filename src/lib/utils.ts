@@ -70,9 +70,6 @@ export const convertNeo4jDateToString = (neo4jDate: Neo4jDate): string => {
     day: 'numeric'
   });
 
-  console.log("done ", formattedDate);
-  
-
   return formattedDate;
 };
 

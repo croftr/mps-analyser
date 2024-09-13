@@ -1,6 +1,6 @@
 "use client"
 import * as React from 'react'
-import { PARTY_COLOUR } from ".././../app/config/constants";
+import { getPartyColour } from ".././../app/config/constants";
 
 const PartyLabel = ({ partyName = "" }) => {
 
@@ -24,8 +24,8 @@ const PartyLabel = ({ partyName = "" }) => {
         <span
             className="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-medium mt-2 mb-1" // Added Tailwind classes
             style={{
-                backgroundColor: PARTY_COLOUR[partyName]?.backgroundColour,
-                color: PARTY_COLOUR[partyName]?.foregroundColour,
+                backgroundColor: getPartyColour(partyName).backgroundColour,
+                color: getPartyColour(partyName).foregroundColour,
             }}
         >
             {getPartyAbbreviation(partyName)}

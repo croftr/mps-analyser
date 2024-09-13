@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense, ReactNode } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import ky from 'ky';
 import { config } from '../app.config';
 
@@ -15,27 +15,21 @@ import { ArrowDown } from "lucide-react"
 
 import { capitalizeWords, formatCurrency } from "@/lib/utils";
 
-import { PARTY_COLOUR } from ".././../app/config/constants";
+import { getPartyColour} from ".././../app/config/constants";
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis } from 'recharts';
 import { ChartContainer } from '@/components/ui/chart'
-
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
 
 import {
-  ChartConfig,
-  ChartTooltip,
-  ChartTooltipContent,
+  ChartConfig
 } from "@/components/ui/chart"
-
 
 import {
   BriefcaseIcon,
@@ -207,9 +201,7 @@ function PageContent() {
   }
 
   const chartSummaryData = (contractsResult: Array<any>, donationsResponse: Array<any>): void => {
-
-    console.log("go ", donationsResponse);
-
+    
     const partyContractCounts: PartyCounts = {};
     const partyDonationCounts: PartyCounts = {};
 
@@ -233,13 +225,9 @@ function PageContent() {
         partyDonationCounts[i.partyName] = 1;
       }
     });
-
-    console.log("partyCounts ", partyContractCounts);
-
-    const contractChartData = Object.entries(partyContractCounts).map(([name, contracts]) => ({ name, contracts, fill: PARTY_COLOUR[name].backgroundColour }));
-    const donarChartData = Object.entries(partyDonationCounts).map(([name, donations]) => ({ name, donations, fill: PARTY_COLOUR[name].backgroundColour }));
-
-    console.log("chartData ", donarChartData);
+    
+    const contractChartData = Object.entries(partyContractCounts).map(([name, contracts]) => ({ name, contracts, fill: getPartyColour(name).backgroundColour }));
+    const donarChartData = Object.entries(partyDonationCounts).map(([name, donations]) => ({ name, donations, fill: getPartyColour(name).backgroundColour }));
 
     setContractCountChart(contractChartData);
     setDonationCountChart(donarChartData);

@@ -3,7 +3,7 @@
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { useState, useEffect } from 'react';
 
-import { PARTY_COLOUR } from ".././../app/config/constants";
+import { getPartyColour } from ".././../app/config/constants";
 
 import {
   ChartContainer,
@@ -45,7 +45,7 @@ export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityC
 
     let foregroundColor = "black";
     if (party) {
-      foregroundColor = PARTY_COLOUR[party].foregroundColour;
+      foregroundColor = getPartyColour(party).foregroundColour;
     }
 
     return (
@@ -85,7 +85,7 @@ export default function SimilarityChart({ mpData, onQueryMpByName }: SimilarityC
               {mpData && mpData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={PARTY_COLOUR[entry.party]?.backgroundColour || "var(--clr-primary)"}
+                  fill={getPartyColour(entry.party).backgroundColour || "var(--clr-primary)"}
                 />
               ))}
             </Bar>
