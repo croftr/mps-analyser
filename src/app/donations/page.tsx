@@ -23,16 +23,12 @@ const donationColumns = [
     header: 'Party Name',
   },
   {
-    accessorKey: 'memberCount',
-    header: 'Member Count',
-  },
-  {
     accessorKey: 'donationCount',
-    header: 'Donation Count',
+    header: 'Donations',
   },
   {
     accessorKey: 'totalDonationValue',
-    header: 'Total Donation Value',
+    header: 'Total Value',
   },
 ];
 
@@ -43,7 +39,7 @@ const partyDonarColumns = [
   },
   {
     accessorKey: 'donatedCout',
-    header: 'Donation Count',
+    header: 'Donations',
   },
   {
     accessorKey: 'totalDonationValue',
