@@ -15,7 +15,7 @@ import { ArrowDown } from "lucide-react"
 
 import { capitalizeWords, formatCurrency } from "@/lib/utils";
 
-import { getPartyColour} from ".././../app/config/constants";
+import { getPartyColour } from ".././../app/config/constants";
 
 import { BarChart, Bar, XAxis, YAxis } from 'recharts';
 import { ChartContainer } from '@/components/ui/chart'
@@ -201,7 +201,7 @@ function PageContent() {
   }
 
   const chartSummaryData = (contractsResult: Array<any>, donationsResponse: Array<any>): void => {
-    
+
     const partyContractCounts: PartyCounts = {};
     const partyDonationCounts: PartyCounts = {};
 
@@ -225,7 +225,7 @@ function PageContent() {
         partyDonationCounts[i.partyName] = 1;
       }
     });
-    
+
     const contractChartData = Object.entries(partyContractCounts).map(([name, contracts]) => ({ name, contracts, fill: getPartyColour(name).backgroundColour }));
     const donarChartData = Object.entries(partyDonationCounts).map(([name, donations]) => ({ name, donations, fill: getPartyColour(name).backgroundColour }));
 
@@ -293,7 +293,7 @@ function PageContent() {
           <CardHeader className="items-center pb-0">
             <CardDescription>Contracts received from party</CardDescription>
           </CardHeader>
-          <CardContent className="pb-1">
+          <CardContent className="pb-1 min-w-96">
             <ChartContainer
               config={chartConfig}
               className="mx-auto max-h-[250px]"
@@ -308,7 +308,7 @@ function PageContent() {
                     data={contractCountChart}
                   >
                     <XAxis dataKey="name" />
-                    <YAxis />                    
+                    <YAxis />
                     <Bar dataKey="contracts" fill="#8884d8" />
                   </BarChart>
                 )
@@ -321,7 +321,7 @@ function PageContent() {
           <CardHeader className="items-center pb-0">
             <CardDescription>Donations made to party</CardDescription>
           </CardHeader>
-          <CardContent className="pb-1">
+          <CardContent className="pb-1 min-w-96">
             <ChartContainer config={chartConfig}>
 
               {!donationCountChart ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500 m-auto mt-10"></div>
@@ -334,8 +334,8 @@ function PageContent() {
                 >
 
                   <XAxis dataKey="name" />
-                  <YAxis />                  
-                  <Bar dataKey="donations" fill="#8884d8" />                  
+                  <YAxis />
+                  <Bar dataKey="donations" fill="#8884d8" />
                 </BarChart>)}
 
 
