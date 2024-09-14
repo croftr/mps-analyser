@@ -287,7 +287,7 @@ function PageContent() {
         )}
       </div>
 
-      <div className='flex flex-col gap-2 mb-1'>
+      <div className='flex flex-col md:flex-row gap-2 mb-1'>
 
         <Card>
           <CardHeader className="items-center pb-0">
