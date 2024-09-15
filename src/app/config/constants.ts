@@ -136,7 +136,8 @@ const PARTY_COLOUR: Record<string, PartyColor> = {
     "Democracy 2015": { backgroundColour: "#483d8b", foregroundColour: "#FFFFFF" }, // Dark blue, democracy theme
     "Yorkshire Party": { backgroundColour: "#fffacd", foregroundColour: "#000000" }, // Pale yellow, perhaps Yorkshire rose reference
     "Scottish Libertarian Party": { backgroundColour: "#ffff00", foregroundColour: "#000000" },
-    "Both Unions Party of Northern Ireland": { backgroundColour: "#9acd32", foregroundColour: "#FFFFFF" }
+    "Both Unions Party of Northern Ireland": { backgroundColour: "#9acd32", foregroundColour: "#FFFFFF" },
+    "Mebyon Kernow  The Party for Cornwall" : {  backgroundColour: "#fcb900", foregroundColour: "#FFFFFF" }
 }
 
 export const getPartyColour = (name: string): PartyColor => {

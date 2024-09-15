@@ -64,23 +64,25 @@ function PageContent() {
 
     <div className="flex flex-col justify-center p-4 gap-6 mb-10">
 
-      <div className="flex items-center gap-4 text-lg font-semibold">
+      <div className="flex items-center justify-center gap-4 text-lg font-semibold">
 
-        <div className="headerItem flex-1 flex items-center justify-end gap-2 relative overflow-hidden">
-          <span className="truncate">{title}</span>
-          <div className="h-6 border-l border-gray-300"></div>
-        </div>
+        <div className="flex">
+          <div className="nameItem flex-1 flex items-center justify-end gap-2 relative overflow-hidden hidden md:flex"> {/* Hide on smaller screens, show on medium and larger */}
+            <span className="truncate">{title}</span>
+            <div className="h-6 border-l border-gray-300"></div>
+          </div>
 
-        <div className="headerItem flex-1 mt-2 rounded-full p-4 ring-1 flex flex-col items-center min-w-40">
-          <Handshake className="h-6 w-6 relative arrow-container" />
-          <span className="font-medium">
-            {formatCurrency(value)}
-          </span>
-        </div>
+          <div className="headerItem flex-1 mt-2 rounded-full p-4 ring-1 flex flex-col items-center min-w-40 mr-4 ml-4">
+            <Handshake className="h-6 w-6 relative arrow-container" />
+            <span className="font-medium">
+              {formatCurrency(value)}
+            </span>
+          </div>
 
-        <div className="headerItem flex-1 flex items-center justify-start gap-2 relative overflow-hidden">
-          <div className="h-6 border-l border-gray-300"></div>
-          <span className="truncate">{awardedTo}</span>
+          <div className="nameItem flex-1 flex items-center justify-start gap-2 relative overflow-hidden hidden md:flex"> {/* Hide on smaller screens, show on medium and larger */}
+            <div className="h-6 border-l border-gray-300"></div>
+            <span className="truncate">{awardedTo}</span>
+          </div>
         </div>
       </div>
 
@@ -94,8 +96,9 @@ function PageContent() {
             <div className="font-medium">Awarded to:</div>
             <a className='text-primary hover:underline' href="#" onClick={() => router.push(`org?name=${encodeURIComponent(awardedTo || "")}`)}>{awardedTo}</a>
 
-            <div className="font-medium">Description:</div>
-            <div>{contract[0]._fields[0].properties.Description}</div>
+            {/* <div className='description col-span-2 p-2'>{contract[0]._fields[0].properties.Description}</div> */}
+
+            <div className='description col-span-2 p-2 dark:bg-gray-800 bg-gray-100'>{contract[0]._fields[0].properties.Description}</div>
 
             <div className="font-medium">Industry:</div>
             <div>{contract[0]._fields[0].properties.Industry}</div>
