@@ -29,7 +29,8 @@ const PartyLabel = ({ partyName = "" }) => {
           "Solihull and Meriden Residents Association" : "Solihull and Meriden",
           "The Official Monster Raving Loony Party" : "Monster Raving Loony Party",
           "Both Unions Party of Northern Ireland" : "Both Unions Party",
-          "The Independent Group for Change": "Independent Group for Change"
+          "The Independent Group for Change": "Independent Group for Change",
+          "Better Bedford Independent Party": "Better Bedford Party"
         };
       
         return cleanedName?.startsWith("Speaker") ? "Speaker" 
