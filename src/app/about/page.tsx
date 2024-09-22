@@ -17,11 +17,11 @@ export default function AboutPage() {
 
       <p className="mb-4">
         Under the hood, the app leverages a graph database to establish relationships between different data points, enabling the identification of similarities and patterns that might not be readily apparent in traditional relational databases.
-        We're particularly excited about the potential of graph algorithms to uncover deeper insights into the political landscape.
+        We are particularly excited about the potential of graph algorithms to uncover deeper insights into the political landscape.
       </p>
 
       <p className="mb-4">
-        It's important to emphasize that this project is purely for educational and exploratory purposes.
+        It is important to emphasize that this project is purely for educational and exploratory purposes.
         We have no plans to monetize it or display any advertisements.
       </p>
 

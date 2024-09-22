@@ -37,7 +37,6 @@ export default function Nav() {
           </Link>
         </NavigationMenuItem>
 
-
         <NavigationMenuItem>
           <Link href="/insights" legacyBehavior passHref>
             <NavigationMenuLink>
