@@ -129,7 +129,7 @@ export default function Home() {
 
       <div className="flex items-center justify-center space-x-4 p-6 mt-2">
         <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 shadow-sm">Comons Connect</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 shadow-sm">Commons Connect</h1>
           <p className="text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-300 italic">Connecting MPs, Votes, Donations and Contracts</p>
         </div>
       </div>

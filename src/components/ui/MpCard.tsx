@@ -33,11 +33,10 @@ interface MpCardProps {
 
 const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = true, className }: MpCardProps) => {
   
-
   return (
 
     <div
-      className={`${className} relative p-4 pb-2 pt-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer`}
+      className={`${className} relative p-4 pb-2 pt-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer flex-1`}
       onClick={() => onQueryMp && onQueryMp(item.id)}
     >
 
