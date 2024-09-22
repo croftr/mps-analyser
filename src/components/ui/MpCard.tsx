@@ -36,7 +36,7 @@ const MpCard = ({ onQueryMp, item, isFormatedDates = false, isDisplayingTable = 
   return (
 
     <div
-      className={`${className} relative p-4 pb-2 pt-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer flex-1`}
+      className={`${className} relative p-4 pb-2 pt-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer`}
       onClick={() => onQueryMp && onQueryMp(item.id)}
     >
 
