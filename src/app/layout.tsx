@@ -7,6 +7,9 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: 'Commons Connect - Explore UK Political Data',
   description: 'Uncover connections between MPs, their votes, donations, and contracts using a powerful graph database.',
+  other: {
+    'google-site-verification': 'iXs8XEny4cqWemcVe0yqKaE66l5Nvfz88N40mkET_e8'
+  }
 };
 
 export default function RootLayout({
@@ -15,10 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <meta name="google-site-verification" content="iXs8XEny4cqWemcVe0yqKaE66l5Nvfz88N40mkET_e8" />
-      </head>
+    <html lang="en">      
       <body className="bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Nav />
