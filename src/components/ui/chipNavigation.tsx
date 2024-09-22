@@ -38,7 +38,7 @@ const navItems = [
         color: "bg-orange-100 hover:bg-orange-200"
     },
     {
-        label: "Biggest Donars",
+        label: "Biggest Donors",
         icon: Gift,
         href: "insights?type=org&limit=100&minTotalDonationValue=10000000",
         color: "bg-green-100 hover:bg-green-200"

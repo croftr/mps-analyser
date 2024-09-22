@@ -266,7 +266,7 @@ function PageContent() {
         {name && donorStatus === DonorStatusEnum.UnidentifiableDonor && (
           <div className="flex flex-col gap-1">
             <div className="flex">
-              <span className="dark:text-white">It has not been possible to identify these donars or organisations</span>
+              <span className="dark:text-white">It has not been possible to identify these donors or organisations</span>
             </div>
             <div className="flex">
               <span className="dark:text-white">Expanding the details will give more information</span>

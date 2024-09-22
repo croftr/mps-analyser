@@ -35,7 +35,7 @@ const donationColumns = [
 const partyDonarColumns = [
   {
     accessorKey: 'donar',
-    header: 'Donar',
+    header: 'Donor',
   },
   {
     accessorKey: 'donatedCout',
