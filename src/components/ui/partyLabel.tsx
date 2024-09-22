@@ -30,7 +30,8 @@ const PartyLabel = ({ partyName = "" }) => {
           "The Official Monster Raving Loony Party" : "Monster Raving Loony Party",
           "Both Unions Party of Northern Ireland" : "Both Unions Party",
           "The Independent Group for Change": "Independent Group for Change",
-          "Better Bedford Independent Party": "Better Bedford Party"
+          "Better Bedford Independent Party": "Better Bedford Party",
+          "Labour (Co-op)": "Labour"
         };
       
         return cleanedName?.startsWith("Speaker") ? "Speaker" 
