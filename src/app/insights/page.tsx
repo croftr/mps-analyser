@@ -37,7 +37,7 @@ import {
 
 import { Separator } from '@radix-ui/react-separator';
 import { generateHeaderFromQueryParams } from './tableHeaderGenerator';
-import { LastUpdateDataType, Neo4jDate } from '@/types';
+import { LastUpdateDataType } from '@/types';
 
 
 const types = [
@@ -119,6 +119,8 @@ function PageContent() {
   const [minTotalDonationValue, setMinTotalDonationValue] = useState(0);
   const [minContractCount, setMinContractCount] = useState(0);
   const [orgType, setOrgType] = useState("Any");
+  const [donationFromDate, setDonationFromDate] = useState(new Date(EARLIEST_FROM_DATE).toISOString().substring(0, 10));
+  const [donationToDate, setDonationToDate] = useState(new Date().toISOString().substring(0, 10));
 
   const onToggleWholeWordMatch = () => {
     setWholeWordMatch(!wholeWordMatch);
@@ -248,7 +250,9 @@ function PageContent() {
       awardedbyParam: '',
       minTotalDonationValue: 0,
       minContractCount: 0,
-      orgType: "Any"
+      orgType: "Any",
+      donationFromDate: '',
+      donationToDate: ''
     };
 
     switch (typeParam.toLocaleLowerCase()) {
@@ -308,6 +312,8 @@ function PageContent() {
         orgParams.minTotalDonationValue = Number(searchParams.get('minTotalDonationValue') || 0);
         orgParams.minContractCount = Number(searchParams.get('minContractCount') || 0);
         orgParams.orgType = searchParams.get('orgtype') || 'Any';
+        orgParams.donationFromDate = searchParams.get('donationFromDate') || EARLIEST_FROM_DATE;
+        orgParams.donationToDate = searchParams.get('donationToDate') || new Date().toISOString().substring(0, 10);
 
         setType("Organisation or Individual");
         setDontatedToParty(orgParams.donatedtoParam);
@@ -316,6 +322,8 @@ function PageContent() {
         setMinTotalDonationValue(orgParams.minTotalDonationValue);
         setMinContractCount(orgParams.minContractCount);
         setOrgType(orgParams.orgType);
+        setDonationFromDate(orgParams.donationFromDate);
+        setDonationToDate(orgParams.donationToDate);
 
         url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}&orgtype=${orgParams.orgType}&matchtype=${commonParams.matchType}`;
 
@@ -481,7 +489,7 @@ function PageContent() {
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}`
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}&donationFromDate=${donationFromDate}&donationToDate=${donationToDate}`
     if (orgName) {
       queryString = `${queryString}&name=${orgName}`;
     }
@@ -494,12 +502,14 @@ function PageContent() {
       awardedbyParam: awaredByParty,
       minTotalDonationValue: minTotalDonationValue,
       minContractCount: minContractCount,
-      orgType: orgType
+      orgType: orgType,
+      donationFromDate: donationFromDate,
+      donationToDate: donationToDate
     }
 
     generateTableHeader({ typeParam: "org", orgParams });
 
-    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}&donationFromDate=${donationFromDate}&donationToDate=${donationToDate}`).json();
 
     setData(result);
   }
@@ -598,8 +608,7 @@ function PageContent() {
               {type === "Organisation or Individual" && (
                 <OrgInsights
                   onChangeOrgName={onChangeOrgName}
-                  orgName={orgName}
-                  onSearch={onSearchOrgs}
+                  orgName={orgName}                  
                   dontatedToParty={dontatedToParty}
                   onChangeDontatedToParty={onChangeDontatedToParty}
                   minTotalDonationValue={minTotalDonationValue}
@@ -612,6 +621,11 @@ function PageContent() {
                   wholeWordMatch={wholeWordMatch}
                   awardedByParty={awaredByParty}
                   onChangeAwardedByarty={onChangeAwardedByParty}
+                  donationFromDate={donationFromDate}
+                  donationToDate={donationToDate}
+                  setDonationFromDate={setDonationFromDate}
+                  setDonationToDate={setDonationToDate}
+                  onSearch={onSearchOrgs}
                 />
               )}
 

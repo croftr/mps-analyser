@@ -1,6 +1,9 @@
 
 import { ContractParams, OrgParams, CommonParams } from './insightTypes';
 import { formatCurrency } from "@/lib/utils";
+import { EARLIEST_FROM_DATE } from "../config/constants";
+
+const TODAY = new Date().toISOString().substring(0, 10);
 
 export const generateHeaderFromQueryParams = (params: {
   typeParam: string;
@@ -80,7 +83,13 @@ export const generateHeaderFromQueryParams = (params: {
       }
 
       if (params.orgParams?.minTotalDonationValue) {
-        header += ` who donated more than <span class='text-primary'>${formatCurrency(params.orgParams?.minTotalDonationValue)}</span> to <span class='text-primary'>${params.orgParams?.donatedtoParam}</span>`
+        header += ` who donated more than <span class='text-primary'>${formatCurrency(params.orgParams?.minTotalDonationValue)}</span> to <span class='text-primary'>${params.orgParams?.donatedtoParam || "Any Party"}</span>`
+
+        //append date info only if default date values have been changed
+        if (params.orgParams.donationFromDate && params.orgParams.donationFromDate !== EARLIEST_FROM_DATE || params.orgParams.donationToDate && params.orgParams.donationToDate !== TODAY) {
+          header += ` between <span class='text-primary'>${params.orgParams.donationFromDate}</span> and <span class='text-primary'>${params.orgParams.donationToDate}</span>`
+        } 
+
       }
 
       if (params.orgParams?.minContractCount) {

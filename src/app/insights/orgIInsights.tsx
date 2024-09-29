@@ -11,6 +11,8 @@ import CustomFieldset from "@/components/custom/customFieldset";
 import CustomSelect from "@/components/custom/customSelect";
 import ToggleButton from "@/components/custom/toggleButton";
 
+import { EARLIEST_FROM_DATE } from "../config/constants";
+
 interface OrgInsightsProps {
     dontatedToParty: string,
     onChangeDontatedToParty: (value: string) => void;
@@ -27,6 +29,10 @@ interface OrgInsightsProps {
     setOrgType: (value: string) => void;
     wholeWordMatch: boolean;
     onToggleWholeWordMatch: () => void;
+    donationFromDate: string;
+    setDonationFromDate: (value: string) => void;
+    donationToDate: string;
+    setDonationToDate: (value: string) => void;
 }
 
 const OrgInsights = ({
@@ -45,6 +51,10 @@ const OrgInsights = ({
     setOrgType,
     wholeWordMatch,
     onToggleWholeWordMatch,
+    donationFromDate,
+    setDonationFromDate,
+    donationToDate,
+    setDonationToDate,
 }: OrgInsightsProps) => {
 
     return (
@@ -85,6 +95,7 @@ const OrgInsights = ({
 
 
             <CustomFieldset legend="Donations Made">
+
                 <div className='flex items-baseline gap-2'>
                     <Label htmlFor="donationAmount" className="w-[62px]">Amount</Label>
                     <div className="relative">
@@ -108,7 +119,63 @@ const OrgInsights = ({
                     label="To"
                     labelClassName="min-w-[62px]"
                 />
+
+                <div className="flex gap-2 items-baseline">
+
+                    <Label
+                        htmlFor="startSelect"
+                        className="min-w-[62px]">
+                        from
+                    </Label>
+
+                    <input
+                        type="date"
+                        id="startSelect"
+                        name="from-date"
+                        min={EARLIEST_FROM_DATE}
+                        max={new Date().toISOString().substring(0, 10)}
+                        onChange={(e) => setDonationFromDate(e.target.value)}
+                        value={donationFromDate}
+                        className="px-4 py-2 rounded-md
+                            bg-background                 
+                            border 
+                            border-gray-400 dark:border-gray-700       
+                            focus:outline-none 
+                            focus:ring-2 
+                            focus:ring-custom-outline 
+                            transition-all 
+                            duration-200 
+                            ease-in-out w-[210px]"
+                    />
+                </div>
+
+                <div className="flex gap-2 items-baseline">
+                    <Label
+                        htmlFor="startSelect"
+                        className="min-w-[62px]">
+                        to
+                    </Label>
+
+                    <input
+                        type="date"
+                        id="toDate"
+                        name="to-date"
+                        min={EARLIEST_FROM_DATE}
+                        max={new Date().toISOString().substring(0, 10)}
+                        onChange={(e) => setDonationToDate(e.target.value)}
+                        value={donationToDate}
+                        className="px-4 py-2 rounded-md
+                    bg-background 
+                    border
+                    border-gray-400 dark:border-gray-700
+                    focus:outline-none 
+                    focus:ring-2 
+                    focus:ring-custom-outline 
+                    transition-all duration-200 ease-in-out w-[210px]"
+                    />
+                </div>
             </CustomFieldset>
+
 
             <div className="flex gap-2">
                 <Info className="w-5 h-5 text-gray-500" />
