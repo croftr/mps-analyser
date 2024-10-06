@@ -14,7 +14,6 @@ export function metadata({ params }: { params: { slug?: string } }): Metadata {
     ? `Explore data related to ${params.slug} in the UK Parliament.`
     : 'Uncover connections between MPs, their votes, donations, and contracts using a powerful graph database.';
 
-
   return {
     title: title,
     description: description,
@@ -22,20 +21,30 @@ export function metadata({ params }: { params: { slug?: string } }): Metadata {
       'google-site-verification': 'iXs8XEny4cqWemcVe0yqKaE66l5Nvfz88N40mkET_e8'
     },
     openGraph: {
-      title: 'Commons Connect - Explore UK Political Data',
-      description: 'Uncover connections between MPs, their votes, donations, and contracts using a powerful graph database.',
-      url: 'https://commons-connect.com/',
+      url: 'https://commons-connect.com',
       type: 'website',
+      title: title, // Use the dynamic title here
+      description: description, // Use the dynamic description
       images: ['https://commons-connect.com/opengraph-image.png'],
     },
     twitter: {
-      card: 'summary_large_image',
-      title: 'Commons Connect - Explore UK Political Data',
-      description: 'Uncover connections between MPs, their votes, donations, and contracts using a powerful graph database.',
+      card: 'summary_large_image',      
+      site:'@croft_rob',        
+      creator: "@croft_rob", 
+      title: title, // Use the dynamic title here
+      description: description, // Use the dynamic description
       images: ['https://commons-connect.com/twitter-image.png'],
     }
   };
 }
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Website",
+  "name": "Commons Connect",
+  "url": "https://commons-connect.com/",
+  "description": "Explore UK Political Data"
+};
 
 export default function RootLayout({
   children,
@@ -44,6 +53,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body className="bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Nav />
