@@ -25,7 +25,7 @@ export function metadata({ params }: { params: { slug?: string } }): Metadata {
       type: 'website',
       title: title, // Use the dynamic title here
       description: description, // Use the dynamic description
-      images: ['https://commons-connect.com/opengraph-image.png'],
+      images: ['https://commons-connect.com/card.png'],
     },
     twitter: {
       card: 'summary_large_image',      
@@ -33,7 +33,7 @@ export function metadata({ params }: { params: { slug?: string } }): Metadata {
       creator: "@croft_rob", 
       title: title, // Use the dynamic title here
       description: description, // Use the dynamic description
-      images: ['https://commons-connect.com/twitter-image.png'],
+      images: ['https://commons-connect.com/card.png'],
     }
   };
 }
