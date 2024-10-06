@@ -20,6 +20,8 @@ export interface OrgParams {
   orgType: string;
   donationFromDate: string;
   donationToDate: string;
+  contractFromDate: string;
+  contractToDate: string;
 }
 
 export interface CommonParams {

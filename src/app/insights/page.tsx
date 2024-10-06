@@ -252,7 +252,9 @@ function PageContent() {
       minContractCount: 0,
       orgType: "Any",
       donationFromDate: '',
-      donationToDate: ''
+      donationToDate: '',
+      contractFromDate: '',
+      contractToDate: ''
     };
 
     switch (typeParam.toLocaleLowerCase()) {
@@ -306,6 +308,7 @@ function PageContent() {
         break;
       }
       case 'org': {
+
         orgParams.nameParam = searchParams.get('name');
         orgParams.donatedtoParam = searchParams.get('donatedto') || 'Any Party';
         orgParams.awardedbyParam = searchParams.get('awardedby') || 'Any Party';
@@ -314,6 +317,8 @@ function PageContent() {
         orgParams.orgType = searchParams.get('orgtype') || 'Any';
         orgParams.donationFromDate = searchParams.get('donationFromDate') || EARLIEST_FROM_DATE;
         orgParams.donationToDate = searchParams.get('donationToDate') || new Date().toISOString().substring(0, 10);
+        orgParams.contractFromDate = searchParams.get('contractFromDate') || EARLIEST_FROM_DATE;
+        orgParams.contractToDate = searchParams.get('contractToDate') || new Date().toISOString().substring(0, 10);
 
         setType("Organisation or Individual");
         setDontatedToParty(orgParams.donatedtoParam);
@@ -324,8 +329,10 @@ function PageContent() {
         setOrgType(orgParams.orgType);
         setDonationFromDate(orgParams.donationFromDate);
         setDonationToDate(orgParams.donationToDate);
+        setContractFromDate(orgParams.contractFromDate);
+        setContractToDate(orgParams.contractToDate);
 
-        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}&orgtype=${orgParams.orgType}&matchtype=${commonParams.matchType}`;
+        url = `${config.mpsApiUrl}orgs?limit=${commonParams.limit}&donatedTo=${orgParams.donatedtoParam}&awardedBy=${orgParams.awardedbyParam}&minTotalDonationValue=${orgParams.minTotalDonationValue}&minContractCount=${orgParams.minContractCount}&orgtype=${orgParams.orgType}&matchtype=${commonParams.matchType}&donationFromDate=${orgParams.donationFromDate}&donationToDate=${orgParams.donationToDate}&contractFromDate=${orgParams.contractFromDate}&contractToDate=${orgParams.contractToDate}`;
 
         if (orgParams.nameParam) {
           url = `${url}&name=${orgParams.nameParam}`;
@@ -486,10 +493,11 @@ function PageContent() {
   }
 
   const onSearchOrgs = async () => {
+
     setIsQuerying(true);
     setData(undefined);
 
-    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}&donationFromDate=${donationFromDate}&donationToDate=${donationToDate}`
+    let queryString = `?type=org&donatedto=${dontatedToParty}&awardedby=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}&donationFromDate=${donationFromDate}&donationToDate=${donationToDate}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}`
     if (orgName) {
       queryString = `${queryString}&name=${orgName}`;
     }
@@ -504,12 +512,14 @@ function PageContent() {
       minContractCount: minContractCount,
       orgType: orgType,
       donationFromDate: donationFromDate,
-      donationToDate: donationToDate
+      donationToDate: donationToDate,
+      contractFromDate: contractFromDate,
+      contractToDate: contractToDate
     }
 
     generateTableHeader({ typeParam: "org", orgParams });
 
-    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}&donationFromDate=${donationFromDate}&donationToDate=${donationToDate}`).json();
+    const result: any = await ky(`${config.mpsApiUrl}orgs?name=${orgName}&donatedTo=${dontatedToParty}&awardedBy=${awaredByParty}&limit=${limit}&minTotalDonationValue=${minTotalDonationValue}&minContractCount=${minContractCount}&orgtype=${orgType}&matchtype=${onGetMatchType()}&donationFromDate=${donationFromDate}&donationToDate=${donationToDate}&contractFromDate=${contractFromDate}&contractToDate=${contractToDate}`).json();
 
     setData(result);
   }
@@ -626,6 +636,10 @@ function PageContent() {
                   setDonationFromDate={setDonationFromDate}
                   setDonationToDate={setDonationToDate}
                   onSearch={onSearchOrgs}
+                  contractFromDate={contractFromDate}
+                  setContractFromDate={setContractFromDate}
+                  contractToDate={contractToDate}
+                  setContractToDate={setContractToDate}
                 />
               )}
 

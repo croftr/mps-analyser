@@ -33,6 +33,10 @@ interface OrgInsightsProps {
     setDonationFromDate: (value: string) => void;
     donationToDate: string;
     setDonationToDate: (value: string) => void;
+    contractFromDate: string;
+    setContractFromDate: (value: string) => void;
+    contractToDate: string;
+    setContractToDate: (value: string) => void;
 }
 
 const OrgInsights = ({
@@ -55,6 +59,10 @@ const OrgInsights = ({
     setDonationFromDate,
     donationToDate,
     setDonationToDate,
+    contractFromDate,
+    setContractFromDate,
+    contractToDate,
+    setContractToDate,
 }: OrgInsightsProps) => {
 
     return (
@@ -165,13 +173,13 @@ const OrgInsights = ({
                         onChange={(e) => setDonationToDate(e.target.value)}
                         value={donationToDate}
                         className="px-4 py-2 rounded-md
-                    bg-background 
-                    border
-                    border-gray-400 dark:border-gray-700
-                    focus:outline-none 
-                    focus:ring-2 
-                    focus:ring-custom-outline 
-                    transition-all duration-200 ease-in-out w-[210px]"
+                            bg-background 
+                            border
+                            border-gray-400 dark:border-gray-700
+                            focus:outline-none 
+                            focus:ring-2 
+                            focus:ring-custom-outline 
+                            transition-all duration-200 ease-in-out w-[210px]"
                     />
                 </div>
             </CustomFieldset>
@@ -206,6 +214,61 @@ const OrgInsights = ({
                     label="By"
                     labelClassName="min-w-[62px]"
                 />
+
+                <div className="flex gap-2 items-baseline">
+
+                    <Label
+                        htmlFor="startSelect"
+                        className="min-w-[62px]">
+                        from
+                    </Label>
+
+                    <input
+                        type="date"
+                        id="startSelect"
+                        name="from-date"
+                        min={EARLIEST_FROM_DATE}
+                        max={new Date().toISOString().substring(0, 10)}
+                        onChange={(e) => setContractFromDate(e.target.value)}
+                        value={contractFromDate}
+                        className="px-4 py-2 rounded-md
+                            bg-background                 
+                            border 
+                            border-gray-400 dark:border-gray-700       
+                            focus:outline-none 
+                            focus:ring-2 
+                            focus:ring-custom-outline 
+                            transition-all 
+                            duration-200 
+                            ease-in-out w-[210px]"
+                    />
+                </div>
+
+                <div className="flex gap-2 items-baseline">
+                    <Label
+                        htmlFor="startSelect"
+                        className="min-w-[62px]">
+                        to
+                    </Label>
+
+                    <input
+                        type="date"
+                        id="toDate"
+                        name="to-date"
+                        min={EARLIEST_FROM_DATE}
+                        max={new Date().toISOString().substring(0, 10)}
+                        onChange={(e) => setContractToDate(e.target.value)}
+                        value={contractToDate}
+                        className="px-4 py-2 rounded-md
+                            bg-background 
+                            border
+                            border-gray-400 dark:border-gray-700
+                            focus:outline-none 
+                            focus:ring-2 
+                            focus:ring-custom-outline 
+                            transition-all duration-200 ease-in-out w-[210px]"
+                    />
+                </div>
 
             </CustomFieldset>
         </div>
