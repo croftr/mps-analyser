@@ -21,7 +21,7 @@ export function metadata({ params }: { params: { slug?: string } }): Metadata {
       'google-site-verification': 'iXs8XEny4cqWemcVe0yqKaE66l5Nvfz88N40mkET_e8'
     },
     openGraph: {
-      url: 'https://commons-connect.com',
+      url: `https://commons-connect.com/${params?.slug || ''}`,
       type: 'website',
       title: title, // Use the dynamic title here
       description: description, // Use the dynamic description
